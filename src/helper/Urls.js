@@ -1,0 +1,1 @@
+export const BACKENDURL='http://localhost:2024'
