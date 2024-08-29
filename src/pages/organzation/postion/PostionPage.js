@@ -1,24 +1,24 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AlertContext } from '../context/AlertContext';
+import { AlertContext } from '../../../context/AlertContext';
 import axios from 'axios';
-import ModalForm from '../modal/Modal';
-import NewUserForm from '../components/forms/NewUserForm';
+import ModalForm from '../../../modal/Modal';
 import { Button } from 'antd';
-import UserTable from '../components/tables/UserTable';
-import { BACKENDURL } from '../helper/Urls';
+import { BACKENDURL } from '../../../helper/Urls';
+import PostionTable from '../../../components/tables/organzation/postion/PostionTable';
+import NewPostionForm from '../../../components/forms/organzation/NewPostionForm';
 
-const Users = () => {
+const PostionPage = () => {
   const {openNotification} = useContext(AlertContext);
 
-  const [userData,setUserData]=useState([])
+  const [branchData,setBranchData]=useState([])
   const [loading,setLoading]=useState(false)
 
-  const getUserData=async()=>{
+  const getBranchData=async()=>{
     setLoading(true)
     try {
       const res = await axios.get(`${BACKENDURL}/users/all`);
       setLoading (false);
-      setUserData(res.data.users)
+      setBranchData(res.data.branchs)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
@@ -26,7 +26,7 @@ const Users = () => {
   }
 
   useEffect(()=>{
-    getUserData()
+    getBranchData()
   },[])
 
 
@@ -36,21 +36,21 @@ const Users = () => {
     <div>
       <div style={{height: '50px',display:'flex',gap:'10px'}}>
         <Button type="primary" onClick={() => setModalOpen (true)}>
-          Add New User
+          Register Postion
         </Button>
-        <Button type='default' onClick={getUserData} loading={loading}>
+        <Button type='default' onClick={getBranchData} loading={loading}>
           Reload
         </Button>
         <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
-          title={'New User Form'}
-          content={<NewUserForm reload={()=>getUserData()} openModalFun={(e) => setModalOpen (e)}/>}
+          title={'New Postion Form'}
+          content={<NewPostionForm reload={()=>getBranchData()} openModalFun={(e) => setModalOpen (e)}/>}
         />
       </div>
-      <UserTable loading={loading} reload={()=>getUserData()} userData={userData}/>
+      <PostionTable loading={loading} reload={()=>getBranchData()} branchData={branchData}/>
     </div>
   )
 }
 
-export default Users
+export default PostionPage
