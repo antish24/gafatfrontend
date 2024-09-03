@@ -27,6 +27,10 @@ import EmployeePage from './pages/employee/employee/EmployeePage';
 import { GoLaw } from 'react-icons/go';
 import AgreementPage from './pages/employee/agreement/AgreementPage';
 import EmployeeDetail from './pages/employee/employee/EmployeeDetail';
+import TimeSheet from './pages/payroll/timesheet/List/TimeSheet';
+import PayrollPage from './pages/payroll/payroll/PayrollPage';
+import PayrollReportPage from './pages/payroll/payroll/PayrollReportPage';
+import TimeSheetForm from './pages/payroll/timesheet/Form/TimeSheetForm';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -164,23 +168,49 @@ const App = () => {
       children: [
         {
           key: '42',
-          label: <Link to={'/payroll/timesheet'}><IoTimeOutline/> TimeSheet</Link>,
+          label:<><IoTimeOutline/> TimeSheet</>,
+          children: [
+            {
+              key: '421',
+              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Form</Link>,
+            },
+            {
+              key: '423',
+              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> List</Link>,
+            },
+          ],
         },
         {
           key: '44',
-          label: <Link to={'/payroll/deduction'}><FaUserMinus/> Deduction</Link>,
-        },
-        {
-          key: '45',
-          label: <Link to={'/payroll/allowance'}><FaUserPlus/> Allowance</Link>,
+          label: <><FaUserMinus/> Salary</>,
+          children: [
+            {
+              key: '441',
+              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Components</Link>,
+            },
+            {
+              key: '442',
+              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Structure</Link>,
+            },
+            {
+              key: '443',
+              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
+            },
+          ],
         },
         {
           key: '41',
-          label: <Link to={'/payroll/list'}><FaFileInvoice/> Payroll</Link>,
-        },
-        {
-          key: '46',
-          label: <Link to={'/companies/report'}><HiOutlineDocumentReport/> Report</Link>,
+          label: <><FaFileInvoice/> Payroll</>,
+          children: [
+            {
+              key: '411',
+              label: <Link to={'/payroll/list/all'}><FaUsers/> Payroll</Link>,
+            },
+            {
+              key: '413',
+              label: <Link to={'/payroll/list/report'}><HiOutlineDocumentReport/> Report</Link>,
+            },
+          ],
         },
       ],
     },
@@ -376,6 +406,11 @@ const App = () => {
             <Route element={<AgreementPage />} path="/employee/agreement" />
 
             <Route element={<Users />} path="/users/list" />
+
+            <Route element={<TimeSheet />} path="/payroll/timesheet/list" />
+            <Route element={<TimeSheetForm />} path="/payroll/timesheet/form" />
+            <Route element={<PayrollPage />} path="/payroll/list/all" />
+            <Route element={<PayrollReportPage />} path="/payroll/list/report" />
             
             <Route element={<SupportPage />} path="/support" />
             <Route element={<PageNotFound />} path="*" />
