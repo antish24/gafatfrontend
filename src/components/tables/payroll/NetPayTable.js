@@ -1,19 +1,12 @@
 import React, {useContext, useRef, useState} from 'react';
-import {
-  Button,
-  Input,
-  Popconfirm,
-  Space,
-  Table,
-  Tag,
-} from 'antd';
+import {Button, Input, Popconfirm, Space, Table, Tag} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import {MdDelete, MdEdit} from 'react-icons/md';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 
-const IncomeTaxTable = ({incomeTaxDate, loading, reload}) => {
+const NetPayTable = ({incomeTaxDate, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -122,148 +115,91 @@ const IncomeTaxTable = ({incomeTaxDate, loading, reload}) => {
 
   const columns = [
     {
-      title: 'TIN',
-      dataIndex: 'TIN',
-      ...getColumnSearchProps ('TIN'),
-      fixed: 'left',
-      width: '80px',
-      key: 'TIN',
-    },
-
-    {
       title: 'Full Name',
       dataIndex: 'fullName',
       ...getColumnSearchProps ('fullName'),
       key: 'fullName',
       width: '200px',
     },
-
     {
-      title: 'Hired Date',
-      dataIndex: 'hiredDate',
-      key: 'hiredDate',
+      title: 'Bank',
+      dataIndex: 'bank',
+      key: 'bank',
+      width: '100px',
+    },
+    {
+      title: 'Account NO',
+      dataIndex: 'accountNo',
+      key: 'accountNo',
       width: '120px',
     },
     {
-      title: 'Salary',
-      dataIndex: 'salary',
-      key: 'salary',
+      title: 'Net Pay',
+      dataIndex: 'netPay',
+      key: 'netPay',
+      width: '100px',
+    },
+    {
+      fixed: 'right',
+      title: 'Status',
       width: '80px',
+      key: 'status',
+      render: r => (
+        <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
+          {r.status}
+        </Tag>
+      ),
     },
     {
-      title: 'Total Transport',
-      dataIndex: 'totalTransport',
-      key: 'totalTransport',
-      width: '80px',
+      title: 'Action',
+      width: '165px',
+      fixed: 'right',
+      key: 'operation',
+      render: r => (
+        <Space
+          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+        >
+          <Button
+            type="text"
+            onClick={() => {
+              setModalOpen (true);
+              setModalContent (r.IDNO);
+            }}
+          >
+            <MdEdit />
+          </Button>
+          <Popconfirm
+            title="Are you sure, Delete user"
+            onConfirm={() => DeleteUser (r.IDNO)}
+          >
+            <Button
+              type="text"
+              disabled={deleteLoading}
+              loading={deleteLoading}
+            >
+              <MdDelete color="red" />
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
-    {
-      title: 'Extra Payments',
-      children:[
-        {
-          title: 'Transport With Tax',
-          dataIndex: 'totalTransportTax',
-          key: 'totalTransportTax',
-          width: '80px',
-        },
-        {
-          title: 'Over Time',
-          dataIndex: 'overTime',
-          key: 'overTime',
-          width: '80px',
-        },
-      
-        {
-          title: 'Taxable Benfits',
-          dataIndex: 'taxableBenfits',
-          key: 'taxableBenfits',
-          width: '80px',
-        },]
-    },
-    {
-      title: 'Total Taxable Salary',
-      dataIndex: 'totalTaxableSalarys',
-      key: 'totalTaxableSalary',
-      width: '100px',
-    },
-    {
-      title: 'Income Tax',
-      dataIndex: 'incomeTax',
-      key: 'incomeTax',
-      width: '100px',
-    },
-    {
-      title: 'Cost Sharing',
-      dataIndex: 'costSharing',
-      key: 'costSharing',
-      width: '100px',
-    },
-    {
-      title: 'Net Payment',
-      dataIndex: 'netPayment',
-      key: 'netPayment',
-      width: '100px',
-    },
-    // {
-    //   fixed: 'right',
-    //   title: 'Status',
-    //   width: '80px',
-    //   key: 'status',
-    //   render: r => (
-    //     <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
-    //       {r.status}
-    //     </Tag>
-    //   ),
-    // },
-    // {
-    //   title: 'Action',
-    //   width: '165px',
-    //   fixed: 'right',
-    //   key: 'operation',
-    //   render: r => (
-    //     <Space
-    //       style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
-    //     >
-    //       <Button
-    //         type="text"
-    //         onClick={() => {
-    //           setModalOpen (true);
-    //           setModalContent (r.IDNO);
-    //         }}
-    //       >
-    //         <MdEdit />
-    //       </Button>
-    //       <Popconfirm
-    //         title="Are you sure, Delete user"
-    //         onConfirm={() => DeleteUser (r.IDNO)}
-    //       >
-    //         <Button
-    //           type="text"
-    //           disabled={deleteLoading}
-    //           loading={deleteLoading}
-    //         >
-    //           <MdDelete color="red" />
-    //         </Button>
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
-    // },
   ];
 
   return (
-      <Table
-        size="small"
-        columns={columns}
-        bordered
-        scroll={{
-          x: 500,
-        }}
-        pagination={{
-          defaultPageSize: 10,
-          showSizeChanger: false,
-        }}
-        dataSource={incomeTaxDate}
-        loading={loading}
-      />
+    <Table
+      size="small"
+      columns={columns}
+      bordered
+      scroll={{
+        x: 500,
+      }}
+      pagination={{
+        defaultPageSize: 10,
+        showSizeChanger: false,
+      }}
+      dataSource={incomeTaxDate}
+      loading={loading}
+    />
   );
 };
-export default IncomeTaxTable;
+export default NetPayTable;

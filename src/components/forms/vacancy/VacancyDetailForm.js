@@ -1,38 +1,30 @@
 import {Button, DatePicker, Form, Input, Select} from 'antd';
 import axios from 'axios';
 import React, {useContext, useState} from 'react';
-import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
+import { AlertContext } from '../../../context/AlertContext';
+import { BACKENDURL } from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
 
-const NewVancayForm = ({openModalFun, reload}) => {
+const VancayDetailForm = ({openModalFun,reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
-  const [form] = Form.useForm ();
+  const [form] = Form.useForm();
 
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/vacancy/new`, {
-        title:values.title,
-        position:values.position,
-        vacancyType:values.vacancyType,
-        employementType:values.employementType,
-        interview:values.interview,
-        gender:values.gender,
-        location:values.location,
-        sector:values.sector,
-        experience:values.experience,
-        deadline:values.deadline,
-        vacancyNo:values.vacancyNo,
-        salary:values.salary,
-        description:values.description,
+      const res = await axios.post (`${BACKENDURL}/vacancy/new`,{
+        email: values.email,
+        phone: values.phone,
+        gender: values.sex,
+        fullname: values.fullName,
+        access: values.access,
       });
-      reload ();
+      reload()
       setLoading (false);
-      openModalFun (false);
+      openModalFun(false)
       openNotification ('success', res.data.message, 3, 'green');
-      form.resetFields ();
+      form.resetFields()
     } catch (error) {
       setLoading (false);
       openNotification ('error', error.response.data.message, 3, 'red');
@@ -49,42 +41,37 @@ const NewVancayForm = ({openModalFun, reload}) => {
       form={form}
       onFinishFailed={onFinishFailed}
     >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-        }}
+      <div style={{display: 'flex', justifyContent: 'space-between',flexWrap:'wrap'}}>
+
+      <Form.Item
+        style={{margin: '5px',width:'47%'}}
+        label="Title"
+        rules={[
+          {
+            required: true,
+            message: 'Please input Title',
+          },
+        ]}
+        name="title"
       >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        style={{margin: '5px',width:'47%'}}
+        label="Position"
+        rules={[
+          {
+            required: true,
+            message: 'Please input Position',
+          },
+        ]}
+        name="position"
+      >
+        <Input />
+      </Form.Item>
 
-        <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Title"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Title',
-            },
-          ]}
-          name="title"
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Position"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Position',
-            },
-          ]}
-          name="position"
-        >
-          <Input />
-        </Form.Item>
 
-        <Form.Item
+      <Form.Item
           style={{margin: '5px', width: '47%'}}
           label="Vacancy Type"
           name="vacancyType"
@@ -138,40 +125,8 @@ const NewVancayForm = ({openModalFun, reload}) => {
             ]}
           />
         </Form.Item>
-        <Form.Item
-          style={{margin: '5px', width: '40%'}}
-          label="Interview"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Interview',
-            },
-          ]}
-          name="interview"
-        >
-          <Select
-            showSearch
-            placeholder="Search to Select"
-            optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            }
-            options={[
-              {
-                value: 'Staff',
-                label: 'Staff Interview',
-              },
-              {
-                value: 'Security',
-                label: 'Security Interview',
-              },
-            ]}
-          />
-        </Form.Item>
-
-        <Form.Item
-          style={{margin: '5px', width: '20%'}}
+      <Form.Item
+          style={{margin: '5px', width: '30%'}}
           label="Gender"
           name="gender"
           rules={[
@@ -182,7 +137,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
           ]}
         >
           <Select
-            placeholder="Select"
+            placeholder="Search to Select"
             options={[
               {
                 value: 'Male',
@@ -200,7 +155,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
           />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '30%'}}
+          style={{margin: '5px', width: '65%'}}
           label="Location"
           rules={[
             {
@@ -214,10 +169,10 @@ const NewVancayForm = ({openModalFun, reload}) => {
             showSearch
             placeholder="Search to Select"
             optionFilterProp="children"
-            // filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            // filterSort={(optionA, optionB) =>
-            //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            // }
+            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            }
             options={[
               {
                 value: 'AA',
@@ -227,18 +182,18 @@ const NewVancayForm = ({openModalFun, reload}) => {
           />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '30%'}}
-          label="Sector"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Sector',
-            },
-          ]}
-          name="sector"
-        >
-          <Input />
-        </Form.Item>
+        style={{margin: '5px',width:'30%'}}
+        label="Sector"
+        rules={[
+          {
+            required: true,
+            message: 'Please input Sector',
+          },
+        ]}
+        name="sector"
+      >
+        <Input />
+      </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '65%'}}
           label="Experience"
@@ -275,7 +230,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
         <Form.Item
           style={{margin: '5px', width: '30%'}}
           label="Vacancy"
-          name="vacancyNo"
+          name="vacancy"
           rules={[
             {
               required: true,
@@ -283,7 +238,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
             },
           ]}
         >
-          <Input type="number" />
+          <Input type='number'/>
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '30%'}}
@@ -296,7 +251,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
             },
           ]}
         >
-          <Input type="number" />
+          <Input type='number'/>
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '30%'}}
@@ -309,7 +264,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
             },
           ]}
         >
-          <DatePicker />
+          <DatePicker/>
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '100%'}}
@@ -322,23 +277,11 @@ const NewVancayForm = ({openModalFun, reload}) => {
             },
           ]}
         >
-          <TextArea style={{height: '200px'}} />
+          <TextArea style={{height:'200px'}}/>
         </Form.Item>
       </div>
-      <Form.Item
-        style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}
-      >
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={loading}
-          loading={loading}
-        >
-          Publish
-        </Button>
-      </Form.Item>
     </Form>
   );
 };
 
-export default NewVancayForm;
+export default VancayDetailForm;

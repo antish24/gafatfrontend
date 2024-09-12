@@ -16,9 +16,9 @@ const EmployeePage = () => {
   const getUserData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/users/all`);
+      const res = await axios.get(`${BACKENDURL}/employee/all`);
       setLoading (false);
-      setUserData(res.data.users)
+      setUserData(res.data.employees)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);

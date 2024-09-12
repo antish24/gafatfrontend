@@ -5,7 +5,7 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
 
-const NewVancayForm = ({openModalFun, reload}) => {
+const UpdateVancayForm = ({openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
@@ -14,19 +14,11 @@ const NewVancayForm = ({openModalFun, reload}) => {
     setLoading (true);
     try {
       const res = await axios.post (`${BACKENDURL}/vacancy/new`, {
-        title:values.title,
-        position:values.position,
-        vacancyType:values.vacancyType,
-        employementType:values.employementType,
-        interview:values.interview,
-        gender:values.gender,
-        location:values.location,
-        sector:values.sector,
-        experience:values.experience,
-        deadline:values.deadline,
-        vacancyNo:values.vacancyNo,
-        salary:values.salary,
-        description:values.description,
+        email: values.email,
+        phone: values.phone,
+        gender: values.sex,
+        fullname: values.fullName,
+        access: values.access,
       });
       reload ();
       setLoading (false);
@@ -153,10 +145,10 @@ const NewVancayForm = ({openModalFun, reload}) => {
             showSearch
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            }
+            // filterOption={(input, option) => (option?.label ?? '').includes(input)}
+            // filterSort={(optionA, optionB) =>
+            //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            // }
             options={[
               {
                 value: 'Staff',
@@ -182,7 +174,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
           ]}
         >
           <Select
-            placeholder="Select"
+            placeholder="Search to Select"
             options={[
               {
                 value: 'Male',
@@ -275,7 +267,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
         <Form.Item
           style={{margin: '5px', width: '30%'}}
           label="Vacancy"
-          name="vacancyNo"
+          name="vacancy"
           rules={[
             {
               required: true,
@@ -334,11 +326,11 @@ const NewVancayForm = ({openModalFun, reload}) => {
           disabled={loading}
           loading={loading}
         >
-          Publish
+          Update
         </Button>
       </Form.Item>
     </Form>
   );
 };
 
-export default NewVancayForm;
+export default UpdateVancayForm;

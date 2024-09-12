@@ -9,7 +9,7 @@ import {
   Upload,
 } from 'antd';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import {FaUpload} from 'react-icons/fa';
@@ -21,11 +21,93 @@ const NewEmployee = ({openModalFun, reload}) => {
   const [formValues, setFormValues] = useState ({});
   const {Dragger} = Upload;
 
+  const [branchData, setBranchData] = useState ([]);
+  const [branchId, setBranchId] = useState ('');
+  const [loadingBranch, setLoadingBranch] = useState (false);
+
+  const getBranchData = async () => {
+    setLoadingBranch (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/branch/all`);
+      setLoadingBranch (false);
+      setBranchData (res.data.branchs);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingBranch (false);
+    }
+  };
+
+  const branchOptions = branchData.length
+  ? branchData.map(branch => ({
+    value: branch.id,
+    label: branch.name 
+  }))
+  : [];
+
+  useEffect(() => {
+    getBranchData ();
+  }, []);
+
+  const [departmentData, setDepartmentData] = useState ([]);
+  const [loadingDepartment, setLoadingDepartment] = useState (false);
+  const [departmentId, setDepartmentId] = useState ('');
+
+  const getDepartmentData = async (id) => {
+    setLoadingDepartment (true);
+    form.resetFields (['department']);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/department/find?branchId=${id}`);
+      setLoadingDepartment (false);
+      setDepartmentData (res.data.departments);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingDepartment (false);
+    }
+  };
+
+  const departmentOptions = departmentData.length
+    ? departmentData.map (department => ({
+        value: department.id,
+        label: department.name,
+      }))
+    : [];
+
+  useEffect (() => {
+    getDepartmentData (branchId);
+  }, [branchId]);
+
+  const [positionData, setPositionData] = useState ([]);
+  const [loadingPosition, setLoadingPosition] = useState (false);
+
+  const getPositionData = async (id) => {
+    setLoadingPosition (true);
+    form.resetFields (['position']);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/position/find?departmentId=${id}`);
+      setLoadingPosition (false);
+      setPositionData (res.data.positions);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingPosition (false);
+    }
+  };
+
+  const positionOptions = positionData.length
+    ? positionData.map (position => ({
+        value: position.id,
+        label: position.name,
+      }))
+    : [];
+
+  useEffect(() => {
+    getPositionData (departmentId);
+  }, [departmentId]);
+
   const onFinish = async () => {
     setLoading (true);
     console.log (formValues);
     try {
-      const res = await axios.post (`${BACKENDURL}/users/new`, {formValues});
+      const res = await axios.post (`${BACKENDURL}/employee/new`,formValues);
       reload ();
       setLoading (false);
       openModalFun (false);
@@ -119,10 +201,10 @@ const NewEmployee = ({openModalFun, reload}) => {
         {lable: 'Wereda', name: 'wereda', type: 'Input', width: '30%'},
         {lable: 'Kebele', name: 'kebele', type: 'Input', width: '30%'},
         {lable: 'House No', name: 'houseNo', type: 'Input', width: '30%'},
-        {lable: 'Phone', name: 'phone', type: 'Input', width: '47%'},
+        {lable: 'Phone', name: 'phone', type: 'Input', width: '47%',min:10,max:10},
         {
           lable: 'Alternate Phone',
-          name: 'alternatePhone',
+          name: 'otherPhone',
           type: 'Input',
           width: '47%',
           notRequired: true,
@@ -146,38 +228,29 @@ const NewEmployee = ({openModalFun, reload}) => {
           name: 'branch',
           width: '47%',
           type: 'Select',
-          options: [
-            {value: 'Yeka', lable: 'Yeka'},
-            {value: 'Arada', lable: 'Arada'},
-          ],
+          options:branchOptions,
         },
         {
           lable: 'Department',
           name: 'department',
           width: '47%',
           type: 'Select',
-          options: [
-            {value: 'Marketing', lable: 'Marketing'},
-            {value: 'Accounting', lable: 'Accounting'},
-          ],
+          options:departmentOptions,
         },
         {
-          lable: 'Postion',
-          name: 'postion',
+          lable: 'Position',
+          name: 'position',
           width: '47%',
           type: 'Select',
-          options: [
-            {value: 'Accountant', lable: 'Accountant'},
-            {value: 'Sales', lable: 'Sales'},
-          ],
+          options:positionOptions,
         },
         {
           lable: 'Employment Type',
-          name: 'employemmentType',
+          name: 'employementType',
           type: 'Select',
           options: [
-            {value: 'Accountant', lable: 'Accountant'},
-            {value: 'Sales', lable: 'Sales'},
+            {value: 'Full Time', lable: 'Full Time'},
+            {value: 'Temporary', lable: 'Temporary'},
           ],
           width: '47%',
         },
@@ -186,8 +259,8 @@ const NewEmployee = ({openModalFun, reload}) => {
           name: 'shift',
           type: 'Select',
           options: [
-            {value: 'Accountant', lable: 'Accountant'},
-            {value: 'Sales', lable: 'Sales'},
+            {value: 'Basic', lable: 'Basic'},
+            {value: 'Security', lable: 'Security'},
           ],
           width: '31%',
         },
@@ -224,7 +297,7 @@ const NewEmployee = ({openModalFun, reload}) => {
         },
         {
           lable: 'Tin Number',
-          name: 'tinNumber',
+          name: 'TIN',
           type: 'Input',
           req: 'number',
           width: '31%',
@@ -293,6 +366,14 @@ const NewEmployee = ({openModalFun, reload}) => {
   const onNext = () => {
     setCurrentSlide (c => c + 1);
   };
+
+  const FindPosition=(name,value)=>{
+    if(name === 'branch') {
+      setBranchId(value);
+    } else if(name === 'department') {
+      setDepartmentId(value);
+    }
+  }
   return (
     <Form
       layout="vertical"
@@ -321,7 +402,7 @@ const NewEmployee = ({openModalFun, reload}) => {
               name={data.name}
               rules={[
                 {
-                  // required: data.notRequired ? false : true,
+                  required: data.notRequired ? false : true,
                   message: `Please input ${data.lable}`,
                 },
               ]}
@@ -329,6 +410,8 @@ const NewEmployee = ({openModalFun, reload}) => {
               {data.type === 'Input'
                 ? <Input
                     onChange={e => onFieldChange (data.name, e.target.value)}
+                    minLength={data.min?data.min:1}
+                    maxLength={data.max?data.max:400}
                     type={data.req && data.req}
                   />
                 : data.type === 'Date'
@@ -340,7 +423,7 @@ const NewEmployee = ({openModalFun, reload}) => {
                     : data.type === 'Select'
                         ? <Select
                             options={data.options}
-                            onChange={e => onFieldChange (data.name, e)}
+                            onChange={e =>{onFieldChange (data.name, e);FindPosition(data.name,e)}}
                           />
                         : data.type === 'File' &&
                             <Dragger

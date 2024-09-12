@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import { Link, Route, Routes} from 'react-router-dom';
 import {Layout,theme,Button, Menu,} from 'antd';
 
-import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaListUl,FaServicestack, FaUserCheck, FaUserGear, FaUserGroup, FaUserMinus, FaUserPlus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
-import { MdAccountBalance, MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork } from 'react-icons/md';
+import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
+import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
 import Auth from './pages/Auth';
@@ -31,6 +31,10 @@ import TimeSheet from './pages/payroll/timesheet/List/TimeSheet';
 import PayrollPage from './pages/payroll/payroll/PayrollPage';
 import PayrollReportPage from './pages/payroll/payroll/PayrollReportPage';
 import TimeSheetForm from './pages/payroll/timesheet/Form/TimeSheetForm';
+import ApplicantList from './pages/vacancy/Applicant/ApplicantList';
+import ApplicantDetail from './pages/vacancy/Applicant/ApplicantDetail';
+import InterviewPage from './pages/vacancy/interview/InterviewPage';
+import InterviewVacancyPage from './pages/vacancy/interview/InterviewVacancyPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -56,7 +60,7 @@ const App = () => {
         },
         {
           key: '22',
-          label: <Link to={'/vacancy/applicants'}><FaUserCheck/> Applicants</Link>,
+          label: <Link to={'/vacancy/interview'}><FaUserCheck/> Interview</Link>,
         },
         {
           key: '23',
@@ -65,47 +69,47 @@ const App = () => {
       ],
     },
     {
-      key: '5',
+      key: '3',
       label: 'Organzation',
       icon: <SiAwsorganizations size={20} />,
       children: [
         {
-          key: '51',
+          key: '31',
           label: <Link to={'/organzation/branch'}><MdLocationCity/> Branch</Link>,
         },
         {
-          key: '52',
+          key: '32',
           label: <Link to={'/organzation/department'}><SiOnlyoffice/> Department</Link>,
         },
         {
-          key: '53',
+          key: '33',
           label: <Link to={'/organzation/postion'}><PiOfficeChair/> Postion</Link>,
         },
       ],
     },
     {
-      key: '3',
+      key: '4',
       label: 'Employee',
       icon: <FaBuildingUser size={20} />,
       children: [
         {
-          key: '34',
+          key: '41',
           label: <Link to={'/employee/list'}><FaUsers/> Employee</Link>,
         },
         {
-          key: '36',
-          label: <Link to={'/employee/agreement'}><GoLaw/> Agreement</Link>,
+          key: '42',
+          label:<Link to={'/employee/agreement'}><GoLaw/> Agreement</Link>,
         },
         {
-          key: '35',
-          label: <Link to={'/employee/performace'}><FaUsersGear/> Performace</Link>,
+          key: '43',
+          label: <><FaUsersGear/> Performace</>,
           children: [
             {
-              key: '351',
+              key: '431',
               label: <Link to={'/employee/performace/setting'}><MdSettings/> Setting</Link>,
             },
             {
-              key: '352',
+              key: '432',
               label: <Link to={'/employee/performace/list'}><FaWpforms/> Performace</Link>,
             },
           ],
@@ -113,16 +117,16 @@ const App = () => {
       ],
     },
     {
-      key: '20',
+      key: '5',
       label: 'Manage Project',
       icon: <FaDiagramProject size={20} />,
       children: [
         {
-          key: '261',
+          key: '51',
           label: <Link to={'/project/list'}><MdWork/> Projects</Link>,
         },
         {
-          key: '262',
+          key: '52',
           label: <Link to={'/project/assign'}><FaUserCheck/> Assign</Link>,
         },
       ],
@@ -152,62 +156,88 @@ const App = () => {
       icon: <MdAccountBalance size={20} />,
       children: [
         {
-          key: '72',
+          key: '71',
           label: <Link to={'/asset/requests'}><FaClipboardList/> Requests</Link>,
         },
         {
-          key: '73',
+          key: '72',
           label: <Link to={'/asset/list'}><MdAccountBalance/> Asset</Link>,
         },
       ],
     },
+
     {
-      key: '4',
-      label: 'Manage Payroll',
-      icon: <GrMoney size={20} />,
+      key: '8',
+      label: 'Attendance',
+      icon: <MdTimer size={20} />,
       children: [
         {
-          key: '42',
+          key: '81',
           label:<><IoTimeOutline/> TimeSheet</>,
           children: [
             {
-              key: '421',
+              key: '811',
               label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Form</Link>,
             },
             {
-              key: '423',
+              key: '812',
               label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> List</Link>,
             },
           ],
         },
         {
-          key: '44',
-          label: <><FaUserMinus/> Salary</>,
+          key: '82',
+          label: <><FaUserMinus/> Attendance</>,
           children: [
             {
-              key: '441',
+              key: '821',
               label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Components</Link>,
             },
             {
-              key: '442',
+              key: '822',
               label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Structure</Link>,
             },
             {
-              key: '443',
+              key: '823',
+              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      key: '9',
+      label: 'Manage Payroll',
+      icon: <GrMoney size={20} />,
+      children: [
+        {
+          key: '91',
+          label: <><FaUserMinus/> Salary</>,
+          children: [
+            {
+              key: '911',
+              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Components</Link>,
+            },
+            {
+              key: '912',
+              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Structure</Link>,
+            },
+            {
+              key: '913',
               label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
             },
           ],
         },
         {
-          key: '41',
+          key: '92',
           label: <><FaFileInvoice/> Payroll</>,
           children: [
             {
-              key: '411',
+              key: '921',
               label: <Link to={'/payroll/list/all'}><FaUsers/> Payroll</Link>,
             },
             {
-              key: '413',
+              key: '922',
               label: <Link to={'/payroll/list/report'}><HiOutlineDocumentReport/> Report</Link>,
             },
           ],
@@ -215,44 +245,36 @@ const App = () => {
       ],
     },
     {
-      key: 'grp',
+      key: 'Companies',
       label: 'Companies',
       type: 'group',
     },
     {
-      key: '/Companies',
+      key: '10',
       label: 'Companies',
       icon: <FaBuilding size={20} />,
       children: [
         {
-          key: '/Companies/list',
+          key: '101',
           label: <Link to={'/companies/list'}><IoBusiness/> Companies</Link>,
         },
         {
-          key: '/Companies/req',
-          label: <Link to={'/companies/request'}><FaListAlt/> Request</Link>,
-        },
-        {
-          key: '/Companies/plan',
-          label: <Link to={'/companies/plan'}><FaListUl/> Plan</Link>,
-        },
-        {
-          key: '/Companies/service',
+          key: '102',
           label: <Link to={'/companies/service'}><FaServicestack/> Service</Link>,
         },
         {
-          key: '/Companies/transation',
-          label: <Link to={'/companies/transaction'}><GrTransaction/> Transaction</Link>,
+          key: '103',
+          label: <Link to={'/companies/history'}><GrTransaction/> History</Link>,
         },
       ],
     },
     {
-      key: '14',
-      label: <Link to={'/support'}>Payment</Link>,
+      key: '11',
+      label: <Link to={'/securityplacement'}>Placement</Link>,
       icon: <MdOutlineSupportAgent size={20} />,
     },
     {
-      key: 'grp',
+      key: 'System',
       label: 'System',
       type: 'group',
     },
@@ -272,12 +294,12 @@ const App = () => {
       ],
     },
     {
-      key: '11',
-      label: <Link to={'/support'}>Setting</Link>,
+      key: '13',
+      label: <Link to={'/setting'}>Setting</Link>,
       icon: <MdBuild size={20} />,
     },
     {
-      key: '12',
+      key: '14',
       label: <Link to={'/support'}>Help & Support</Link>,
       icon: <MdOutlineSupportAgent size={20} />,
     },
@@ -396,6 +418,11 @@ const App = () => {
             <Route element={<Dashboard />} path="/dashboard" />
 
             <Route element={<VacancyPage />} path="/vacancy/list" />
+            <Route element={<ApplicantList />} path="/vacancy/applicants/:id" />
+            <Route element={<ApplicantDetail />} path="/vacancy/applicant/detail/:id" />
+
+            <Route element={<InterviewPage />} path="/vacancy/interview" />
+            <Route element={<InterviewVacancyPage />} path="/vacancy/interview/usedby" />
 
             <Route element={<BranchPage />} path="/organzation/branch" />
             <Route element={<DepartmentPage />} path="/organzation/department" />

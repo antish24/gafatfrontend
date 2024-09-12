@@ -4,30 +4,14 @@ import React, {useContext, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 
-const FilterIncomeTax = ({openModalFun, reload}) => {
+const FilterIncomeTax = ({openModalFun, reload,onFilterChange}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
 
   const onFinish = async values => {
-    setLoading (true);
-    try {
-      const res = await axios.post (`${BACKENDURL}/users/new`, {
-        email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullName,
-        access: values.access,
-      });
-      reload ();
-      setLoading (false);
-      openModalFun (false);
-      openNotification ('success', res.data.message, 3, 'green');
-      form.resetFields ();
-    } catch (error) {
-      setLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
+    onFilterChange()
+    
   };
   const onFinishFailed = errorInfo => {
     console.log ('Failed:', errorInfo);
@@ -79,7 +63,6 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
         style={{margin: '5px', width: '200px'}}
         rules={[
           {
-            required: true,
             message: 'Select Site',
           },
         ]}
@@ -88,12 +71,20 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
           placeholder="Select Site"
           options={[
             {
-              value: 'Addis Abeba',
-              label: 'Addis Abeba',
+              value: 'Addis Abeba Yeka',
+              label: 'Addis Abeba Yeka',
             },
             {
-              value: 'Gonder',
-              label: 'Gonder',
+              value: 'Arada Buna Bank',
+              label: 'Arada Buna Bank',
+            },
+            {
+              value: 'Addis Abeba Saris',
+              label: 'Addis Abeba Saris',
+            },
+            {
+              value: 'Bahir Dar CBE',
+              label: 'Bahir Dar CBE',
             },
           ]}
         />
@@ -103,7 +94,6 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
         name="city"
         rules={[
           {
-            required: true,
             message: 'Select City / Region',
           },
         ]}
@@ -119,6 +109,10 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
               value: 'Amhara',
               label: 'Amhara',
             },
+            {
+              value: 'Sidama',
+              label: 'Sidama',
+            },
           ]}
         />
       </Form.Item>
@@ -128,7 +122,6 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
         name="subcity"
         rules={[
           {
-            required: true,
             message: 'Select SubCity / Zone',
           },
         ]}
@@ -141,8 +134,12 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
               label: 'Yeka',
             },
             {
-              value: 'Semen Shewa',
-              label: 'Semen Shewa',
+              value: 'North Shewa',
+              label: 'North Shewa',
+            },
+            {
+              value: 'South Shewa',
+              label: 'South Shewa',
             },
           ]}
         />
@@ -154,7 +151,6 @@ const FilterIncomeTax = ({openModalFun, reload}) => {
         name="wereda"
         rules={[
           {
-            required: true,
             message: 'Select Wereda',
           },
         ]}

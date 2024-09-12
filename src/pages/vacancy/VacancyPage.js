@@ -4,7 +4,7 @@ import axios from 'axios';
 import ModalForm from '../../modal/Modal';
 import { Button } from 'antd';
 import { BACKENDURL } from '../../helper/Urls';
-import VacancyTable from '../../components/tables/VacancyTable';
+import VacancyTable from '../../components/tables/vacancy/VacancyTable';
 import NewVancayForm from '../../components/forms/vacancy/NewVacancyForm';
 
 const VacancyPage = () => {

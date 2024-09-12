@@ -169,7 +169,7 @@ const BranchTable = ({branchData,loading,reload}) => {
      title: 'Status',
      width:'80px',
      key: 'status',
-     render: (r) => <Badge status={r.status==="Active"?"success":'error'} text={r.status} />,
+     render: (r) => <Tag color={r.status==="Active"?'success':'volcano'} text={r.status}>{r.status}</Tag>,
     },
     {
      title: 'Action',

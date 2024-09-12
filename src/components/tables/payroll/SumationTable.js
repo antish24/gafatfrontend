@@ -2,7 +2,6 @@ import React, {useContext, useRef, useState} from 'react';
 import {
   Badge,
   Button,
-  DatePicker,
   Divider,
   Input,
   Popconfirm,
@@ -12,15 +11,15 @@ import {
   Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {MdDelete, MdEdit, MdFilterAltOff} from 'react-icons/md';
+import {MdDelete, MdEdit} from 'react-icons/md';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
-import {FaFileCsv, FaFileExcel} from 'react-icons/fa6';
-import { TbReload } from 'react-icons/tb';
+import {FaFile} from 'react-icons/fa6';
+import FiterTimeSheetForm from '../../forms/payroll/FiterTimeSheetForm';
 
-const PayrollTable = ({payrollDate, loading, reload}) => {
+const SumationTable = ({payrollDate, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -114,69 +113,18 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
       ),
   });
   
-  const [filteredInfo, setFilteredInfo] = useState({});
-  const [sortedInfo, setSortedInfo] = useState({});
-  
-  const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
-    setFilteredInfo(filters);
-    setSortedInfo(sorter);
+  const DeleteUser = async id => {
+    setDeleteLoading (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
+      setDeleteLoading (false);
+      reload ();
+      openNotification ('success', res.data.message, 3, 'green');
+    } catch (error) {
+      setDeleteLoading (false);
+      openNotification ('error', error.response.data.message, 3, 'red');
+    }
   };
-
-  const clearAll = () => {
-    setFilteredInfo({});
-    setSortedInfo({});
-  };
-
-  const cities = [
-    {
-      name: 'Addis Ababa',
-      subCities: [
-        {
-          name: 'Kirkos',
-          weredas: ['Wereda 1', 'Wereda 2'],
-        },
-        {
-          name: 'Lideta',
-          weredas: ['Wereda 3', 'Wereda 4'],
-        },
-        {
-          name: 'Bole',
-          weredas: ['Wereda 5', 'Wereda 6'],
-        },
-      ],
-    },
-    {
-      name: 'Gonder',
-      subCities: [
-        {
-          name: 'Aynalem',
-          weredas: ['Wereda 7', 'Wereda 8'],
-        },
-        {
-          name: 'Agena',
-          weredas: ['Wereda 9', 'Wereda 10'],
-        },
-        {
-          name: 'Gore',
-          weredas: ['Wereda 11', 'Wereda 12'],
-        },
-      ],
-    },
-    {
-      name: 'Sidama',
-      subCities: [
-        {
-          name: 'Hawassa',
-          weredas: ['Wereda 13', 'Wereda 14'],
-        },
-        {
-          name: 'Bensa',
-          weredas: ['Wereda 15', 'Wereda 16'],
-        },
-      ],
-    },
-  ];
 
   const columns = [
     {
@@ -203,8 +151,8 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
             {
               title: 'Branch',
               dataIndex: 'branch',
-              key: 'branch',
               ...getColumnSearchProps ('branch'),
+              key: 'branch',
               width: '200px',
             },
             {
@@ -236,78 +184,23 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
             {
               title: 'City / Region',
               dataIndex: 'city',
+              ...getColumnSearchProps ('city'),
               key: 'city',
               width: '200px',
-              filters: cities.map(city => ({
-                text: city.name,
-                value: city.name
-              })),
-            
-              filteredValue: filteredInfo.city || null,
-            
-              onFilter: (value, record) => {
-                // Get city object matching filter value
-                const city = cities.find(c => c.name === value);
-            
-                // Check if record's city matches filter
-                return city.name === record.city; 
-              }
             },
             {
               title: 'SubCity / Zone',
               dataIndex: 'subCity',
+              ...getColumnSearchProps ('subCity'),
               key: 'subCity',
               width: '200px',
-              filters: cities.flatMap(city => 
-                city.subCities.map(sub => ({
-                  text: sub.name, 
-                  value: sub.name
-                }))
-              ),
-            
-              onFilter: (value, record) => {
-                const city = cities.find(c => {
-                  return c.subCities.some(s => s.name === value); 
-                });
-              
-                const subcity = city.subCities.find(s => s.name === value);
-              
-                return record.city === city.name && record.subCity === subcity.name;
-              }
             },
             {
               title: 'Wereda',
               dataIndex: 'wereda',
+              ...getColumnSearchProps ('wereda'),
               key: 'wereda',
               width: '200px',
-              filters: cities.flatMap(city =>
-                city.subCities.flatMap(sub =>  
-                  sub.weredas.map(w => ({
-                    text: w,
-                    value: w  
-                  }))
-                )
-              ),
-              filteredValue: filteredInfo.wereda || null,
-              onFilter: (value, record) => {
-                const city = cities.find(c => {
-                  return c.subCities.some(sc => {
-                    return sc.weredas.some(w => w === value);
-                  });
-                });
-              
-                const subcity = city.subCities.find(sc => {
-                  return sc.weredas.some(w => w === value);
-                });
-              
-                const wereda = subcity.weredas.find(w => w === value);
-              
-                return (
-                  record.city === city.name && 
-                  record.subCity === subcity.name &&
-                  record.wereda === wereda
-                );
-              }
             },
           ],
         },
@@ -410,73 +303,67 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
       ],
     },
 
-    // {
-    //   fixed: 'right',
-    //   title: 'Status',
-    //   width: '80px',
-    //   key: 'status',
-    //   render: r => (
-    //     <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
-    //       {r.status}
-    //     </Tag>
-    //   ),
-    // },
-    // {
-    //   title: 'Action',
-    //   width: '165px',
-    //   fixed: 'right',
-    //   key: 'operation',
-    //   render: r => (
-    //     <Space
-    //       style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
-    //     >
-    //       <Button
-    //         type="text"
-    //         onClick={() => {
-    //           setModalOpen (true);
-    //           setModalContent (r.IDNO);
-    //         }}
-    //       >
-    //         <MdEdit />
-    //       </Button>
-    //       <Popconfirm
-    //         title="Are you sure, Delete user"
-    //         onConfirm={() => DeleteUser (r.IDNO)}
-    //       >
-    //         <Button
-    //           type="text"
-    //           disabled={deleteLoading}
-    //           loading={deleteLoading}
-    //         >
-    //           <MdDelete color="red" />
-    //         </Button>
-    //       </Popconfirm>
-    //     </Space>
-      // ),
-    // },
+    {
+      fixed: 'right',
+      title: 'Status',
+      width: '80px',
+      key: 'status',
+      render: r => (
+        <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
+          {r.status}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Action',
+      width: '165px',
+      fixed: 'right',
+      key: 'operation',
+      render: r => (
+        <Space
+          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+        >
+          <Button
+            type="text"
+            onClick={() => {
+              setModalOpen (true);
+              setModalContent (r.IDNO);
+            }}
+          >
+            <MdEdit />
+          </Button>
+          <Popconfirm
+            title="Are you sure, Delete user"
+            onConfirm={() => DeleteUser (r.IDNO)}
+          >
+            <Button
+              type="text"
+              disabled={deleteLoading}
+              loading={deleteLoading}
+            >
+              <MdDelete color="red" />
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
   ];
 
   return (
     <div>
-      <div style={{display:'flex',width:"100%",justifyContent:'space-between',marginBottom:'30px'}}>
-      <div style={{display:'flex',gap:'5px'}}>
-      <CSVLink
-        data={payrollDate}
-        filename={"payroll-detail-csv"}>
-          <Button><FaFileCsv/>CSV</Button>
-      </CSVLink>
-      <CSVLink
-        data={payrollDate}
-        filename={"payroll-detail-csv"}>
-          <Button><FaFileExcel/>Excel</Button>
-      </CSVLink>
+      <div
+        style={{
+          display: 'flex',
+          height: '60px',
+          justifyContent: 'space-between',
+        }}
+      >
+        <span style={{fontSize: '20px'}}>Payroll List </span>
+        <div style={{display: 'flex', gap: '10px'}}>
+          <FiterTimeSheetForm />
+        </div>
       </div>
-      <DatePicker onChange={reload} disabled/>
-      <div style={{display:'flex',gap:'5px'}}>
-      <Button onClick={reload} type='primary'><TbReload />Refresh</Button>
-      <Button onClick={clearAll}><MdFilterAltOff/> Clear filters</Button>
-      </div>
-      </div>
+
       <Table
         size="small"
         columns={columns}
@@ -486,14 +373,12 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
         }}
         pagination={{
           defaultPageSize: 10,
-          position:'topRight',
           showSizeChanger: false,
         }}
         dataSource={payrollDate}
         loading={loading}
-        onChange={handleChange}
       />
     </div>
   );
 };
-export default PayrollTable;
+export default SumationTable;

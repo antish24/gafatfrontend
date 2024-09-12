@@ -12,12 +12,11 @@ const NewBranchForm = ({openModalFun,reload}) => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/users/new`,{
-        email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullName,
-        access: values.access,
+      const res = await axios.post (`${BACKENDURL}/organzation/branch/new`,{
+        name: values.name,
+        city: values.city,
+        subCity: values.subCity,
+        wereda: values.wereda,
       });
       reload()
       setLoading (false);
@@ -58,7 +57,7 @@ const NewBranchForm = ({openModalFun,reload}) => {
 
       <Form.Item
           style={{margin: '5px', width: '47%'}}
-          label="City"
+          label="City / Region"
           name="city"
           rules={[
             {
@@ -71,12 +70,12 @@ const NewBranchForm = ({openModalFun,reload}) => {
             placeholder="Search to Select"
             options={[
               {
-                value: 'Male',
-                label: 'Male',
+                value: 'Addis Abeba',
+                label: 'Addis Abeba',
               },
               {
-                value: 'Female',
-                label: 'Female',
+                value: 'Sidama',
+                label: 'Sidama',
               },
             ]}
           />
@@ -103,16 +102,16 @@ const NewBranchForm = ({openModalFun,reload}) => {
             }
             options={[
               {
-                value: 'R',
-                label: 'Read',
+                value: 'Arada',
+                label: 'Arada',
               },
               {
-                value: 'RW',
-                label: 'Read Write',
+                value: 'Yeka',
+                label: 'Yeka',
               },
               {
-                value: 'FULL',
-                label: 'Full Access',
+                value: 'Bole',
+                label: 'Bole',
               },
             ]}
           />
@@ -139,16 +138,16 @@ const NewBranchForm = ({openModalFun,reload}) => {
             }
             options={[
               {
-                value: 'R',
-                label: 'Read',
+                value: '01',
+                label: '01',
               },
               {
-                value: 'RW',
-                label: 'Read Write',
+                value: '02',
+                label: '02',
               },
               {
-                value: 'FULL',
-                label: 'Full Access',
+                value: '04',
+                label: '04',
               },
             ]}
           />

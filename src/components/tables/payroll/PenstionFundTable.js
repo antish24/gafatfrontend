@@ -13,7 +13,7 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 
-const IncomeTaxTable = ({incomeTaxDate, loading, reload}) => {
+const PenstionFundTable = ({incomeTaxDate, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -151,102 +151,70 @@ const IncomeTaxTable = ({incomeTaxDate, loading, reload}) => {
       width: '80px',
     },
     {
-      title: 'Total Transport',
-      dataIndex: 'totalTransport',
-      key: 'totalTransport',
+      title: 'PF 7%',
+      dataIndex: 'deductions',
+      key: 'deductions',
+      render: r => r.PF7,
       width: '80px',
     },
     {
-      title: 'Extra Payments',
-      children:[
-        {
-          title: 'Transport With Tax',
-          dataIndex: 'totalTransportTax',
-          key: 'totalTransportTax',
-          width: '80px',
-        },
-        {
-          title: 'Over Time',
-          dataIndex: 'overTime',
-          key: 'overTime',
-          width: '80px',
-        },
-      
-        {
-          title: 'Taxable Benfits',
-          dataIndex: 'taxableBenfits',
-          key: 'taxableBenfits',
-          width: '80px',
-        },]
+      title: 'PF 11%',
+      dataIndex: 'deductions',
+      key: 'deductions',
+      render: r => r.PF11,
+      width: '80px',
     },
     {
-      title: 'Total Taxable Salary',
-      dataIndex: 'totalTaxableSalarys',
-      key: 'totalTaxableSalary',
+      title: 'Total',
+      dataIndex: 'deductions',
+      key: 'deductions',
+      render: r => r.total,
       width: '100px',
     },
     {
-      title: 'Income Tax',
-      dataIndex: 'incomeTax',
-      key: 'incomeTax',
-      width: '100px',
+      fixed: 'right',
+      title: 'Status',
+      width: '80px',
+      key: 'status',
+      render: r => (
+        <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
+          {r.status}
+        </Tag>
+      ),
     },
     {
-      title: 'Cost Sharing',
-      dataIndex: 'costSharing',
-      key: 'costSharing',
-      width: '100px',
+      title: 'Action',
+      width: '165px',
+      fixed: 'right',
+      key: 'operation',
+      render: r => (
+        <Space
+          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+        >
+          <Button
+            type="text"
+            onClick={() => {
+              setModalOpen (true);
+              setModalContent (r.IDNO);
+            }}
+          >
+            <MdEdit />
+          </Button>
+          <Popconfirm
+            title="Are you sure, Delete user"
+            onConfirm={() => DeleteUser (r.IDNO)}
+          >
+            <Button
+              type="text"
+              disabled={deleteLoading}
+              loading={deleteLoading}
+            >
+              <MdDelete color="red" />
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
     },
-    {
-      title: 'Net Payment',
-      dataIndex: 'netPayment',
-      key: 'netPayment',
-      width: '100px',
-    },
-    // {
-    //   fixed: 'right',
-    //   title: 'Status',
-    //   width: '80px',
-    //   key: 'status',
-    //   render: r => (
-    //     <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
-    //       {r.status}
-    //     </Tag>
-    //   ),
-    // },
-    // {
-    //   title: 'Action',
-    //   width: '165px',
-    //   fixed: 'right',
-    //   key: 'operation',
-    //   render: r => (
-    //     <Space
-    //       style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
-    //     >
-    //       <Button
-    //         type="text"
-    //         onClick={() => {
-    //           setModalOpen (true);
-    //           setModalContent (r.IDNO);
-    //         }}
-    //       >
-    //         <MdEdit />
-    //       </Button>
-    //       <Popconfirm
-    //         title="Are you sure, Delete user"
-    //         onConfirm={() => DeleteUser (r.IDNO)}
-    //       >
-    //         <Button
-    //           type="text"
-    //           disabled={deleteLoading}
-    //           loading={deleteLoading}
-    //         >
-    //           <MdDelete color="red" />
-    //         </Button>
-    //       </Popconfirm>
-    //     </Space>
-    //   ),
-    // },
   ];
 
   return (
@@ -266,4 +234,4 @@ const IncomeTaxTable = ({incomeTaxDate, loading, reload}) => {
       />
   );
 };
-export default IncomeTaxTable;
+export default PenstionFundTable;

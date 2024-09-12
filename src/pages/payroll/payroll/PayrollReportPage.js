@@ -1,60 +1,11 @@
 import React from 'react'
-import PayrollTable from '../../../components/tables/payroll/PayrollTable'
 import { Tabs } from 'antd';
 import IncomeTax from '../../../components/tabs/payroll/IncomeTax';
+import PenstionFund from '../../../components/tabs/payroll/PenstionFund';
+import NetPaymentTab from '../../../components/tabs/payroll/NetPaymentTab';
+import SumationPayroll from '../../../components/tabs/payroll/SumationPayroll';
 
 const PayrollReportPage = () => {
-  const tabs2 = [
-    {
-      key: '1',
-      label: (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-          }}
-        >
-          Income Tax
-        </div>
-      ),
-      children:<div>Income tax</div>,
-    },
-    {
-      key: '3',
-      label: (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-          }}
-        >
-          Penstion
-        </div>
-      ),
-      children:<div>Penstion tax</div>,
-    },
-    {
-      key: '2',
-      label: (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '3px',
-          }}
-        >
-          Net Payment
-        </div>
-      ),
-      children:<div>Net Payment</div>,
-    },
-  ];
-
   const tabs = [
     {
       key: '1',
@@ -86,7 +37,7 @@ const PayrollReportPage = () => {
           Penstion
         </div>
       ),
-      children:<div>Penstion tax</div>,
+      children:<PenstionFund/>,
     },
     {
       key: '2',
@@ -102,7 +53,7 @@ const PayrollReportPage = () => {
           Net Payment
         </div>
       ),
-      children:<div>Net Payment</div>,
+      children:<NetPaymentTab/>,
     },
     {
       key: '4',
@@ -118,7 +69,7 @@ const PayrollReportPage = () => {
          Summation
         </div>
       ),
-      children:<Tabs defaultActiveKey="1" items={tabs2} style={{width: '100%'}} />,
+      children:<SumationPayroll/>,
     },
   ];
   return (

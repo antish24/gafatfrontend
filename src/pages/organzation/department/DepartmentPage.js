@@ -16,9 +16,9 @@ const DepartmentPage = () => {
   const getBranchData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/users/all`);
+      const res = await axios.get(`${BACKENDURL}/organzation/department/all`);
       setLoading (false);
-      setBranchData(res.data.branchs)
+      setBranchData(res.data.departments)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);

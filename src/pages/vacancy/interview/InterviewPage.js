@@ -4,21 +4,21 @@ import axios from 'axios';
 import ModalForm from '../../../modal/Modal';
 import { Button } from 'antd';
 import { BACKENDURL } from '../../../helper/Urls';
-import PostionTable from '../../../components/tables/organzation/postion/PostionTable';
-import NewPostionForm from '../../../components/forms/organzation/NewPostionForm';
+import InterviewTable from '../../../components/tables/vacancy/InterviewTable';
+import NewInterviewForm from '../../../components/forms/vacancy/NewInterviewForm';
 
-const PostionPage = () => {
+const InterviewPage = () => {
   const {openNotification} = useContext(AlertContext);
 
-  const [branchData,setBranchData]=useState([])
+  const [interviewData,setinterviewData]=useState([])
   const [loading,setLoading]=useState(false)
 
-  const getBranchData=async()=>{
+  const getinterviewData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/organzation/position/all`);
+      const res = await axios.get(`${BACKENDURL}/interview/all`);
       setLoading (false);
-      setBranchData(res.data.positions)
+      setinterviewData(res.data.vacancys)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
@@ -26,7 +26,7 @@ const PostionPage = () => {
   }
 
   useEffect(()=>{
-    getBranchData()
+    getinterviewData()
   },[])
 
 
@@ -36,21 +36,21 @@ const PostionPage = () => {
     <div>
       <div style={{height: '50px',display:'flex',gap:'10px'}}>
         <Button type="primary" onClick={() => setModalOpen (true)}>
-          Register Postion
+          Add New Interview
         </Button>
-        <Button type='default' onClick={getBranchData} loading={loading}>
+        <Button type='default' onClick={getinterviewData} loading={loading}>
           Reload
         </Button>
         <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
-          title={'New Postion Form'}
-          content={<NewPostionForm reload={()=>getBranchData()} openModalFun={(e) => setModalOpen (e)}/>}
+          title={'New Interview Form'}
+          content={<NewInterviewForm reload={()=>getinterviewData()} openModalFun={(e) => setModalOpen (e)}/>}
         />
       </div>
-      <PostionTable loading={loading} reload={()=>getBranchData()} branchData={branchData}/>
+      <InterviewTable loading={loading} reload={()=>getinterviewData()} interviewData={interviewData}/>
     </div>
   )
 }
 
-export default PostionPage
+export default InterviewPage

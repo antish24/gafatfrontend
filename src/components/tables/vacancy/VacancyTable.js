@@ -10,8 +10,8 @@ import {
   Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock} from 'react-icons/fa6';
-import {MdDelete, MdEdit} from 'react-icons/md';
+import {FaUserLock, FaUsers} from 'react-icons/fa6';
+import {MdClose, MdDelete, MdEdit, MdViewAgenda} from 'react-icons/md';
 import {FormatDateTime} from '../../../helper/FormatDate';
 import ModalForm from '../../../modal/Modal';
 import UpdateUserForm from '../../forms/UpdateUserForm';
@@ -19,9 +19,12 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
-import {FormatDay} from '../../../helper/FormateDay';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import UpdateVancayForm from '../../forms/vacancy/UpdateVacancyForm';
+import { Link } from 'react-router-dom';
+import { FormatDay } from '../../../helper/FormateDay';
 
-const EmployeeTable = ({userData, loading, reload}) => {
+const VacancyTable = ({vacancyData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -41,27 +44,20 @@ const EmployeeTable = ({userData, loading, reload}) => {
     setSearchText ('');
   };
 
-  const getColumnSearchProps = dataIndex => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div
         style={{
           padding: 8,
         }}
-        onKeyDown={e => e.stopPropagation ()}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys (e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch (selectedKeys, confirm, dataIndex)}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
           style={{
             marginBottom: 8,
             display: 'block',
@@ -70,7 +66,7 @@ const EmployeeTable = ({userData, loading, reload}) => {
         <Space>
           <Button
             type="primary"
-            onClick={() => handleSearch (selectedKeys, confirm, dataIndex)}
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
             icon={<SearchOutlined />}
             size="small"
             style={{
@@ -80,7 +76,7 @@ const EmployeeTable = ({userData, loading, reload}) => {
             Search
           </Button>
           <Button
-            onClick={() => clearFilters && handleReset (clearFilters)}
+            onClick={() => clearFilters && handleReset(clearFilters)}
             size="small"
             style={{
               width: 90,
@@ -91,7 +87,7 @@ const EmployeeTable = ({userData, loading, reload}) => {
         </Space>
       </div>
     ),
-    filterIcon: filtered => (
+    filterIcon: (filtered) => (
       <SearchOutlined
         style={{
           color: filtered ? '#1677ff' : undefined,
@@ -112,7 +108,7 @@ const EmployeeTable = ({userData, loading, reload}) => {
         text
       ),
   });
-
+  
   const BanUser = async ({id, status}) => {
     setBanLoading (true);
     try {
@@ -147,114 +143,87 @@ const EmployeeTable = ({userData, loading, reload}) => {
       dataIndex: 'IDNO',
       ...getColumnSearchProps ('IDNO'),
       width: '80px',
-      fixed:'left',
       key: 'IDNO',
     },
     {
-      title: 'Employee Info',
-      children: [
-        {
-          title: 'Full Name',
-          children: [
-            {
-              title: 'First',
-              dataIndex: 'fName',
-              ...getColumnSearchProps ('fName'),
-              width: '90px',
-              key: 'fName',
-            },
-            {
-              title: 'Middle',
-              dataIndex: 'mName',
-              ...getColumnSearchProps ('mName'),
-              width: '90px',
-              key: 'mName',
-            },
-            {
-              title: 'Last',
-              dataIndex: 'lName',
-              ...getColumnSearchProps ('lName'),
-              width: '90px',
-              key: 'lName',
-            },
-            ,
-          ],
-        },
-        {
-          title: 'Sex',
-          dataIndex: 'sex',
-          key: 'sex',
-          width: '80px',
-        },
-        {
-          title: 'Date Of Birth',
-          dataIndex: 'dateOfBirth',
-          width: '150px',
-          key: 'createdAt',
-          render: r => <span>{FormatDay (r)}</span>,
-        },
-        {
-          title: 'Nationality',
-          dataIndex: 'nationality',
-          key: 'nationality',
-          width: '100px',
-        },
-      ],
+      title: 'Title',
+      dataIndex: 'title',
+      ...getColumnSearchProps ('title'),
+      width: '200px',
+      key: 'title',
     },
     {
-      title: 'Work Info',
-      children: [
-        {
-          title: 'Branch',
-          dataIndex: 'branch',
-          width: '100px',
-          key: 'branch',
-        },
-        {
-          title: 'Department',
-          dataIndex: 'department',
-          width: '100px',
-          key: 'department',
-        },
-        {
-          title: 'Position',
-          dataIndex: 'position',
-          width: '80px',
-          key: 'position',
-        },
-        {
-          title: 'Start Date',
-          dataIndex: 'startDate',
-          width: '100px',
-          render: r => <span>{FormatDay(r)}</span>,
-          key: 'startDate',
-        },
-        {
-          title: 'Employement Type',
-          dataIndex: 'employementType',
-          width: '120px',
-          key: 'employementType',
-        },
-        {
-          title: 'Shift',
-          dataIndex: 'shift',
-          width: '80px',
-          key: 'shift',
-        },
-        {
-          title: 'Salary',
-          dataIndex: 'salary',
-          width: '80px',
-          key: 'salary',
-        },
-      ],
+      title: 'Position',
+      dataIndex: 'position',
+      ...getColumnSearchProps ('position'),
+      width: '100px',
+      key: 'position',
     },
     {
-      title: 'Registered',
-      dataIndex: 'registered',
+      title: 'Vacancy Type',
+      dataIndex: 'vacancyType',
+      ...getColumnSearchProps ('vacancyType'),
+      key: 'type',
+      width: '140px',
+    },
+    {
+      title: 'Employement Type',
+      dataIndex: 'employementType',
+      ...getColumnSearchProps ('employementType'),
+      key: 'type',
+      width: '160px',
+    },
+    {
+      title: 'Sector',
+      dataIndex: 'sector',
+      key: 'sector',
+      width: '120px',
+    },
+    {
+      title: 'Location',
+      dataIndex: 'location',
+      ...getColumnSearchProps ('location'),
+      key: 'location',
+      width: '100px',
+    }, 
+    {
+      title: 'Gender',
+      dataIndex: 'gender',
+      key: 'gender',
+      width: '100px',
+    },
+    {
+      title: 'Experience',
+      dataIndex: 'experience',
+      key: 'experience',
+      width: '100px',
+    },
+    {
+      title: 'Vacancy',
+      dataIndex: 'vacancyNo',
+      key: 'vacancyNo',
+      width: '100px',
+    },
+   
+    {
+      title: 'Salary',
+      dataIndex: 'salary',
+      key: 'salary',
       width: '150px',
-      key: 'registered',
+    },
+    {
+      title: 'Deadline',
+      dataIndex: 'deadline',
+      key: 'deadline',
       render: r => <span>{FormatDay(r)}</span>,
+      width: '120px',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'createdAt',
+      width: '160px',
+      key: 'createdAt',
+      render: r => <span>{FormatDateTime(r)}</span>,
     },
     {
       fixed: 'right',
@@ -270,14 +239,14 @@ const EmployeeTable = ({userData, loading, reload}) => {
     },
     {
       title: 'Action',
-      width: '165px',
+      width: '100px',
       fixed: 'right',
       key: 'operation',
       render: r => (
         <Space
           style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
         >
-          <Button
+          <Button style={{padding:'0',margin:'0'}}
             type="text"
             onClick={() => {
               setModalOpen (true);
@@ -286,53 +255,50 @@ const EmployeeTable = ({userData, loading, reload}) => {
           >
             <MdEdit />
           </Button>
-          <Button
-            style={{padding: 2, margin: 0}}
+          <Button style={{padding:'0',margin:'0'}}
             type="text"
-            disabled={banLoading}
-            loading={banLoading}
           >
-            <FaUserLock
-              onClick={() =>
-                BanUser ({
-                  id: r.IDNO,
-                  status: r.status === 'Active' ? 'InActive' : 'Active',
-                })}
-            />
+            <IoMdEyeOff/>
           </Button>
-          <Popconfirm
-            title="Are you sure, Delete user"
-            onConfirm={() => DeleteUser (r.IDNO)}
-          >
-            <Button
-              type="text"
-              disabled={deleteLoading}
-              loading={deleteLoading}
+            <Link
+              to={`/vacancy/applicants/${1}`}
             >
-              <MdDelete color="red" />
-            </Button>
-          </Popconfirm>
+              <FaUsers />
+            </Link>
         </Space>
       ),
     },
   ];
 
   return (
-    <Table
-      size="small"
-      columns={columns}
-      bordered
-      scroll={{
-        x: 500,
-      }}
-      pagination={{
-        defaultPageSize: 10,
-        showSizeChanger: true,
-        position:['topRight']
-      }}
-      dataSource={userData}
-      loading={loading}
-    />
+    <div>
+      <CSVLink data={vacancyData}>Download me</CSVLink>
+      <ModalForm
+        open={modalOpen}
+        close={() => setModalOpen (false)}
+        title={<Divider>Update Vacancy</Divider>}
+        content={
+          <UpdateVancayForm
+            id={modalContent}
+            reload={() => reload ()}
+            openModalFun={e => setModalOpen (e)}
+          />
+        }
+      />
+      <Table
+        size="small"
+        columns={columns}
+        scroll={{
+          x: 500,
+        }}
+        pagination={{
+          defaultPageSize: 7,
+          showSizeChanger: false,
+        }}
+        dataSource={vacancyData}
+        loading={loading}
+      />
+    </div>
   );
 };
-export default EmployeeTable;
+export default VacancyTable;

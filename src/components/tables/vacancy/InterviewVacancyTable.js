@@ -10,17 +10,21 @@ import {
   Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock} from 'react-icons/fa6';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {FormatDateTime} from '../../helper/FormatDate';
-import ModalForm from '../../modal/Modal';
-import UpdateUserForm from '../forms/UpdateUserForm';
-import {AlertContext} from '../../context/AlertContext';
-import {BACKENDURL} from '../../helper/Urls';
+import {FaUserLock, FaUsers} from 'react-icons/fa6';
+import {MdClose, MdDelete, MdEdit, MdViewAgenda} from 'react-icons/md';
+import {FormatDateTime} from '../../../helper/FormatDate';
+import ModalForm from '../../../modal/Modal';
+import {AlertContext} from '../../../context/AlertContext';
+import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
+import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import { Link } from 'react-router-dom';
+import UpdateInterviewForm from '../../forms/vacancy/UpdateInterviewForm';
+import { LuFileStack } from 'react-icons/lu';
+import VacancyDetailForm from '../../forms/vacancy/VacancyDetailForm';
 
-const VacancyTable = ({vacancyData, loading, reload}) => {
+const InterviewVacancyTable = ({vacancyData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -149,17 +153,24 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       key: 'title',
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      ...getColumnSearchProps ('type'),
+      title: 'Vacancy Type',
+      dataIndex: 'vacancyType',
+      ...getColumnSearchProps ('vacancyType'),
       key: 'type',
-      width: '100px',
+      width: '140px',
+    },
+    {
+      title: 'Employement Type',
+      dataIndex: 'employementType',
+      ...getColumnSearchProps ('employementType'),
+      key: 'type',
+      width: '140px',
     },
     {
       title: 'Sector',
       dataIndex: 'sector',
       key: 'sector',
-      width: '80px',
+      width: '120px',
     },
     {
       title: 'Location',
@@ -167,42 +178,6 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       ...getColumnSearchProps ('location'),
       key: 'location',
       width: '100px',
-    },
-    {
-      title: 'Experience',
-      dataIndex: 'experience',
-      key: 'experience',
-      width: '100px',
-    },
-    {
-      title: 'Vacancy',
-      dataIndex: 'vacancy',
-      key: 'vacancy',
-      width: '150px',
-    },
-    {
-      title: 'Gender',
-      dataIndex: 'gender',
-      key: 'gender',
-      width: '150px',
-    },
-    {
-      title: 'Salary',
-      dataIndex: 'salary',
-      key: 'salary',
-      width: '150px',
-    },
-    {
-      title: 'Requirement',
-      dataIndex: 'requirement',
-      key: 'requirement',
-      width: '150px',
-    },
-    {
-      title: 'Deadline',
-      dataIndex: 'deadline',
-      key: 'deadline',
-      width: '80px',
     },
     {
       title: 'Date',
@@ -225,48 +200,26 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
     },
     {
       title: 'Action',
-      width: '165px',
       fixed: 'right',
       key: 'operation',
       render: r => (
         <Space
           style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
         >
-          <Button
+          <Button style={{padding:'0',margin:'0'}}
             type="text"
             onClick={() => {
               setModalOpen (true);
               setModalContent (r.IDNO);
             }}
           >
-            <MdEdit />
+            <IoMdEye />
           </Button>
-          <Button
-            style={{padding: 2, margin: 0}}
-            type="text"
-            disabled={banLoading}
-            loading={banLoading}
-          >
-            <FaUserLock
-              onClick={() =>
-                BanUser ({
-                  id: r.IDNO,
-                  status: r.status === 'Active' ? 'InActive' : 'Active',
-                })}
-            />
-          </Button>
-          <Popconfirm
-            title="Are you sure, Delete user"
-            onConfirm={() => DeleteUser (r.IDNO)}
-          >
-            <Button
-              type="text"
-              disabled={deleteLoading}
-              loading={deleteLoading}
+            <Link
+              to={`/vacancy/applicants/1`}
             >
-              <MdDelete color="red" />
-            </Button>
-          </Popconfirm>
+              <FaUsers />
+            </Link>
         </Space>
       ),
     },
@@ -278,9 +231,9 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       <ModalForm
         open={modalOpen}
         close={() => setModalOpen (false)}
-        title={<Divider>Update User Form</Divider>}
+        title={<Divider>Vacancy Detail</Divider>}
         content={
-          <UpdateUserForm
+          <VacancyDetailForm
             id={modalContent}
             reload={() => reload ()}
             openModalFun={e => setModalOpen (e)}
@@ -297,10 +250,10 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
           defaultPageSize: 7,
           showSizeChanger: false,
         }}
-        dataSource={vacancyData}
+        dataSource={Array(3).fill(0)}
         // loading={loading}
       />
     </div>
   );
 };
-export default VacancyTable;
+export default InterviewVacancyTable;
