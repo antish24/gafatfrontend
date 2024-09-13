@@ -123,11 +123,19 @@ const App = () => {
       children: [
         {
           key: '51',
-          label: <Link to={'/project/list'}><MdWork/> Projects</Link>,
+          label: <Link to={'/project/list'}><MdWork/> Companies</Link>,
         },
         {
           key: '52',
-          label: <Link to={'/project/assign'}><FaUserCheck/> Assign</Link>,
+          label: <Link to={'/project/list'}><MdWork/> Projects</Link>,
+        },
+        {
+          key: '53',
+          label: <Link to={'/project/assign'}><FaUserCheck/> Report</Link>,
+        },
+        {
+          key: '54',
+          label: <Link to={'/project/assign'}><FaUserCheck/> Tender</Link>,
         },
       ],
     },

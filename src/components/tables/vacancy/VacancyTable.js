@@ -6,6 +6,7 @@ import {
   Input,
   Popconfirm,
   Space,
+  Tooltip,
   Table,
   Tag,
 } from 'antd';
@@ -260,11 +261,13 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
           >
             <IoMdEyeOff/>
           </Button>
+            <Tooltip title="Applicants">
             <Link
               to={`/vacancy/applicants/${1}`}
             >
               <FaUsers />
             </Link>
+            </Tooltip>
         </Space>
       ),
     },

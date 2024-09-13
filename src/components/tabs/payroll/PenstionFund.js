@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import IncomeTaxTable from '../../tables/payroll/IncomeTaxTable';
 import FilterIncomeTax from '../../forms/payroll/FilterIncomeTax';
 import PenstionFundTable from '../../tables/payroll/PenstionFundTable';
