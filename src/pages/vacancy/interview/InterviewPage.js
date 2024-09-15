@@ -18,7 +18,7 @@ const InterviewPage = () => {
     try {
       const res = await axios.get(`${BACKENDURL}/interview/all`);
       setLoading (false);
-      setinterviewData(res.data.vacancys)
+      setinterviewData(res.data.interviews)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);

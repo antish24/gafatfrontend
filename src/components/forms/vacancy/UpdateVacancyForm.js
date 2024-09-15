@@ -1,11 +1,11 @@
 import {Button, DatePicker, Form, Input, Select} from 'antd';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
 
-const UpdateVancayForm = ({openModalFun, reload}) => {
+const UpdateVancayForm = ({id,openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
@@ -13,12 +13,21 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/vacancy/new`, {
-        email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullName,
-        access: values.access,
+      const res = await axios.post (`${BACKENDURL}/vacancy/update`, {
+        IDNO:id,
+        title:values.title,
+        position:values.position,
+        vacancyType:values.vacancyType,
+        employementType:values.employementType,
+        interview:values.interview,
+        gender:values.gender,
+        location:values.location,
+        sector:values.sector,
+        experience:values.experience,
+        deadline:values.deadline + "T00:00:00Z",
+        vacancyNo:values.vacancyNo,
+        salary:values.salary,
+        description:values.description,
       });
       reload ();
       setLoading (false);
@@ -34,12 +43,62 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
     console.log ('Failed:', errorInfo);
   };
 
+  const [vacancyData,setVacancyData]=useState([])
+
+  const getVacancyData=async()=>{
+    try {
+      const res = await axios.get(`${BACKENDURL}/vacancy/detail?id=${id}`);
+      setVacancyData(res.data.vacancy)
+    } catch (error) {
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
+  }
+
+  useEffect(()=>{
+    getVacancyData()
+
+    return setVacancyData([])
+  },[id])
+
+
+  const [interviewData, setInterviewData] = useState ([]);
+  const [loadinginterview, setLoadinginterview] = useState (false);
+
+  const getInterviewData = async (id) => {
+    setLoadinginterview (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/interview/all`);
+      setLoadinginterview (false);
+      setInterviewData (res.data.interviews);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadinginterview (false);
+    }
+  };
+
+  const interviewOptions = interviewData.length
+    ? interviewData.map (interview => ({
+        value: interview.id,
+        label: interview.title,
+      }))
+    : [];
+
+  useEffect(() => {
+    getInterviewData ();
+  }, []);
+
   return (
+    <div>
+      {Object.keys(vacancyData).length > 0 ? (
     <Form
       layout="vertical"
       onFinish={onFinish}
       form={form}
       onFinishFailed={onFinishFailed}
+      initialValues={vacancyData}
+      disabled={loading}
+      autoComplete="on"
+      autoFocus="true"
     >
       <div
         style={{
@@ -145,20 +204,13 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
             showSearch
             placeholder="Search to Select"
             optionFilterProp="children"
-            // filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            // filterSort={(optionA, optionB) =>
-            //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            // }
-            options={[
-              {
-                value: 'Staff',
-                label: 'Staff Interview',
-              },
-              {
-                value: 'Security',
-                label: 'Security Interview',
-              },
-            ]}
+            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            }
+            options={interviewOptions}
+            loading={loadinginterview}
+            disabled={loadinginterview}
           />
         </Form.Item>
 
@@ -174,7 +226,7 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
           ]}
         >
           <Select
-            placeholder="Search to Select"
+            placeholder="Select"
             options={[
               {
                 value: 'Male',
@@ -267,7 +319,7 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
         <Form.Item
           style={{margin: '5px', width: '30%'}}
           label="Vacancy"
-          name="vacancy"
+          name="vacancyNo"
           rules={[
             {
               required: true,
@@ -301,7 +353,7 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
             },
           ]}
         >
-          <DatePicker />
+          <Input type='date' />
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '100%'}}
@@ -330,6 +382,10 @@ const UpdateVancayForm = ({openModalFun, reload}) => {
         </Button>
       </Form.Item>
     </Form>
+    ) : (
+      <p>Loading Vacancy data...</p>
+    )}
+    </div>
   );
 };
 

@@ -30,8 +30,6 @@ const InterviewTable = ({interviewData, loading, reload}) => {
   const searchInput = useRef (null);
   const [modalOpen, setModalOpen] = useState (false);
   const [modalContent, setModalContent] = useState ([]);
-  const [banLoading, setBanLoading] = useState (false);
-  const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -108,33 +106,6 @@ const InterviewTable = ({interviewData, loading, reload}) => {
       ),
   });
   
-  const BanUser = async ({id, status}) => {
-    setBanLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setBanLoading (false);
-    } catch (error) {
-      setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
 
   const columns = [
     {

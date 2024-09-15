@@ -13,7 +13,7 @@ const TimeSheetForm = () => {
       name: names[Math.floor(Math.random()*names.length)],
       regularHour: Math.floor(Math.random() * 10),
       OT32: Math.floor(Math.random() * 10),
-      nonRegularHour: Math.floor(Math.random() * 10),
+      RPOTHour: Math.floor(Math.random() * 10),
       specialHour: Math.floor(Math.random() * 10),
       totalHour: Math.floor(Math.random() * 10),
       status: ['Approved', 'Pending'][Math.floor(Math.random() * 2)]

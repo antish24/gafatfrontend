@@ -52,7 +52,7 @@ const TimeSheetFormTable = ({timesheetData}) => {
     form.setFieldsValue ({
       address: '',
       regularHour: '',
-      nonRegularHour: '',
+      RPOTHour: '',
       OT32: '',
       totalHour: '',
       specialHour: '',
@@ -215,9 +215,9 @@ const TimeSheetFormTable = ({timesheetData}) => {
     },
 
     {
-      title: 'Non Regular Place Hour',
-      dataIndex: 'nonRegularHour',
-      key: 'nonRegularHour',
+      title: 'Regular Place OT Hour',
+      dataIndex: 'RPOTHour',
+      key: 'RPOTHour',
       editable: true,
       width: '80px',
     },

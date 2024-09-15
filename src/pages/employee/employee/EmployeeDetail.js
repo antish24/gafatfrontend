@@ -1,8 +1,9 @@
-import {Image, Tabs} from 'antd';
+import {Button, Image, Select, Tabs, Tooltip} from 'antd';
 import React from 'react';
 import EmployeeInfoTab from '../../../components/tabs/employee/EmployeeInfoTab';
 import {FaBuilding, FaSchool, FaUserAlt} from 'react-icons/fa';
-import {FaHeartPulse, FaLocationPin, FaUserGear} from 'react-icons/fa6';
+import {FaHeartPulse, FaLocationPin, FaUserGear, FaUserLock} from 'react-icons/fa6';
+import { MdList, MdPrint, MdReport } from 'react-icons/md';
 
 const EmployeeDetail = () => {
     const EmployeeInfoData = [
@@ -36,7 +37,7 @@ const EmployeeDetail = () => {
         {key: '10',label: 'Tin',children:"00457281"},
       ];
 
-      const RelatedInfoData = [
+      const PersonalInfoData = [
         {key: '1',label: 'Marital status',children:'SIngle'},
         {key: '2',label: 'Religion',children:"Ortodox"},
         {key: '3',label: 'Ethnic Group',children:'Afar'},
@@ -98,10 +99,10 @@ const EmployeeDetail = () => {
             gap: '3px',
           }}
         >
-          <FaHeartPulse size={20} />Related Info
+          <FaHeartPulse size={20} />Personal Info
         </div>
       ),
-      children: <EmployeeInfoTab data={RelatedInfoData}/>,
+      children: <EmployeeInfoTab data={PersonalInfoData}/>,
     },
     {
       key: '5',
@@ -114,7 +115,7 @@ const EmployeeDetail = () => {
             gap: '3px',
           }}
         >
-          <FaSchool size={20} />Educational Background
+          <FaSchool size={20} />Profile
         </div>
       ),
       children: <EmployeeInfoTab />,
@@ -135,9 +136,30 @@ const EmployeeDetail = () => {
       ),
       children: <EmployeeInfoTab data={SuretyInfoData}/>,
     },
+    {
+      key: '7',
+      label: (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          <MdList size={20} />Log
+        </div>
+      ),
+      children: <EmployeeInfoTab data={SuretyInfoData}/>,
+    },
   ];
   return (
     <div>
+      <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
+        <Tooltip title='Print'><Button><MdPrint/></Button></Tooltip>
+        <Tooltip title='Status'><Button><FaUserLock/></Button></Tooltip>
+        <Tooltip title='Report'><Button><MdReport color='red'/></Button></Tooltip>
+      </div>
       <Tabs defaultActiveKey="1" items={tabs} style={{width: '100%'}} />
     </div>
   );

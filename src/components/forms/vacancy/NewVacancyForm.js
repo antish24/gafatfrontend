@@ -1,6 +1,6 @@
 import {Button, DatePicker, Form, Input, Select} from 'antd';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
@@ -9,6 +9,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
+  const [interviewType, setInterviewType] = useState ();
 
   const onFinish = async values => {
     setLoading (true);
@@ -18,7 +19,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
         position:values.position,
         vacancyType:values.vacancyType,
         employementType:values.employementType,
-        interview:values.interview,
+        interview:interviewType,
         gender:values.gender,
         location:values.location,
         sector:values.sector,
@@ -41,6 +42,33 @@ const NewVancayForm = ({openModalFun, reload}) => {
   const onFinishFailed = errorInfo => {
     console.log ('Failed:', errorInfo);
   };
+
+  const [interviewData, setInterviewData] = useState ([]);
+  const [loadinginterview, setLoadinginterview] = useState (false);
+
+  const getInterviewData = async (id) => {
+    setLoadinginterview (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/interview/all`);
+      setLoadinginterview (false);
+      setInterviewData (res.data.interviews);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadinginterview (false);
+    }
+  };
+
+  const interviewOptions = interviewData.length
+    ? interviewData.map (interview => ({
+        value: interview.id,
+        label: interview.title,
+      }))
+    : [];
+
+  useEffect(() => {
+    getInterviewData ();
+  }, []);
+
 
   return (
     <Form
@@ -157,16 +185,10 @@ const NewVancayForm = ({openModalFun, reload}) => {
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
-            options={[
-              {
-                value: 'Staff',
-                label: 'Staff Interview',
-              },
-              {
-                value: 'Security',
-                label: 'Security Interview',
-              },
-            ]}
+            onChange={(e)=>setInterviewType(e)}
+            options={interviewOptions}
+            loading={loadinginterview}
+            disabled={loadinginterview}
           />
         </Form.Item>
 

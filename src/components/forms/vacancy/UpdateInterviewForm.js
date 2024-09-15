@@ -1,11 +1,10 @@
 import {Button, DatePicker, Form, Input, Select} from 'antd';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
-import TextArea from 'antd/es/input/TextArea';
 
-const UpdateInterviewForm = ({openModalFun, reload}) => {
+const UpdateInterviewForm = ({id,openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
@@ -36,12 +35,10 @@ const UpdateInterviewForm = ({openModalFun, reload}) => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/vacancy/new`, {
-        email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullName,
-        access: values.access,
+      const res = await axios.post (`${BACKENDURL}/interview/update`, {
+        title: values.title,
+        IDNO:id,
+        questions: question,
       });
       reload ();
       setLoading (false);
@@ -57,12 +54,40 @@ const UpdateInterviewForm = ({openModalFun, reload}) => {
     console.log ('Failed:', errorInfo);
   };
 
+  const [interviewData,setInterviewData]=useState([])
+
+  const getInterviewData=async()=>{
+    try {
+      const res = await axios.get(`${BACKENDURL}/interview/detail?id=${id}`);
+      setInterviewData(res.data.interview)
+      setQuestions(res.data.interviewQ.map(question => ({
+        name: question.name, 
+        max: question.maxValue,
+        min: question.minValue
+      })))
+    } catch (error) {
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
+  }
+
+  useEffect(()=>{
+    getInterviewData()
+
+    return setInterviewData([])
+  },[id])
+
   return (
+    <div>
+    {Object.keys(interviewData).length > 0 ? (
     <Form
       layout="vertical"
       onFinish={onFinish}
       form={form}
       onFinishFailed={onFinishFailed}
+      initialValues={interviewData}
+      disabled={loading}
+      autoComplete="on"
+      autoFocus="true"
     >
       <div
         style={{
@@ -182,7 +207,10 @@ const UpdateInterviewForm = ({openModalFun, reload}) => {
           Submit
         </Button>
       </Form.Item>
-    </Form>
+    </Form>): (
+      <p>Loading Interview data...</p>
+    )}
+    </div>
   );
 };
 

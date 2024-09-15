@@ -1,35 +1,24 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Badge,
   Button,
-  Divider,
+  DatePicker,
   Input,
-  Popconfirm,
   Space,
   Table,
-  Tag,
+  Tooltip,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock} from 'react-icons/fa6';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {FormatDateTime} from '../../../helper/FormatDate';
-import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
-import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
-import axios from 'axios';
+import {FaFileCsv} from 'react-icons/fa6';
+import { MdFilterAltOff} from 'react-icons/md';
 import {CSVLink} from 'react-csv';
 import {FormatDay} from '../../../helper/FormateDay';
+import { Link } from 'react-router-dom';
 
 const EmployeeTable = ({userData, loading, reload}) => {
-  const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
-  const [modalOpen, setModalOpen] = useState (false);
-  const [modalContent, setModalContent] = useState ([]);
-  const [banLoading, setBanLoading] = useState (false);
-  const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -113,34 +102,37 @@ const EmployeeTable = ({userData, loading, reload}) => {
       ),
   });
 
-  const BanUser = async ({id, status}) => {
-    setBanLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setBanLoading (false);
-    } catch (error) {
-      setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [filteredData, setFilteredData] = useState(userData);
+  
+  const handleChange = (pagination, filters) => {
+
+    let filteredInfo = filters;
+    let filterData = userData;
+    setFilteredInfo(filters);
+  
+    Object.keys(filteredInfo).forEach(key => {
+  
+      const value = filteredInfo[key];
+  
+      if(!value) return;
+      
+      filterData = filterData.filter(item => {  
+        return value.includes(item[key]); 
+      });
+  
+    });
+  
+    setFilteredData(filterData);
+
+    console.log(filterData)
   };
 
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
+  const clearAll = () => {
+    setFilteredInfo({});
+    setFilteredData(userData);
   };
-
+  
   const columns = [
     {
       title: 'IDNO',
@@ -185,6 +177,18 @@ const EmployeeTable = ({userData, loading, reload}) => {
           dataIndex: 'sex',
           key: 'sex',
           width: '80px',
+          filters: [
+            {
+              text: 'Male',
+              value: 'Male',
+            },
+            {
+              text: 'Female',
+              value: 'Female',
+            },
+          ],
+          filteredValue: filteredInfo.sex || null,
+          onFilter: (value, record) => record.sex.includes(value),
         },
         {
           title: 'Date Of Birth',
@@ -197,7 +201,19 @@ const EmployeeTable = ({userData, loading, reload}) => {
           title: 'Nationality',
           dataIndex: 'nationality',
           key: 'nationality',
-          width: '100px',
+          width: '120px',
+          filters: [
+            {
+              text: 'Ethiopian',
+              value: 'Ethiopian',
+            },
+            {
+              text: 'Kenya',
+              value: 'Kenya',
+            },
+          ],
+          filteredValue: filteredInfo.nationality || null,
+          onFilter: (value, record) => record.nationality.includes(value),
         },
       ],
     },
@@ -209,18 +225,42 @@ const EmployeeTable = ({userData, loading, reload}) => {
           dataIndex: 'branch',
           width: '100px',
           key: 'branch',
+          filters: [
+            {
+              text: 'Arada Adwa',
+              value: 'Arada Adwa',
+            },
+          ],
+          filteredValue: filteredInfo.branch || null,
+          onFilter: (value, record) => record.branch.includes(value),
         },
         {
           title: 'Department',
           dataIndex: 'department',
-          width: '100px',
+          width: '120px',
           key: 'department',
+          filters: [
+            {
+              text: 'Security',
+              value: 'Security',
+            },
+          ],
+          filteredValue: filteredInfo.department || null,
+          onFilter: (value, record) => record.department.includes(value),
         },
         {
           title: 'Position',
           dataIndex: 'position',
-          width: '80px',
+          width: '100px',
           key: 'position',
+          filters: [
+            {
+              text: 'Security Guard',
+              value: 'Security Guard',
+            },
+          ],
+          filteredValue: filteredInfo.position || null,
+          onFilter: (value, record) => record.position.includes(value),
         },
         {
           title: 'Start Date',
@@ -234,6 +274,22 @@ const EmployeeTable = ({userData, loading, reload}) => {
           dataIndex: 'employementType',
           width: '120px',
           key: 'employementType',
+          filters: [
+            {
+              text: 'Full Time',
+              value: 'Full Time',
+            },
+            {
+              text: 'Permanenent',
+              value: 'Permanenent',
+            },
+            {
+              text: 'Temporary',
+              value: 'Temporary',
+            },
+          ],
+          filteredValue: filteredInfo.employementType || null,
+          onFilter: (value, record) => record.employementType.includes(value),
         },
         {
           title: 'Shift',
@@ -261,6 +317,18 @@ const EmployeeTable = ({userData, loading, reload}) => {
       title: 'Status',
       width: '80px',
       key: 'status',
+      filters: [
+        {
+          text: 'Active',
+          value: 'Active',
+        },
+        {
+          text: 'InActive',
+          value: 'InActive',
+        },
+      ],
+      filteredValue: filteredInfo.status || null,
+      onFilter: (value, record) => record.status.includes(value),
       render: r => (
         <Badge
           status={r.status === 'Active' ? 'success' : 'error'}
@@ -270,55 +338,31 @@ const EmployeeTable = ({userData, loading, reload}) => {
     },
     {
       title: 'Action',
-      width: '165px',
+      width: '70px',
       fixed: 'right',
       key: 'operation',
       render: r => (
-        <Space
-          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+        <Tooltip title='View Detail'
         >
-          <Button
-            type="text"
-            onClick={() => {
-              setModalOpen (true);
-              setModalContent (r.IDNO);
-            }}
-          >
-            <MdEdit />
-          </Button>
-          <Button
-            style={{padding: 2, margin: 0}}
-            type="text"
-            disabled={banLoading}
-            loading={banLoading}
-          >
-            <FaUserLock
-              onClick={() =>
-                BanUser ({
-                  id: r.IDNO,
-                  status: r.status === 'Active' ? 'InActive' : 'Active',
-                })}
-            />
-          </Button>
-          <Popconfirm
-            title="Are you sure, Delete user"
-            onConfirm={() => DeleteUser (r.IDNO)}
-          >
-            <Button
-              type="text"
-              disabled={deleteLoading}
-              loading={deleteLoading}
-            >
-              <MdDelete color="red" />
-            </Button>
-          </Popconfirm>
-        </Space>
+          <Link to={`/employee/detail/${r.IDNO}`}>
+            Detail
+          </Link>
+        </Tooltip>
       ),
     },
   ];
 
   return (
-    <Table
+    <div>
+      <div style={{display:'flex',width:"100%",gap:'5px',marginBottom:"5px",justifyContent:'flex-end'}}>
+      <CSVLink
+        data={filteredData}
+        filename={"employee-detail-csv"}>
+          <Button><FaFileCsv/>CSV</Button>
+      </CSVLink>
+      <Button onClick={clearAll}><MdFilterAltOff/> Clear filters</Button>
+      </div>
+      <Table
       size="small"
       columns={columns}
       bordered
@@ -328,11 +372,12 @@ const EmployeeTable = ({userData, loading, reload}) => {
       pagination={{
         defaultPageSize: 10,
         showSizeChanger: true,
-        position:['topRight']
       }}
       dataSource={userData}
+      onChange={handleChange}
       loading={loading}
     />
+    </div>
   );
 };
 export default EmployeeTable;

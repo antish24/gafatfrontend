@@ -3,7 +3,7 @@ import { Link, Route, Routes} from 'react-router-dom';
 import {Layout,theme,Button, Menu,} from 'antd';
 
 import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
-import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork } from 'react-icons/md';
+import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
 import Auth from './pages/Auth';
@@ -253,33 +253,19 @@ const App = () => {
       ],
     },
     {
-      key: 'Companies',
-      label: 'Companies',
-      type: 'group',
-    },
-    {
       key: '10',
-      label: 'Companies',
-      icon: <FaBuilding size={20} />,
+      label: 'Daily Report',
+      icon: <MdReport size={20} />,
       children: [
         {
           key: '101',
-          label: <Link to={'/companies/list'}><IoBusiness/> Companies</Link>,
+          label: <Link to={'/dailyteport/list'}><FaClipboardList/> List</Link>,
         },
         {
           key: '102',
-          label: <Link to={'/companies/service'}><FaServicestack/> Service</Link>,
-        },
-        {
-          key: '103',
-          label: <Link to={'/companies/history'}><GrTransaction/> History</Link>,
+          label: <Link to={'/dailyreport/analytics'}><MdAnalytics/> Analytics</Link>,
         },
       ],
-    },
-    {
-      key: '11',
-      label: <Link to={'/securityplacement'}>Placement</Link>,
-      icon: <MdOutlineSupportAgent size={20} />,
     },
     {
       key: 'System',

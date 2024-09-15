@@ -192,19 +192,19 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
           width: '80px',
         },
         {
-          title: 'Non Regular Place',
-          dataIndex: 'nonRegularPlace',
+          title: 'Regular Place OT',
+          dataIndex: 'regularPlaceOT',
           children: [
             {
               title: 'Day',
-              dataIndex: 'nonRegularDay',
-              key: 'nonRegularDay',
+              dataIndex: 'RPOTDay',
+              key: 'RPOTDay',
               width: '80px',
             },
             {
               title: 'Hour',
-              dataIndex: 'nonRegularHour',
-              key: 'nonRegularHour',
+              dataIndex: 'RPOTHour',
+              key: 'RPOTHour',
               width: '80px',
             },
           ],

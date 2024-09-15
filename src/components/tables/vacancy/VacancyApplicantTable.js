@@ -19,11 +19,12 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
-import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import {IoMdEye, IoMdEyeOff} from 'react-icons/io';
 import UpdateVancayForm from '../../forms/vacancy/UpdateVacancyForm';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+import { FormatDay } from '../../../helper/FormateDay';
 
-const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
+const VacancyApplicantTable = ({vacancyApplicantData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -107,34 +108,6 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
         text
       ),
   });
-  
-  const BanUser = async ({id, status}) => {
-    setBanLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setBanLoading (false);
-    } catch (error) {
-      setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
 
   const columns = [
     {
@@ -146,29 +119,49 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
     },
     {
       title: 'Full Name',
-      dataIndex: 'title',
-      ...getColumnSearchProps ('title'),
-      width: '200px',
-      key: 'title',
+      children: [
+        {
+          title: 'First',
+          dataIndex: 'fName',
+          ...getColumnSearchProps ('fName'),
+          width: '90px',
+          key: 'fName',
+        },
+        {
+          title: 'Middle',
+          dataIndex: 'mName',
+          ...getColumnSearchProps ('mName'),
+          width: '90px',
+          key: 'mName',
+        },
+        {
+          title: 'Last',
+          dataIndex: 'lName',
+          ...getColumnSearchProps ('lName'),
+          width: '90px',
+          key: 'lName',
+        },
+        ,
+      ],
     },
     {
-      title: 'Gender',
-      dataIndex: 'vacancyType',
-      ...getColumnSearchProps ('vacancyType'),
-      key: 'type',
+      title: 'sex',
+      dataIndex: 'sex',
+      ...getColumnSearchProps ('sex'),
+      key: 'sex',
       width: '140px',
     },
     {
-      title: 'Email',
-      dataIndex: 'employementType',
-      ...getColumnSearchProps ('employementType'),
-      key: 'type',
-      width: '140px',
+      title: 'Date Of Birth',
+      dataIndex: 'dateOfBirth',
+      width: '150px',
+      key: 'dateOfBirth',
+      render: r => <span>{FormatDay (r)}</span>,
     },
     {
-      title: 'Phone',
-      dataIndex: 'sector',
-      key: 'sector',
+      title: 'Nationality',
+      dataIndex: 'nationality',
+      key: 'nationality',
       width: '120px',
     },
     {
@@ -180,17 +173,15 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
     },
     {
       title: 'Rank',
-      dataIndex: 'createdAt',
-      width: '150px',
-      key: 'createdAt',
-      render: r => <span>{FormatDateTime (r)}</span>,
+      dataIndex: 'rank',
+      width: '50px',
+      key: 'rank',
     },
     {
       title: 'Score',
-      dataIndex: 'createdAt',
-      width: '150px',
-      key: 'createdAt',
-      render: r => <span>{FormatDateTime (r)}</span>,
+      dataIndex: 'score',
+      width: '80px',
+      key: 'score',
     },
     {
       fixed: 'right',
@@ -198,10 +189,9 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
       width: '80px',
       key: 'status',
       render: r => (
-        <Badge
-          status={r.status === 'Active' ? 'success' : 'error'}
-          text={r.status}
-        />
+        <Tag
+          color={r.status === 'Pending' ?'processing':r.status === 'Hired'?"success" : 'volcano'}
+        >{r.status}</Tag>
       ),
     },
     {
@@ -213,11 +203,9 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
         <Space
           style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
         >
-            <Link
-              to={`/vacancy/applicant/detail/${r.id}`}
-            >
-              <IoMdEye />
-            </Link>
+          <Link to={`/vacancy/applicant/detail/${r.id}`}>
+            Detail
+          </Link>
         </Space>
       ),
     },
@@ -225,7 +213,6 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
 
   return (
     <div>
-      <CSVLink data={vacancyData}>Download me</CSVLink>
       <ModalForm
         open={modalOpen}
         close={() => setModalOpen (false)}
@@ -248,8 +235,8 @@ const VacancyApplicantTable = ({vacancyData, loading, reload}) => {
           defaultPageSize: 7,
           showSizeChanger: false,
         }}
-        dataSource={Array(3).fill(0)}
-        // loading={loading}
+        dataSource={vacancyApplicantData}
+        loading={loading}
       />
     </div>
   );

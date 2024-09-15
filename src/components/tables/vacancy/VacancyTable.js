@@ -20,10 +20,10 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
-import { IoMdEye, IoMdEyeOff } from 'react-icons/io';
+import {IoMdEye, IoMdEyeOff} from 'react-icons/io';
 import UpdateVancayForm from '../../forms/vacancy/UpdateVacancyForm';
-import { Link } from 'react-router-dom';
-import { FormatDay } from '../../../helper/FormateDay';
+import {Link} from 'react-router-dom';
+import {FormatDay} from '../../../helper/FormateDay';
 
 const VacancyTable = ({vacancyData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -109,31 +109,16 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
         text
       ),
   });
-  
-  const BanUser = async ({id, status}) => {
+
+  const CloseVacancy = async id => {
     setBanLoading (true);
     try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
+      const res = await axios.get (`${BACKENDURL}/vacancy/close?id=${id}`);
       openNotification ('success', res.data.message, 3, 'green');
       reload ();
       setBanLoading (false);
     } catch (error) {
       setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
       openNotification ('error', error.response.data.message, 3, 'red');
     }
   };
@@ -186,7 +171,7 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       ...getColumnSearchProps ('location'),
       key: 'location',
       width: '100px',
-    }, 
+    },
     {
       title: 'Gender',
       dataIndex: 'gender',
@@ -205,7 +190,7 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       key: 'vacancyNo',
       width: '100px',
     },
-   
+
     {
       title: 'Salary',
       dataIndex: 'salary',
@@ -216,7 +201,7 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       title: 'Deadline',
       dataIndex: 'deadline',
       key: 'deadline',
-      render: r => <span>{FormatDay(r)}</span>,
+      render: r => <span>{FormatDay (r)}</span>,
       width: '120px',
     },
     {
@@ -224,7 +209,7 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       dataIndex: 'createdAt',
       width: '160px',
       key: 'createdAt',
-      render: r => <span>{FormatDateTime(r)}</span>,
+      render: r => <span>{FormatDateTime (r)}</span>,
     },
     {
       fixed: 'right',
@@ -232,10 +217,9 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       width: '80px',
       key: 'status',
       render: r => (
-        <Badge
-          status={r.status === 'Active' ? 'success' : 'error'}
-          text={r.status}
-        />
+        <Tag color={r.status === 'Open' ? 'success' : 'volcano'}>
+          {r.status}
+        </Tag>
       ),
     },
     {
@@ -247,27 +231,31 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
         <Space
           style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
         >
-          <Button style={{padding:'0',margin:'0'}}
-            type="text"
-            onClick={() => {
-              setModalOpen (true);
-              setModalContent (r.IDNO);
-            }}
-          >
-            <MdEdit />
-          </Button>
-          <Button style={{padding:'0',margin:'0'}}
-            type="text"
-          >
-            <IoMdEyeOff/>
-          </Button>
-            <Tooltip title="Applicants">
-            <Link
-              to={`/vacancy/applicants/${1}`}
-            >
+          <Tooltip title="Update">
+              <Button
+                style={{padding: '0', margin: '0'}}
+                type="text"
+                onClick={() => {
+                  setModalOpen (true);
+                  setModalContent (r.IDNO);
+                }}
+              >
+                <MdEdit />
+              </Button>
+          </Tooltip>
+          <Tooltip title="Close">
+            <Popconfirm title='Are you sure, Close Vacancy' onConfirm={() => CloseVacancy (r.IDNO)}>
+
+            <Button style={{padding: '0', margin: '0'}} type="text">
+              <IoMdEyeOff />
+            </Button>
+            </Popconfirm>
+            </Tooltip>
+          <Tooltip title="Applicants">
+            <Link to={`/vacancy/applicants/${r.id}`}>
               <FaUsers />
             </Link>
-            </Tooltip>
+          </Tooltip>
         </Space>
       ),
     },
@@ -275,7 +263,6 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
 
   return (
     <div>
-      <CSVLink data={vacancyData}>Download me</CSVLink>
       <ModalForm
         open={modalOpen}
         close={() => setModalOpen (false)}

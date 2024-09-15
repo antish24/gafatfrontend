@@ -14,100 +14,19 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import {FaUpload} from 'react-icons/fa';
 
-const NewEmployee = ({openModalFun, reload}) => {
+const NewApplicantForm = ({vacancyId,openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
-  const [formValues, setFormValues] = useState ({});
+  const [formValues, setFormValues] = useState ({['vacancy']: vacancyId,});
   const {Dragger} = Upload;
-
-  const [branchData, setBranchData] = useState ([]);
-  const [branchId, setBranchId] = useState ('');
-  const [loadingBranch, setLoadingBranch] = useState (false);
-
-  const getBranchData = async () => {
-    setLoadingBranch (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/organzation/branch/all`);
-      setLoadingBranch (false);
-      setBranchData (res.data.branchs);
-    } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      setLoadingBranch (false);
-    }
-  };
-
-  const branchOptions = branchData.length
-  ? branchData.map(branch => ({
-    value: branch.id,
-    label: branch.name 
-  }))
-  : [];
-
-  useEffect(() => {
-    getBranchData ();
-  }, []);
-
-  const [departmentData, setDepartmentData] = useState ([]);
-  const [loadingDepartment, setLoadingDepartment] = useState (false);
-  const [departmentId, setDepartmentId] = useState ('');
-
-  const getDepartmentData = async (id) => {
-    setLoadingDepartment (true);
-    form.resetFields (['department']);
-    try {
-      const res = await axios.get (`${BACKENDURL}/organzation/department/find?branchId=${id}`);
-      setLoadingDepartment (false);
-      setDepartmentData (res.data.departments);
-    } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      setLoadingDepartment (false);
-    }
-  };
-
-  const departmentOptions = departmentData.length
-    ? departmentData.map (department => ({
-        value: department.id,
-        label: department.name,
-      }))
-    : [];
-
-  useEffect (() => {
-    getDepartmentData (branchId);
-  }, [branchId]);
-
-  const [positionData, setPositionData] = useState ([]);
-  const [loadingPosition, setLoadingPosition] = useState (false);
-
-  const getPositionData = async (id) => {
-    setLoadingPosition (true);
-    form.resetFields (['position']);
-    try {
-      const res = await axios.get (`${BACKENDURL}/organzation/position/find?departmentId=${id}`);
-      setLoadingPosition (false);
-      setPositionData (res.data.positions);
-    } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      setLoadingPosition (false);
-    }
-  };
-
-  const positionOptions = positionData.length
-    ? positionData.map (position => ({
-        value: position.id,
-        label: position.name,
-      }))
-    : [];
-
-  useEffect(() => {
-    getPositionData (departmentId);
-  }, [departmentId]);
 
   const onFinish = async () => {
     setLoading (true);
     console.log (formValues);
+
     try {
-      const res = await axios.post (`${BACKENDURL}/employee/new`,formValues);
+      const res = await axios.post (`${BACKENDURL}/vacancy/addapplicant`,formValues);
       reload ();
       setLoading (false);
       openModalFun (false);
@@ -136,27 +55,6 @@ const NewEmployee = ({openModalFun, reload}) => {
           width: '30%',
         },
         {lable: 'Last Name', name: 'lName', type: 'Input', width: '30%',notRequired: true,},
-        {
-          lable: 'Profile Photo',
-          name: 'profilePhoto',
-          type: 'File',
-          req: 'image/*',
-          width: '30%',
-        },
-        {
-          lable: 'ID Front',
-          name: 'IDF',
-          type: 'File',
-          req: 'image/*',
-          width: '30%',
-        },
-        {
-          lable: 'ID Back',
-          name: 'IDB',
-          type: 'File',
-          req: 'image/*',
-          width: '30%',
-        },
         {
           lable: 'Date Of Birth',
           name: 'dateOfBirth',
@@ -217,142 +115,6 @@ const NewEmployee = ({openModalFun, reload}) => {
         },
       ],
     },
-
-    {
-      title: 'Work Information',
-      key: 3,
-      children: [
-        {
-          lable: 'Branch',
-          name: 'branch',
-          width: '47%',
-          type: 'Select',
-          options:branchOptions,
-        },
-        {
-          lable: 'Department',
-          name: 'department',
-          width: '47%',
-          type: 'Select',
-          options:departmentOptions,
-        },
-        {
-          lable: 'Position',
-          name: 'position',
-          width: '47%',
-          type: 'Select',
-          options:positionOptions,
-        },
-        {
-          lable: 'Employment Type',
-          name: 'employementType',
-          type: 'Select',
-          options: [
-            {value: 'Full Time', lable: 'Full Time'},
-            {value: 'Temporary', lable: 'Temporary'},
-          ],
-          width: '47%',
-        },
-        {
-          lable: 'Shift',
-          name: 'shift',
-          type: 'Select',
-          options: [
-            {value: 'Basic', lable: 'Basic'},
-            {value: 'Security', lable: 'Security'},
-          ],
-          width: '31%',
-        },
-        {
-          lable: 'Salary',
-          name: 'salary',
-          type: 'Input',
-          width: '31%',
-          req: 'number',
-          notRequired: true,
-        },
-        {lable: 'Start Date', name: 'startDate', type: 'Date', width: '31%'},
-        {
-          lable: 'Agreement',
-          name: 'agreement',
-          type: 'File',
-          req: 'application/pdf',
-          width: '100%',
-        },
-        {
-          lable: 'Bank Name',
-          name: 'bankName',
-          type: 'Select',
-          width: '31%',
-          notRequired: true,
-        },
-        {
-          lable: 'Account Number',
-          name: 'accountNumber',
-          type: 'Input',
-          req: 'number',
-          width: '31%',
-          notRequired: true,
-        },
-        {
-          lable: 'Tin Number',
-          name: 'TIN',
-          type: 'Input',
-          req: 'number',
-          width: '31%',
-          notRequired: true,
-        },
-      ],
-    },
-
-    {
-      title: 'Related Information',
-      key: 4,
-      children: [
-        {
-          lable: 'Marital status',
-          name: 'maritalStatus',
-          type: 'Input',
-          width: '47%',
-          notRequired: true,
-        },
-        {
-          lable: 'Religion',
-          name: 'religion',
-          type: 'Input',
-          width: '47%',
-          notRequired: true,
-        },
-        {
-          lable: 'Ethnic Group',
-          name: 'ethnicGroup',
-          type: 'Input',
-          width: '47%',
-          notRequired: true,
-        },
-        {
-          lable: 'Blood Group',
-          name: 'bloodGroup',
-          type: 'Input',
-          width: '47%',
-          notRequired: true,
-        },
-        {
-          lable: 'Medical Report',
-          name: 'medicalReport',
-          type: 'File',
-          req: 'application/pdf',
-          width: '100%',
-        },
-        {
-          lable: 'FingerPrint Report',
-          name: 'fingerPrintReport',
-          type: 'File',
-          req: 'application/pdf',
-          width: '100%',
-        },
-      ],
-    },
   ];
 
   const onFieldChange = (name, e) => {
@@ -366,13 +128,6 @@ const NewEmployee = ({openModalFun, reload}) => {
     setCurrentSlide (c => c + 1);
   };
 
-  const FindPosition=(name,value)=>{
-    if(name === 'branch') {
-      setBranchId(value);
-    } else if(name === 'department') {
-      setDepartmentId(value);
-    }
-  }
   return (
     <Form
       layout="vertical"
@@ -422,7 +177,7 @@ const NewEmployee = ({openModalFun, reload}) => {
                     : data.type === 'Select'
                         ? <Select
                             options={data.options}
-                            onChange={e =>{onFieldChange (data.name, e);FindPosition(data.name,e)}}
+                            onChange={e =>{onFieldChange (data.name, e)}}
                           />
                         : data.type === 'File' &&
                             <Dragger
@@ -501,4 +256,4 @@ const NewEmployee = ({openModalFun, reload}) => {
   );
 };
 
-export default NewEmployee;
+export default NewApplicantForm;

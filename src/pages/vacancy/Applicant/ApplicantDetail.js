@@ -1,8 +1,13 @@
 import {Button, Descriptions, Image} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import ModalForm from '../../../modal/Modal';
+import InterviewApplicantsForm from '../../../components/forms/vacancy/InterviewApplicantsForm';
 
 const ApplicantDetail = () => {
+  const params=useParams()
+  
   const EmployeeInfoData = [
     {key: '4', label: 'Full Name', children: 'Abebe Balch Mulu'},
     {key: '5', label: 'Date of Birth', children: '02 jun 1889'},
@@ -22,11 +27,20 @@ const ApplicantDetail = () => {
     {key: '14', label: 'Rank', children: '0'},
     {key: '15', label: 'Score', children: '0'},
   ];
+
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <div>
       <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginBottom:'5px'}}>
-        <Button>Interview</Button>
-        <Button>Shortlist</Button>
+        <Button type='primary' danger>Check Status</Button>
+        <Button onClick={() => setModalOpen (true)}>Interview</Button>
+        <Button type='primary' >Hire</Button>
+        <ModalForm
+          open={modalOpen}
+          close={() => setModalOpen (false)}
+          title={'Interview Form'}
+          content={<InterviewApplicantsForm id={'IVHR-00001'}/>}
+        />
       </div>
       <Descriptions
         style={{width: '100%'}}
