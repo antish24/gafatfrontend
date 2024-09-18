@@ -4,7 +4,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 
-const InterviewApplicantsForm = ({id, openModalFun, reload}) => {
+const InterviewApplicantsForm = ({id, openModalFun, reload,applicantId}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [loadingQ, setLoadingQ] = useState (false);
@@ -22,14 +22,17 @@ const InterviewApplicantsForm = ({id, openModalFun, reload}) => {
     {
       name: '',
       score: '',
+      max: '',
+      min: '',
     },
   ]);
 
-  const onFinish = async values => {
+  const onFinish = async() => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/interview/new`, {
+      const res = await axios.post (`${BACKENDURL}/interview/applicant`, {
         questions: questionScore,
+        applicant:applicantId,
       });
       reload ();
       setLoading (false);
@@ -56,6 +59,14 @@ const InterviewApplicantsForm = ({id, openModalFun, reload}) => {
           min: question.minValue,
         }))
       );
+      setQuestionScore (
+        res.data.interviewQ.map (question => ({
+          name: question.name,
+          score: 1,
+          min:question.minValue,
+          max:question.maxValue
+        }))
+      );
       setLoadingQ (false);
     } catch (error) {
       setLoadingQ (false);
@@ -72,79 +83,83 @@ const InterviewApplicantsForm = ({id, openModalFun, reload}) => {
 
   return (
     <div>
-        {question ? (
-        <Form
-      layout="vertical"
-      onFinish={onFinish}
-      form={form}
-      onFinishFailed={onFinishFailed}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-        }}
-      >
-        {question.map ((questions, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              width: '100%',
-              borderBottom: '1px solid gray',
-              padding: '5px 0',
-            }}
-          >
-            <Form.Item style={{margin: '0', width: '84%'}} label="Question">
-              <Input disabled value={questions.name} 
-              onChange={e => {
-                const value = e.target.value;
-                setQuestionScore (prev => {
-                  const updatedQuestion = [...prev];
-                  updatedQuestion[index].name = value;
-                  return updatedQuestion;
-                });
-              }}/>
-            </Form.Item>
-            <Form.Item
-              style={{margin: '0', width: '15%'}}
-              label="Score"
-              rules={[{required: true, message: 'Min Required'}]}
-            >
-              <Input
-                placeholder="3"
-                type="number"
-                min={questions.min}
-                max={questions.max}
-                onChange={e => {
-                  const value = e.target.value;
-                  setQuestionScore (prev => {
-                    const updatedQuestion = [...prev];
-                    updatedQuestion[index].score = value;
-                    return updatedQuestion;
-                  });
-                }}
-              />
-            </Form.Item>
-          </div>
-        ))}
-      </div>
-      <Form.Item
-        style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}
-      >
-        <Button
-          type="primary"
-          htmlType="submit"
-          disabled={loading}
-          loading={loading}
-        >
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>):'Loading Questions'}
+      {loadingQ
+        ? 'Loading Questions'
+        : question
+            ? <Form
+                layout="vertical"
+                onFinish={onFinish}
+                form={form}
+                onFinishFailed={onFinishFailed}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  {question.map ((questions, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        flexWrap: 'wrap',
+                        width: '100%',
+                        borderBottom: '1px solid gray',
+                        padding: '5px 0',
+                      }}
+                    >
+                      <Form.Item
+                        style={{margin: '0', width: '84%'}}
+                        label={`Question ${index + 1}`}
+                      >
+                        <span>
+                          {questions.name}
+                        </span>
+                      </Form.Item>
+                      <Form.Item
+                        style={{margin: '0', width: '15%'}}
+                        label="Score"
+                        rules={[{required: true, message: 'Score Required'}]}
+                      >
+                        <Input
+                          placeholder="3"
+                          type="number"
+                          min={questions.min}
+                          max={questions.max}
+                          onChange={e => {
+                            const value = e.target.value;
+                            setQuestionScore (prev => {
+                              const updatedQuestion = [...prev];
+                              updatedQuestion[index].score = value;
+                              return updatedQuestion;
+                            });
+                          }}
+                        />
+                      </Form.Item>
+                    </div>
+                  ))}
+                </div>
+                <Form.Item
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '15px',
+                  }}
+                >
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    disabled={loading}
+                    loading={loading}
+                  >
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            : 'Loading Questions'}
     </div>
   );
 };

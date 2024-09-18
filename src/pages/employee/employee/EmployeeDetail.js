@@ -1,9 +1,9 @@
-import {Button, Image, Select, Tabs, Tooltip} from 'antd';
+import {Button, Image, Tabs, Tooltip} from 'antd';
 import React from 'react';
 import EmployeeInfoTab from '../../../components/tabs/employee/EmployeeInfoTab';
 import {FaBuilding, FaSchool, FaUserAlt} from 'react-icons/fa';
-import {FaHeartPulse, FaLocationPin, FaUserGear, FaUserLock} from 'react-icons/fa6';
-import { MdList, MdPrint, MdReport } from 'react-icons/md';
+import {FaHeartPulse, FaUserGear, FaUserLock} from 'react-icons/fa6';
+import { MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
 
 const EmployeeDetail = () => {
     const EmployeeInfoData = [
@@ -31,7 +31,7 @@ const EmployeeDetail = () => {
         {key: '4',label: 'Shift',children:'Normal'},
         {key: '5',label: 'Start Date',children:'02 jun 1889'},
         {key: '6',label: 'Salary',children:'2000'},
-        {key: '7',label: 'Agreement',children:"Ethiopian"},
+        {key: '7',label: 'Agreement',children:"File",span:2},
         {key: '8',label: 'Bank Name',children:"CBE"},
         {key: '9',label: 'Account Number',children:"1000152677889"},
         {key: '10',label: 'Tin',children:"00457281"},
@@ -41,19 +41,27 @@ const EmployeeDetail = () => {
         {key: '1',label: 'Marital status',children:'SIngle'},
         {key: '2',label: 'Religion',children:"Ortodox"},
         {key: '3',label: 'Ethnic Group',children:'Afar'},
+        {key: '6',label: 'Emergency Contact Name',children:'Abrham Welede'},
+        {key: '7',label: 'Emergency Contact Phone',children:'0910778899'},
+        {key: '8',label: 'EmergencyContact Relation',children:'Father'},
+        {key: '5',label: 'Family',children:'3'},
         {key: '4',label: 'Blood Type',children:'O+'},
         {key: '9',label: 'Medical Report',children:"1000152677889"},
         {key: '10',label: 'FingerPrint Report',children:"00457281"},
       ];
 
       const SuretyInfoData = [
-        {key: '1',label: 'Type',children:'Person'},
-        {key: '2',label: 'Religion',children:"Ortodox"},
-        {key: '3',label: 'Ethnic Group',children:'Afar'},
-        {key: '4',label: 'Blood Type',children:'O+'},
-        {key: '9',label: 'Medical Report',children:"1000152677889"},
-        {key: '10',label: 'FingerPrint Report',children:"00457281"},
+        {key: '1',label: 'Type',children:'Letter'},
+        {key: '2',label: 'Attachment',children:"",span:2},
+        {key: '3',label: 'Full Name',children:'Telahun Wase Mula'},
+        {key: '4',label: 'Phone',children:'0911664477'},
+        {key: '5',label: 'City',children:"Addis Abeba"},
+        {key: '6',label: 'Sub City',children:"Yeka"},
+        {key: '7',label: 'Wereda',children:"01"},
+        {key: '8',label: 'Kebele',children:"13"},
+        {key: '9',label: 'House No',children:"New"},
       ];
+
 
   const tabs = [
     {
@@ -73,7 +81,7 @@ const EmployeeDetail = () => {
       children: <EmployeeInfoTab data={EmployeeInfoData}/>,
     },
     {
-      key: '3',
+      key: '2',
       label: (
         <div
           style={{
@@ -83,13 +91,13 @@ const EmployeeDetail = () => {
             gap: '3px',
           }}
         >
-          <FaBuilding size={20} />Work Info
+          <FaBuilding size={20} />Work Detail
         </div>
       ),
       children: <EmployeeInfoTab data={WorkInfoData}/>,
     },
     {
-      key: '4',
+      key: '3',
       label: (
         <div
           style={{
@@ -105,6 +113,22 @@ const EmployeeDetail = () => {
       children: <EmployeeInfoTab data={PersonalInfoData}/>,
     },
     {
+      key: '4',
+      label: (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          <MdWorkHistory size={20} />Work History
+        </div>
+      ),
+      children: <EmployeeInfoTab />,
+    },
+    {
       key: '5',
       label: (
         <div
@@ -115,7 +139,7 @@ const EmployeeDetail = () => {
             gap: '3px',
           }}
         >
-          <FaSchool size={20} />Profile
+          <FaSchool size={20} />Education
         </div>
       ),
       children: <EmployeeInfoTab />,
@@ -150,15 +174,15 @@ const EmployeeDetail = () => {
           <MdList size={20} />Log
         </div>
       ),
-      children: <EmployeeInfoTab data={SuretyInfoData}/>,
+      children: <EmployeeInfoTab/>,
     },
   ];
   return (
     <div>
       <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
-        <Tooltip title='Print'><Button><MdPrint/></Button></Tooltip>
-        <Tooltip title='Status'><Button><FaUserLock/></Button></Tooltip>
-        <Tooltip title='Report'><Button><MdReport color='red'/></Button></Tooltip>
+        <Tooltip title='Print'><Button><MdPrint/>Print</Button></Tooltip>
+        <Tooltip title='Status'><Button type='primary'><FaUserLock/>Status</Button></Tooltip>
+        <Tooltip title='Report'><Button danger><MdReport color='red'/>Report</Button></Tooltip>
       </div>
       <Tabs defaultActiveKey="1" items={tabs} style={{width: '100%'}} />
     </div>

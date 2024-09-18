@@ -35,6 +35,9 @@ import ApplicantList from './pages/vacancy/Applicant/ApplicantList';
 import ApplicantDetail from './pages/vacancy/Applicant/ApplicantDetail';
 import InterviewPage from './pages/vacancy/interview/InterviewPage';
 import InterviewVacancyPage from './pages/vacancy/interview/InterviewVacancyPage';
+import ManageLeavePage from './pages/leave/ManageLeavePage';
+import LeaveBalancePage from './pages/leave/balance/LeaveBalancePage';
+import LeaveApplicationPage from './pages/leave/application/LeaveApplicationPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -146,7 +149,7 @@ const App = () => {
       children: [
         {
           key: '61',
-          label: <Link to={'/leave/holiday'}><MdAirlines/> Holidays</Link>,
+          label: <Link to={'/leave/leaves'}><MdAirlines/> Leaves</Link>,
         },
         {
           key: '62',
@@ -425,6 +428,10 @@ const App = () => {
             <Route element={<EmployeePage />} path="/employee/list" />
             <Route element={<EmployeeDetail />} path="/employee/detail/:id" />
             <Route element={<AgreementPage />} path="/employee/agreement" />
+
+            <Route element={<ManageLeavePage />} path="/leave/leaves" />
+            <Route element={<LeaveApplicationPage />} path="/leave/application" />
+            <Route element={<LeaveBalancePage />} path="/leave/balance" />
 
             <Route element={<Users />} path="/users/list" />
 

@@ -14,11 +14,11 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import {FaUpload} from 'react-icons/fa';
 
-const NewEmployee = ({openModalFun, reload}) => {
+const HireEmployee = ({data,openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
-  const [formValues, setFormValues] = useState ({});
+  const [formValues, setFormValues] = useState ({['empId']: data.id,});
   const {Dragger} = Upload;
 
   const [branchData, setBranchData] = useState ([]);
@@ -105,13 +105,12 @@ const NewEmployee = ({openModalFun, reload}) => {
 
   const onFinish = async () => {
     setLoading (true);
-    console.log (formValues);
     try {
-      const res = await axios.post (`${BACKENDURL}/employee/new`,formValues);
-      reload ();
+      const res=await axios.post (`${BACKENDURL}/employee/hire`,formValues);
       setLoading (false);
+      reload()
       openModalFun (false);
-      openNotification ('success', res.data.message, 3, 'green');
+      openNotification ('success',res.data.message, 3, 'green');
       form.resetFields ();
     } catch (error) {
       setLoading (false);
@@ -128,14 +127,6 @@ const NewEmployee = ({openModalFun, reload}) => {
       title: 'Personal Information',
       key: 1,
       children: [
-        {lable: 'First Name', name: 'fName', type: 'Input', width: '30%'},
-        {
-          lable: 'Middle Name',
-          name: 'mName',
-          type: 'Input',
-          width: '30%',
-        },
-        {lable: 'Last Name', name: 'lName', type: 'Input', width: '30%',notRequired: true,},
         {
           lable: 'Profile Photo',
           name: 'profilePhoto',
@@ -156,64 +147,6 @@ const NewEmployee = ({openModalFun, reload}) => {
           type: 'File',
           req: 'image/*',
           width: '30%',
-        },
-        {
-          lable: 'Date Of Birth',
-          name: 'dateOfBirth',
-          type: 'Date',
-          width: '30%',
-        },
-        {
-          lable: 'Sex',
-          name: 'sex',
-          type: 'Select',
-          options: [
-            {value: 'Male', lable: 'Male'},
-            {value: 'Female', lable: 'Female'},
-          ],
-          width: '30%',
-        },
-        {
-          lable: 'Nationality',
-          name: 'nationality',
-          type: 'Select',
-          options: [
-            {value: 'Ethiopian', lable: 'Ethiopian'},
-            {value: 'Kenya', lable: 'Kenya'},
-          ],
-          width: '30%',
-        },
-      ],
-    },
-
-    {
-      title: 'Address Information',
-      key: 2,
-      children: [
-        {lable: 'City / Region', name: 'city', type: 'Input', width: '47%'},
-        {
-          lable: 'Sub City / Zone',
-          name: 'subCity',
-          type: 'Input',
-          width: '47%',
-        },
-        {lable: 'Wereda', name: 'wereda', type: 'Input', width: '30%'},
-        {lable: 'Kebele', name: 'kebele', type: 'Input', width: '30%'},
-        {lable: 'House No', name: 'houseNo', type: 'Input', width: '30%'},
-        {lable: 'Phone', name: 'phone', type: 'Input', width: '47%',min:10,max:10},
-        {
-          lable: 'Alternate Phone',
-          name: 'otherPhone',
-          type: 'Input',
-          width: '47%',
-          notRequired: true,
-        },
-        {
-          lable: 'Email',
-          name: 'email',
-          type: 'Input',
-          width: '100%',
-          notRequired: true,
         },
       ],
     },
@@ -269,6 +202,7 @@ const NewEmployee = ({openModalFun, reload}) => {
           type: 'Input',
           width: '31%',
           req: 'number',
+          notRequired: true,
         },
         {lable: 'Start Date', name: 'startDate', type: 'Date', width: '31%'},
         {
@@ -500,4 +434,4 @@ const NewEmployee = ({openModalFun, reload}) => {
   );
 };
 
-export default NewEmployee;
+export default HireEmployee;

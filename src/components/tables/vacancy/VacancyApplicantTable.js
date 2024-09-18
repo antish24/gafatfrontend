@@ -29,10 +29,6 @@ const VacancyApplicantTable = ({vacancyApplicantData, loading, reload}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
-  const [modalOpen, setModalOpen] = useState (false);
-  const [modalContent, setModalContent] = useState ([]);
-  const [banLoading, setBanLoading] = useState (false);
-  const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -172,16 +168,9 @@ const VacancyApplicantTable = ({vacancyApplicantData, loading, reload}) => {
       render: r => <span>{FormatDateTime (r)}</span>,
     },
     {
-      title: 'Rank',
-      dataIndex: 'rank',
-      width: '50px',
-      key: 'rank',
-    },
-    {
       title: 'Score',
-      dataIndex: 'score',
-      width: '80px',
-      key: 'score',
+      width: '120px',
+      render: r => <span>{r.score}/{r.maxScore}</span>,
     },
     {
       fixed: 'right',
@@ -213,18 +202,6 @@ const VacancyApplicantTable = ({vacancyApplicantData, loading, reload}) => {
 
   return (
     <div>
-      <ModalForm
-        open={modalOpen}
-        close={() => setModalOpen (false)}
-        title={<Divider>Update Vacancy</Divider>}
-        content={
-          <UpdateVancayForm
-            id={modalContent}
-            reload={() => reload ()}
-            openModalFun={e => setModalOpen (e)}
-          />
-        }
-      />
       <Table
         size="small"
         columns={columns}
