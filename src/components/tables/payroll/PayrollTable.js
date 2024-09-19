@@ -323,6 +323,12 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
           width: '80px',
         },
         {
+          title: 'Salary',
+          dataIndex: 'basicSalary',
+          key: 'basicSalary',
+          width: '80px',
+        },
+        {
           title: 'Earnings',
           children: [
             {

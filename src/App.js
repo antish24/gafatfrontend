@@ -37,6 +37,9 @@ import InterviewVacancyPage from './pages/vacancy/interview/InterviewVacancyPage
 import ManageLeavePage from './pages/leave/ManageLeavePage';
 import LeaveBalancePage from './pages/leave/balance/LeaveBalancePage';
 import LeaveApplicationPage from './pages/leave/application/LeaveApplicationPage';
+import StructureAssignmentPage from './pages/payroll/salary/assigment/StructureAssignmentPage';
+import SalaryStructurePage from './pages/payroll/salary/structure/SalaryStructurePage';
+import SalaryComponentsPage from './pages/payroll/salary/components/SalaryComponentsPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -187,11 +190,11 @@ const App = () => {
           children: [
             {
               key: '811',
-              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Form</Link>,
+              label: <Link to={'/timesheet/form'}><FaClipboardList/> Form</Link>,
             },
             {
               key: '812',
-              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> List</Link>,
+              label: <Link to={'/timesheet/list'}><MdAccountBalance/> List</Link>,
             },
           ],
         },
@@ -201,15 +204,15 @@ const App = () => {
           children: [
             {
               key: '821',
-              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Components</Link>,
+              label: <Link to={'/timesheet/form'}><FaClipboardList/> Components</Link>,
             },
             {
               key: '822',
-              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Structure</Link>,
+              label: <Link to={'/timesheet/list'}><MdAccountBalance/> Structure</Link>,
             },
             {
               key: '823',
-              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
+              label: <Link to={'/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
             },
           ],
         },
@@ -226,15 +229,15 @@ const App = () => {
           children: [
             {
               key: '911',
-              label: <Link to={'/payroll/timesheet/form'}><FaClipboardList/> Components</Link>,
+              label: <Link to={'/payroll/salary/components'}><FaClipboardList/> Components</Link>,
             },
             {
               key: '912',
-              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Structure</Link>,
+              label: <Link to={'/payroll/salary/structure'}><MdAccountBalance/> Structure</Link>,
             },
             {
               key: '913',
-              label: <Link to={'/payroll/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
+              label: <Link to={'/payroll/salary/assignment'}><MdAccountBalance/> Assignment</Link>,
             },
           ],
         },
@@ -434,10 +437,16 @@ const App = () => {
 
             <Route element={<Users />} path="/users/list" />
 
-            <Route element={<TimeSheet />} path="/payroll/timesheet/list" />
-            <Route element={<TimeSheetForm />} path="/payroll/timesheet/form" />
+            <Route element={<TimeSheet />} path="/timesheet/list" />
+            <Route element={<TimeSheetForm />} path="/timesheet/form" />
+
             <Route element={<PayrollPage />} path="/payroll/list/all" />
             <Route element={<PayrollReportPage />} path="/payroll/list/report" />
+
+            <Route element={<SalaryComponentsPage />} path="/payroll/salary/components" />
+            <Route element={<SalaryStructurePage />} path="/payroll/salary/structure" />
+            <Route element={<StructureAssignmentPage />} path="/payroll/salary/assignment" />
+
             
             <Route element={<SupportPage />} path="/support" />
             <Route element={<PageNotFound />} path="*" />
