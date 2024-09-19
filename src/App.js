@@ -15,9 +15,8 @@ import logo from './assets/imgs/image.png'
 
 import { SiAwsorganizations, SiOnlyoffice } from 'react-icons/si';
 import { BsCalendarDate } from 'react-icons/bs';
-import { GrMoney, GrTransaction } from 'react-icons/gr';
-import { IoBusiness, IoTimeOutline } from 'react-icons/io5';
-import { FaListAlt } from 'react-icons/fa';
+import { GrMoney } from 'react-icons/gr';
+import { IoTimeOutline } from 'react-icons/io5';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import VacancyPage from './pages/vacancy/VacancyPage';
 import BranchPage from './pages/organzation/branch/BranchPage';
@@ -27,10 +26,10 @@ import EmployeePage from './pages/employee/employee/EmployeePage';
 import { GoLaw } from 'react-icons/go';
 import AgreementPage from './pages/employee/agreement/AgreementPage';
 import EmployeeDetail from './pages/employee/employee/EmployeeDetail';
-import TimeSheet from './pages/payroll/timesheet/List/TimeSheet';
+import TimeSheet from './pages/attendance/timesheet/TimeSheet';
 import PayrollPage from './pages/payroll/payroll/PayrollPage';
 import PayrollReportPage from './pages/payroll/payroll/PayrollReportPage';
-import TimeSheetForm from './pages/payroll/timesheet/Form/TimeSheetForm';
+import TimeSheetForm from './pages/attendance/timesheet/TimeSheetForm';
 import ApplicantList from './pages/vacancy/Applicant/ApplicantList';
 import ApplicantDetail from './pages/vacancy/Applicant/ApplicantDetail';
 import InterviewPage from './pages/vacancy/interview/InterviewPage';

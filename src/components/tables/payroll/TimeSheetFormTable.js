@@ -1,97 +1,17 @@
 import React, {useRef, useState} from 'react';
 import {SearchOutlined} from '@ant-design/icons';
-import {
-  Form,
-  Space,
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Table,
-  Typography,
-} from 'antd';
+import {Space, Button, Input, Popconfirm, Table, Divider, Tag} from 'antd';
+import {MdDelete, MdEdit} from 'react-icons/md';
+import {FaCheck} from 'react-icons/fa6';
+import UpdateTimeSheetForm from '../../forms/attendance/UpdateTimeSheetForm';
+import ModalForm from '../../../modal/Modal';
 
-const EditableCell = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = <Input />;
-  return (
-    <td {...restProps}>
-      {editing
-        ? <Form.Item
-            name={dataIndex}
-            style={{
-              margin: 0,
-            }}
-            rules={[
-              {
-                required: true,
-                message: `Please Input ${title}!`,
-              },
-            ]}
-          >
-            {inputNode}
-          </Form.Item>
-        : children}
-    </td>
-  );
-};
-const TimeSheetFormTable = ({timesheetData}) => {
-  const [form] = Form.useForm ();
-  const [data, setData] = useState (timesheetData);
-  const [editingKey, setEditingKey] = useState ('');
-  const isEditing = record => record.key === editingKey;
-  const edit = record => {
-    form.setFieldsValue ({
-      address: '',
-      regularHour: '',
-      RPOTHour: '',
-      OT32: '',
-      totalHour: '',
-      specialHour: '',
-      ...record,
-    });
-    setEditingKey (record.key);
-  };
-
-  const cancel = () => {
-    setEditingKey ('');
-  };
-
-  const save = async key => {
-    try {
-      const row = await form.validateFields ();
-      const newData = [...data];
-      const index = newData.findIndex (item => key === item.IDNO);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice (index, 1, {
-          ...item,
-          ...row,
-        });
-        setData (newData);
-        setEditingKey ('');
-        console.log (newData.find(item => key === item.IDNO));
-      } else {
-        newData.push (row);
-        setData (newData);
-        setEditingKey ('');
-      }
-    } catch (errInfo) {
-      console.log ('Validate Failed:', errInfo);
-    }
-  };
-
+const TimeSheetFormTable = ({timesheetData, reload}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
+  const [modalOpen, setModalOpen] = useState (false);
+  const [modalContent, setModalContent] = useState ([]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -180,121 +100,127 @@ const TimeSheetFormTable = ({timesheetData}) => {
 
   const columns = [
     {
-      title: 'Employee Information',
+      title: 'IDNO',
       fixed: 'left',
+      dataIndex: 'IDNO',
+      ...getColumnSearchProps ('IDNO'),
+      width: '80px',
+      key: 'IDNO',
+    },
+    {
+      title: 'Full Name',
       children: [
         {
-          title: 'IDNO',
-          dataIndex: 'IDNO',
-          ...getColumnSearchProps ('IDNO'),
-          width: '80px',
-          key: 'IDNO',
+          title: 'First',
+          dataIndex: 'fName',
+          ...getColumnSearchProps ('fName'),
+          width: '90px',
+          key: 'fName',
         },
         {
-          title: 'Name',
-          dataIndex: 'name',
-          ...getColumnSearchProps ('name'),
-          key: 'name',
-          width: '200px',
+          title: 'Middle',
+          dataIndex: 'mName',
+          ...getColumnSearchProps ('mName'),
+          width: '90px',
+          key: 'mName',
         },
+        {
+          title: 'Last',
+          dataIndex: 'lName',
+          ...getColumnSearchProps ('lName'),
+          width: '90px',
+          key: 'lName',
+        },
+        ,
       ],
     },
     {
       title: 'Regular Place Hour',
-      dataIndex: 'regularHour',
-      key: 'regularHour',
+      dataIndex: 'regularPH',
+      key: 'regularPH',
       width: '80px',
-      editable: true,
     },
     {
       title: '32 Over Time',
       dataIndex: 'OT32',
       key: 'OT32',
-      editable: true,
       width: '80px',
     },
 
     {
       title: 'Regular Place OT Hour',
-      dataIndex: 'RPOTHour',
-      key: 'RPOTHour',
-      editable: true,
+      dataIndex: 'regularPOTH',
+      key: 'regularPOTH',
       width: '80px',
     },
     {
       title: 'Special Place Hour',
-      dataIndex: 'specialHour',
-      key: 'specialHour',
-      editable: true,
+      dataIndex: 'specialPH',
+      key: 'specialPH',
       width: '80px',
     },
     {
       title: 'Total Hour',
-      dataIndex: 'totalHour',
+      dataIndex: 'totalHours',
       width: '80px',
-      editable: true,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      width: '80px',
+      render:r=>(<Tag color={r==="Pending"?"processing":r==="Approved"?"success":"volcano"}>{r}</Tag>)
     },
     {
       title: 'operation',
-      dataIndex: 'operation',
-      width: '200px',
-      render: (_, record) => {
-        const editable = isEditing (record);
-        return editable
-          ? <span>
-              <Typography.Link
-                onClick={() => save (record.IDNO)}
-                style={{
-                  marginInlineEnd: 8,
-                }}
-              >
-                Save
-              </Typography.Link>
-              <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                <a>Cancel</a>
-              </Popconfirm>
-            </span>
-          : <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit (record)}
-            >
-              Edit
-            </Typography.Link>;
-      },
+      width: '100px',
+      render: r => (
+        <Space
+          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+        >
+          <Button
+            onClick={() => {
+              setModalOpen (true);
+              setModalContent (r.id);
+            }}
+          >
+            <MdEdit />
+          </Button>
+
+          <Button>
+            <FaCheck color="green" />
+          </Button>
+        </Space>
+      ),
     },
   ];
-  const mergedColumns = columns.map (col => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: record => ({
-        record,
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing (record),
-      }),
-    };
-  });
+
   return (
-    <Form form={form} component={false}>
+    <div>
+
+      <ModalForm
+        open={modalOpen}
+        close={() => setModalOpen (false)}
+        title={<Divider>TimeSheet Form</Divider>}
+        content={
+          <UpdateTimeSheetForm
+            id={modalContent}
+            reload={() => reload ()}
+            openModalFun={e => setModalOpen (e)}
+          />
+        }
+      />
+
       <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
         bordered
-        dataSource={data}
-        columns={mergedColumns}
+        dataSource={timesheetData}
+        columns={columns}
         pagination={{
           defaultPageSize: 10,
           showSizeChanger: true,
           position: ['topRight'],
         }}
       />
-    </Form>
+    </div>
   );
 };
 export default TimeSheetFormTable;

@@ -1,36 +1,11 @@
-import React, {useContext, useRef, useState} from 'react';
-import {
-  Badge,
-  Button,
-  Divider,
-  Input,
-  Popconfirm,
-  Select,
-  Space,
-  Table,
-  Tag,
-} from 'antd';
+import React, {useRef, useState} from 'react';
+import {Button, Input, Space, Table, Tag} from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {FormatDateTime} from '../../../helper/FormatDate';
-import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
-import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
-import axios from 'axios';
-import {CSVLink} from 'react-csv';
-import { FaFile } from 'react-icons/fa6';
-import FiterTimeSheetForm from '../../forms/payroll/FiterTimeSheetForm';
-import FiterTimeSheet from '../../forms/payroll/FiterTimeSheet';
 
-const TimeSheetTable = ({timesheetData, loading, reload}) => {
-  const {openNotification} = useContext (AlertContext);
+const TimeSheetTable = ({timesheetData, loading}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
-  const [modalOpen, setModalOpen] = useState (false);
-  const [modalContent, setModalContent] = useState ([]);
-  const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -107,19 +82,6 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
       ),
   });
 
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
   const columns = [
     {
       title: 'Employee Information',
@@ -133,35 +95,55 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
           key: 'IDNO',
         },
         {
-          title: 'Name',
-          dataIndex: 'name',
-          ...getColumnSearchProps ('name'),
-          key: 'name',
-          width: '200px',
-        },
-        {
-          title: 'Work Information',
+          title: 'Full Name',
           children: [
             {
-              title: 'Branch',
-              dataIndex: 'branch',
-              key: 'branch',
-              width: '80px',
+              title: 'First',
+              dataIndex: 'fName',
+              ...getColumnSearchProps ('fName'),
+              width: '90px',
+              key: 'fName',
             },
             {
-              title: 'Department',
-              dataIndex: 'department',
-              key: 'department',
-              width: '100px',
+              title: 'Middle',
+              dataIndex: 'mName',
+              ...getColumnSearchProps ('mName'),
+              width: '90px',
+              key: 'mName',
             },
             {
-              title: 'Postion',
-              dataIndex: 'postion',
-              key: 'postion',
-              width: '80px',
+              title: 'Last',
+              dataIndex: 'lName',
+              ...getColumnSearchProps ('lName'),
+              width: '90px',
+              key: 'lName',
             },
+            ,
           ],
         },
+        // {
+        //   title: 'Work Information',
+        //   children: [
+        //     {
+        //       title: 'Branch',
+        //       dataIndex: 'branch',
+        //       key: 'branch',
+        //       width: '80px',
+        //     },
+        //     {
+        //       title: 'Department',
+        //       dataIndex: 'department',
+        //       key: 'department',
+        //       width: '100px',
+        //     },
+        //     {
+        //       title: 'Position',
+        //       dataIndex: 'position',
+        //       key: 'position',
+        //       width: '80px',
+        //     },
+        //   ],
+        // },
       ],
     },
     {
@@ -169,18 +151,17 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
       children: [
         {
           title: 'Regular Place',
-          dataIndex: 'regularPlace',
           children: [
             {
               title: 'Day',
-              dataIndex: 'regularDay',
-              key: 'regularDay',
+              dataIndex: 'regularPD',
+              key: 'regularPD',
               width: '80px',
             },
             {
               title: 'Hour',
-              dataIndex: 'regularHour',
-              key: 'regularHour',
+              dataIndex: 'regularPH',
+              key: 'regularPH',
               width: '80px',
             },
           ],
@@ -193,54 +174,51 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
         },
         {
           title: 'Regular Place OT',
-          dataIndex: 'regularPlaceOT',
           children: [
             {
               title: 'Day',
-              dataIndex: 'RPOTDay',
-              key: 'RPOTDay',
+              dataIndex: 'regularPOTD',
+              key: 'regularPOTD',
               width: '80px',
             },
             {
               title: 'Hour',
-              dataIndex: 'RPOTHour',
-              key: 'RPOTHour',
+              dataIndex: 'regularPOTH',
+              key: 'regularPOTH',
               width: '80px',
             },
           ],
         },
         {
           title: 'Special Place',
-          dataIndex: 'specialPlace',
           children: [
             {
               title: 'Day',
-              dataIndex: 'specialDay',
-              key: 'specialDay',
+              dataIndex: 'specialPD',
+              key: 'speicalPD',
               width: '80px',
             },
             {
               title: 'Hour',
-              dataIndex: 'specialHour',
-              key: 'specialHour',
+              dataIndex: 'specialPH',
+              key: 'specialPH',
               width: '80px',
             },
           ],
         },
         {
           title: 'Total',
-          dataIndex: 'totalWorking',
           children: [
             {
               title: 'Day',
-              dataIndex: 'totalDay',
-              key: 'totalDay',
+              dataIndex: 'totalDays',
+              key: 'totalDays',
               width: '80px',
             },
             {
               title: 'Hour',
-              dataIndex: 'totalHour',
-              key: 'totalHour',
+              dataIndex: 'totalHours',
+              key: 'totalHours',
               width: '80px',
             },
           ],
@@ -253,81 +231,67 @@ const TimeSheetTable = ({timesheetData, loading, reload}) => {
       width: '80px',
       key: 'status',
       render: r => (
-        <Tag color={r.status === 'Pending' ? 'orange' : 'Green'}>
+        <Tag
+          color={
+            r.status === 'Pending'
+              ? 'processing'
+              : r.status === 'Approved' ? 'success' : 'volcano'
+          }
+        >
           {r.status}
         </Tag>
       ),
     },
-    {
-      title: 'Action',
-      width: '165px',
-      fixed: 'right',
-      key: 'operation',
-      render: r => (
-        <Space
-          style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
-        >
-          <Button
-            type="text"
-            onClick={() => {
-              setModalOpen (true);
-              setModalContent (r.IDNO);
-            }}
-          >
-            <MdEdit />
-          </Button>
-          <Popconfirm
-            title="Are you sure, Delete user"
-            onConfirm={() => DeleteUser (r.IDNO)}
-          >
-            <Button
-              type="text"
-              disabled={deleteLoading}
-              loading={deleteLoading}
-            >
-              <MdDelete color="red" />
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Action',
+    //   width: '165px',
+    //   fixed: 'right',
+    //   key: 'operation',
+    //   render: r => (
+    //     <Space
+    //       style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap'}}
+    //     >
+    //       <Button
+    //         type="text"
+    //         onClick={() => {
+    //           setModalOpen (true);
+    //           setModalContent (r.IDNO);
+    //         }}
+    //       >
+    //         <MdEdit />
+    //       </Button>
+    //       <Popconfirm
+    //         title="Are you sure, Delete user"
+    //         onConfirm={() => DeleteUser (r.IDNO)}
+    //       >
+    //         <Button
+    //           type="text"
+    //           disabled={deleteLoading}
+    //           loading={deleteLoading}
+    //         >
+    //           <MdDelete color="red" />
+    //         </Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
 
-  const [siteLocation,setSiteLocation]=useState([
-    {value:'Addis Abeba',lable:'Addis Abeba'}
-  ])
   return (
-    <div>
-      <div style={{display:'flex',height:'60px',justifyContent:'space-between'}}>
-        <span style={{fontSize:'20px'}}>TimeSheet List </span>
-      <div style={{display:'flex',gap:'10px'}}>
-        <FiterTimeSheet/>
-      <CSVLink
-        data={timesheetData}
-        onClick={() => {
-          console.log ('clicked');
-        }}
-      >
-        <Button><FaFile/></Button>
-      </CSVLink>
-      </div>
-      </div>
-      
-      <Table
-        size="small"
-        columns={columns}
-        bordered
-        scroll={{
-          x: 500,
-        }}
-        pagination={{
-          defaultPageSize: 7,
-          showSizeChanger: false,
-        }}
-        dataSource={timesheetData}
-        loading={loading}
-      />
-    </div>
+    <Table
+      size="small"
+      columns={columns}
+      bordered
+      scroll={{
+        x: 500,
+      }}
+      pagination={{
+        defaultPageSize: 7,
+        showSizeChanger: false,
+      }}
+      dataSource={timesheetData}
+      loading={loading}
+    />
   );
 };
 export default TimeSheetTable;

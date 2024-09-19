@@ -1,37 +1,52 @@
-import {Button, Form, Input, Select} from 'antd';
+import {Button, Form, Select} from 'antd';
+import React, { useContext, useEffect, useState } from 'react';
+import { BACKENDURL } from '../../../helper/Urls';
 import axios from 'axios';
-import React, {useContext, useState} from 'react';
-import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
+import { AlertContext } from '../../../context/AlertContext';
 
-const FiterTimeSheetForm = ({openModalFun, reload}) => {
-  const {openNotification} = useContext (AlertContext);
-  const [loading, setLoading] = useState (false);
+const FiterTimeSheetForm = ({reload,loading}) => {
   const [form] = Form.useForm ();
+  const {openNotification} = useContext(AlertContext);
 
   const onFinish = async values => {
-    setLoading (true);
-    try {
-      const res = await axios.post (`${BACKENDURL}/users/new`, {
-        email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullName,
-        access: values.access,
+      reload ({
+        day: values.day,
+        month: values.month,
+        site: values.site,
+        type: values.employeementType,
       });
-      reload ();
-      setLoading (false);
-      openModalFun (false);
-      openNotification ('success', res.data.message, 3, 'green');
-      form.resetFields ();
-    } catch (error) {
-      setLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
   };
+
   const onFinishFailed = errorInfo => {
     console.log ('Failed:', errorInfo);
   };
+
+  
+  const [siteData, setsiteData] = useState ([]);
+  const [loadingSite, setLoadingSite] = useState (false);
+
+  const getSiteData = async () => {
+    setLoadingSite (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/project/all`);
+      setLoadingSite (false);
+      setsiteData (res.data.projects);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingSite (false);
+    }
+  };
+
+  const siteOptions = siteData.length
+    ? siteData.map (d => ({
+        value: d.site,
+        label: d.site,
+      }))
+    : [];
+
+  useEffect(() => {
+    getSiteData ();
+  }, []);
 
   return (
     <Form
@@ -71,24 +86,10 @@ const FiterTimeSheetForm = ({openModalFun, reload}) => {
       >
         <Select
           placeholder="Select Month"
-          options={[
-            {
-              value: 'Jan',
-              label: 'Jan',
-            },
-            {
-              value: 'Feb',
-              label: 'Feb',
-            },
-            {
-              value: 'Mar',
-              label: 'Mar',
-            },
-            {
-              value: 'Apr',
-              label: 'Apr',
-            },
-          ]}
+          options={Array (12).fill ('1').map ((_, i) => ({
+            value: i + 1,
+            label: i + 1,
+          }))}
         />
       </Form.Item>
       <Form.Item
@@ -103,16 +104,9 @@ const FiterTimeSheetForm = ({openModalFun, reload}) => {
       >
         <Select
           placeholder="Select Site"
-          options={[
-            {
-              value: 'Addis Abeba',
-              label: 'Addis Abeba',
-            },
-            {
-              value: 'Gonder',
-              label: 'Gonder',
-            },
-          ]}
+          options={siteOptions}
+          disabled={loadingSite}
+          loading={loadingSite}
         />
       </Form.Item>
       <Form.Item
