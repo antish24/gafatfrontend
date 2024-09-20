@@ -18,9 +18,10 @@ import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import {CSVLink} from 'react-csv';
 import {FaFileCsv, FaFileExcel} from 'react-icons/fa6';
-import { TbReload } from 'react-icons/tb';
+import {TbReload} from 'react-icons/tb';
+import { FormatDay } from '../../../helper/FormateDay';
 
-const PayrollTable = ({payrollDate, loading, reload}) => {
+const PayrollTable = ({payrollData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
@@ -101,31 +102,26 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
         .toString ()
         .toLowerCase ()
         .includes (value.toLowerCase ()),
-    onFilterDropdownOpenChange: (visible) => {
+    onFilterDropdownOpenChange: visible => {
       if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
+        // setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        searchText
-      ) : (
-        text
-      ),
+    render: text => (searchedColumn === dataIndex ? searchText : text),
   });
-  
-  const [filteredInfo, setFilteredInfo] = useState({});
-  const [sortedInfo, setSortedInfo] = useState({});
-  
+
+  const [filteredInfo, setFilteredInfo] = useState ({});
+  const [sortedInfo, setSortedInfo] = useState ({});
+
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
-    setFilteredInfo(filters);
-    setSortedInfo(sorter);
+    console.log ('Various parameters', pagination, filters, sorter);
+    setFilteredInfo (filters);
+    setSortedInfo (sorter);
   };
 
   const clearAll = () => {
-    setFilteredInfo({});
-    setSortedInfo({});
+    setFilteredInfo ({});
+    setSortedInfo ({});
   };
 
   const cities = [
@@ -178,7 +174,7 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
     },
   ];
 
-  const columns = [
+  const preDefined = [
     {
       title: 'IDNO',
       dataIndex: 'IDNO',
@@ -194,11 +190,56 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
           title: 'Personal info',
           children: [
             {
-              title: 'Name',
-              dataIndex: 'name',
-              ...getColumnSearchProps ('name'),
-              key: 'name',
-              width: '200px',
+              title: 'Full Name',
+              children: [
+                {
+                  title: 'First',
+                  dataIndex: 'fName',
+                  ...getColumnSearchProps ('fName'),
+                  width: '90px',
+                  key: 'fName',
+                },
+                {
+                  title: 'Middle',
+                  dataIndex: 'mName',
+                  ...getColumnSearchProps ('mName'),
+                  width: '90px',
+                  key: 'mName',
+                },
+                {
+                  title: 'Last',
+                  dataIndex: 'lName',
+                  ...getColumnSearchProps ('lName'),
+                  width: '90px',
+                  key: 'lName',
+                },
+                ,
+              ],
+            },
+            {
+              title: 'Sex',
+              dataIndex: 'sex',
+              key: 'sex',
+              width: '80px',
+              filters: [
+                {
+                  text: 'Male',
+                  value: 'Male',
+                },
+                {
+                  text: 'Female',
+                  value: 'Female',
+                },
+              ],
+              filteredValue: filteredInfo.sex || null,
+              onFilter: (value, record) => record.sex.includes (value),
+            },
+            {
+              title: 'Date Of Birth',
+              dataIndex: 'dateOfBirth',
+              width: '150px',
+              key: 'createdAt',
+              render: r => <span>{FormatDay (r)}</span>,
             },
             {
               title: 'Branch',
@@ -209,9 +250,9 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
             },
             {
               title: 'Department',
-              dataIndex: 'branch',
-              ...getColumnSearchProps ('branch'),
-              key: 'branch',
+              dataIndex: 'department',
+              ...getColumnSearchProps ('department'),
+              key: 'department',
               width: '200px',
             },
             {
@@ -220,94 +261,6 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
               ...getColumnSearchProps ('position'),
               key: 'position',
               width: '200px',
-            },
-          ],
-        },
-        {
-          title: 'Work Place info',
-          children: [
-            {
-              title: 'Site',
-              dataIndex: 'site',
-              ...getColumnSearchProps ('site'),
-              key: 'site',
-              width: '200px',
-            },
-            {
-              title: 'City / Region',
-              dataIndex: 'city',
-              key: 'city',
-              width: '200px',
-              filters: cities.map(city => ({
-                text: city.name,
-                value: city.name
-              })),
-            
-              filteredValue: filteredInfo.city || null,
-            
-              onFilter: (value, record) => {
-                // Get city object matching filter value
-                const city = cities.find(c => c.name === value);
-            
-                // Check if record's city matches filter
-                return city.name === record.city; 
-              }
-            },
-            {
-              title: 'SubCity / Zone',
-              dataIndex: 'subCity',
-              key: 'subCity',
-              width: '200px',
-              filters: cities.flatMap(city => 
-                city.subCities.map(sub => ({
-                  text: sub.name, 
-                  value: sub.name
-                }))
-              ),
-            
-              onFilter: (value, record) => {
-                const city = cities.find(c => {
-                  return c.subCities.some(s => s.name === value); 
-                });
-              
-                const subcity = city.subCities.find(s => s.name === value);
-              
-                return record.city === city.name && record.subCity === subcity.name;
-              }
-            },
-            {
-              title: 'Wereda',
-              dataIndex: 'wereda',
-              key: 'wereda',
-              width: '200px',
-              filters: cities.flatMap(city =>
-                city.subCities.flatMap(sub =>  
-                  sub.weredas.map(w => ({
-                    text: w,
-                    value: w  
-                  }))
-                )
-              ),
-              filteredValue: filteredInfo.wereda || null,
-              onFilter: (value, record) => {
-                const city = cities.find(c => {
-                  return c.subCities.some(sc => {
-                    return sc.weredas.some(w => w === value);
-                  });
-                });
-              
-                const subcity = city.subCities.find(sc => {
-                  return sc.weredas.some(w => w === value);
-                });
-              
-                const wereda = subcity.weredas.find(w => w === value);
-              
-                return (
-                  record.city === city.name && 
-                  record.subCity === subcity.name &&
-                  record.wereda === wereda
-                );
-              }
             },
           ],
         },
@@ -324,35 +277,15 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
         },
         {
           title: 'Salary',
-          dataIndex: 'basicSalary',
-          key: 'basicSalary',
+          dataIndex: 'salary',
+          key: 'salary',
           width: '80px',
         },
         {
-          title: 'Earnings',
-          children: [
-            {
-              title: 'Taxable',
-              dataIndex: 'earnings',
-              render:(r)=>r.taxable,
-              key: 'earnings',
-              width: '80px',
-            },
-            {
-              title: 'Non Taxable',
-              dataIndex: 'earnings',
-              key: 'earnings',
-              render:(r)=>r.nonTaxable,
-              width: '100px',
-            },
-            {
-              title: 'Total',
-              dataIndex: 'earnings',
-              key: 'earnings',
-              render:(r)=>r.total,
-              width: '100px',
-            },
-          ],
+          title: 'Total Earning',
+          dataIndex: 'totalEarning',
+          key: 'totalEarning',
+          width: '100px',
         },
         {
           title: 'Gross Salary',
@@ -361,51 +294,10 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
           width: '80px',
         },
         {
-          title: 'Deduction',
-          children: [
-            {
-              title: 'Income Tax',
-              dataIndex: 'deductions',
-              key: 'deductions',
-              render:(r)=>r.incomeTax,
-              width: '80px',
-            },
-            {
-              title: 'PF 7%',
-              dataIndex: 'deductions',
-              key: 'deductions',
-              render:(r)=>r.PF7,
-              width: '80px',
-            },
-            {
-              title: 'PF 11%',
-              dataIndex: 'deductions',
-              key: 'deductions',
-              render:(r)=>r.PF11,
-              width: '80px',
-            },
-            {
-              title: 'Loan',
-              dataIndex: 'deductions',
-              key: 'deductions',
-              render:(r)=>r.loan,
-              width: '80px',
-            },
-            {
-              title: 'Penality',
-              dataIndex: 'deductions',
-              render:(r)=>r.penalty,
-              key: 'deductions',
-              width: '100px',
-            },
-            {
-              title: 'Total',
-              dataIndex: 'deductions',
-              key: 'deductions',
-              render:(r)=>r.total,
-              width: '100px',
-            },
-          ],
+          title: 'Total Deduction',
+          dataIndex: 'totalDeduction',
+          key: 'totalDeduction',
+          width: '100px',
         },
         {
           title: 'Net Salary',
@@ -458,30 +350,69 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
     //         </Button>
     //       </Popconfirm>
     //     </Space>
-      // ),
+    // ),
     // },
   ];
 
+  let dynamicColumns = [];
+  let dynamicColumns2 = [];
+
+  dynamicColumns.push ({
+    title: 'Earning',
+    children: [
+      {
+        title: 'test',
+        dataIndex: 'test',
+        width: '100px',
+      },
+      {
+        title: 'test',
+        dataIndex: 'test',
+        width: '100px',
+      },
+    ],
+  });
+
+  dynamicColumns2.push ({
+    title: 'Dductions',
+    children: [
+      {
+        title: 'test',
+        dataIndex: 'test',
+        width: '100px',
+      },
+      {
+        title: 'test',
+        dataIndex: 'test',
+        width: '100px',
+      },
+    ],
+  });
+
+  const columns = [...preDefined];
+  // const columns = [...preDefined, ...dynamicColumns ,...dynamicColumns2];
   return (
     <div>
-      <div style={{display:'flex',width:"100%",justifyContent:'space-between',marginBottom:'30px'}}>
-      <div style={{display:'flex',gap:'5px'}}>
-      <CSVLink
-        data={payrollDate}
-        filename={"payroll-detail-csv"}>
-          <Button><FaFileCsv/>CSV</Button>
-      </CSVLink>
-      <CSVLink
-        data={payrollDate}
-        filename={"payroll-detail-csv"}>
-          <Button><FaFileExcel/>Excel</Button>
-      </CSVLink>
-      </div>
-      <DatePicker onChange={reload} disabled/>
-      <div style={{display:'flex',gap:'5px'}}>
-      <Button onClick={reload} type='primary'><TbReload />Refresh</Button>
-      <Button onClick={clearAll}><MdFilterAltOff/> Clear filters</Button>
-      </div>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          justifyContent: 'space-between',
+          marginBottom: '30px',
+        }}
+      >
+        <div style={{display: 'flex', gap: '5px'}}>
+          <CSVLink data={payrollData} filename={'payroll-detail-csv'}>
+            <Button><FaFileCsv />CSV</Button>
+          </CSVLink>
+          <CSVLink data={payrollData} filename={'payroll-detail-csv'}>
+            <Button><FaFileExcel />Excel</Button>
+          </CSVLink>
+        </div>
+        <div style={{display: 'flex', gap: '5px'}}>
+          <Button onClick={reload} type="primary"><TbReload />Refresh</Button>
+          <Button onClick={clearAll}><MdFilterAltOff /> Clear filters</Button>
+        </div>
       </div>
       <Table
         size="small"
@@ -492,10 +423,10 @@ const PayrollTable = ({payrollDate, loading, reload}) => {
         }}
         pagination={{
           defaultPageSize: 10,
-          position:'topRight',
+          position: 'topRight',
           showSizeChanger: false,
         }}
-        dataSource={payrollDate}
+        dataSource={payrollData}
         loading={loading}
         onChange={handleChange}
       />

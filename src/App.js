@@ -27,7 +27,6 @@ import { GoLaw } from 'react-icons/go';
 import AgreementPage from './pages/employee/agreement/AgreementPage';
 import EmployeeDetail from './pages/employee/employee/EmployeeDetail';
 import TimeSheet from './pages/attendance/timesheet/TimeSheet';
-import PayrollPage from './pages/payroll/payroll/PayrollPage';
 import PayrollReportPage from './pages/payroll/payroll/PayrollReportPage';
 import TimeSheetForm from './pages/attendance/timesheet/TimeSheetForm';
 import ApplicantList from './pages/vacancy/Applicant/ApplicantList';
@@ -40,6 +39,8 @@ import LeaveApplicationPage from './pages/leave/application/LeaveApplicationPage
 import StructureAssignmentPage from './pages/payroll/salary/assigment/StructureAssignmentPage';
 import SalaryStructurePage from './pages/payroll/salary/structure/SalaryStructurePage';
 import SalaryComponentsPage from './pages/payroll/salary/components/SalaryComponentsPage';
+import GeneratePayroll from './pages/payroll/payroll/GeneratePayroll';
+import GeneratePayrollDetail from './pages/payroll/payroll/GeneratePayrollDetail';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -247,10 +248,14 @@ const App = () => {
           children: [
             {
               key: '921',
-              label: <Link to={'/payroll/list/all'}><FaUsers/> Payroll</Link>,
+              label: <Link to={'/payroll/advance'}><FaUsers/> Advance</Link>,
             },
             {
               key: '922',
+              label: <Link to={'/payroll/generate'}><FaUsers/> Generate</Link>,
+            },
+            {
+              key: '923',
               label: <Link to={'/payroll/list/report'}><HiOutlineDocumentReport/> Report</Link>,
             },
           ],
@@ -440,8 +445,11 @@ const App = () => {
             <Route element={<TimeSheet />} path="/timesheet/list" />
             <Route element={<TimeSheetForm />} path="/timesheet/form" />
 
-            <Route element={<PayrollPage />} path="/payroll/list/all" />
             <Route element={<PayrollReportPage />} path="/payroll/list/report" />
+            <Route element={<GeneratePayroll />} path="/payroll/advance" />
+            <Route element={<GeneratePayroll />} path="/payroll/generate" />
+            <Route element={<GeneratePayrollDetail />} path="/payroll/generate/:id" />
+
 
             <Route element={<SalaryComponentsPage />} path="/payroll/salary/components" />
             <Route element={<SalaryStructurePage />} path="/payroll/salary/structure" />

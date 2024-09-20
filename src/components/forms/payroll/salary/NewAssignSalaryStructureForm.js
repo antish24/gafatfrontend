@@ -32,6 +32,9 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
 
   const [SalaryComponentData, setSalaryComponentData] = useState ([]);
   const [loadingSalaryCom, setLoadingSalaryCom] = useState (false);
+  const [employeesData, setEmployeeData] = useState ([]);
+  const [loadingEmployee, setLoadingEmployee] = useState (false);
+  const [assignmentMethod, setAssignmentMethod] = useState ('');
 
   const getSalaryComponentData = async () => {
     setLoadingSalaryCom (true);
@@ -52,8 +55,34 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
       }))
     : [];
 
+  const getEmployeeData = async () => {
+    setLoadingEmployee (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/employee/names`);
+      setLoadingEmployee (false);
+      setEmployeeData (res.data.employees);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setEmployeeData (false);
+    }
+  };
+
+  const employeesOpt = employeesData.length
+    ? employeesData.map (branch => ({
+        value: branch.id,
+        label: branch.IDNO +
+          '-' +
+          branch.fName +
+          ' ' +
+          branch.mName +
+          ' ' +
+          (branch.lName ? branch.lName : ''),
+      }))
+    : [];
+
   useEffect (() => {
     getSalaryComponentData ();
+    getEmployeeData ();
   }, []);
 
   return (
@@ -70,9 +99,92 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
           flexWrap: 'wrap',
         }}
       >
+        <Form.Item
+          style={{margin: '5px', width: '47%'}}
+          label="Branch"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Branch',
+            },
+          ]}
+          name="branch"
+        >
+          <Select
+            placeholder="Search to Select"
+            options={employeesOpt}
+            loading={loadingEmployee}
+            disabled={loadingEmployee}
+          />
+        </Form.Item>
+
+        <Form.Item
+          style={{margin: '5px', width: '47%'}}
+          label="Department"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Department',
+            },
+          ]}
+          name="department"
+        >
+          <Select
+            placeholder="Search to Select"
+            options={employeesOpt}
+            loading={loadingEmployee}
+            disabled={loadingEmployee}
+          />
+        </Form.Item>
 
         <Form.Item
           style={{margin: '5px', width: '100%'}}
+          label="Assignment Method"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Method',
+            },
+          ]}
+          name="assignmentMethod"
+        >
+          <Select
+            placeholder="Search to Select"
+            onChange={(e)=>setAssignmentMethod(e)}
+            options={[
+              {
+                value: 'Position',
+                label: 'By Position',
+              },
+              {
+                value: 'Employee',
+                label: 'By Employee',
+              },
+            ]}
+          />
+        </Form.Item>
+
+        <Form.Item
+          style={{margin: '5px', width:assignmentMethod==='Position'?"100%":'35%'}}
+          label="Position"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Position',
+            },
+          ]}
+          name="position"
+        >
+          <Select
+            placeholder="Search to Select"
+            options={employeesOpt}
+            loading={loadingEmployee}
+            disabled={loadingEmployee}
+          />
+        </Form.Item>
+
+        <Form.Item
+          style={{margin: '5px', width: '60%',display:assignmentMethod==='Position'&&'none'}}
           label="Employee"
           rules={[
             {
@@ -80,13 +192,15 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
               message: 'Please input Name',
             },
           ]}
-          name="name"
+          name="employee"
         >
           <Select
             placeholder="Search to Select"
-            options={salaryComponentOpt}
-            loading={loadingSalaryCom}
-            disabled={loadingSalaryCom}
+            mode='multiple'
+            maxTagCount='responsive'
+            options={employeesOpt}
+            loading={loadingEmployee}
+            disabled={loadingEmployee}
           />
         </Form.Item>
 
