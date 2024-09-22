@@ -294,6 +294,24 @@ const PayrollTable = ({payrollData, loading, reload}) => {
           width: '80px',
         },
         {
+          title: 'Income Tax',
+          dataIndex: 'incomeTax',
+          key: 'incomeTax',
+          width: '100px',
+        },
+        {
+          title: 'PF 7%',
+          dataIndex: 'employeePension',
+          key: 'employeePension',
+          width: '100px',
+        },
+        {
+          title: 'PF 11%',
+          dataIndex: 'employerPension',
+          key: 'employerPension',
+          width: '100px',
+        },
+        {
           title: 'Total Deduction',
           dataIndex: 'totalDeduction',
           key: 'totalDeduction',

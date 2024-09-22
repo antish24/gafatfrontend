@@ -3,7 +3,7 @@ import { Link, Route, Routes} from 'react-router-dom';
 import {Layout,theme,Button, Menu,} from 'antd';
 
 import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
-import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport } from 'react-icons/md';
+import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
 import Auth from './pages/Auth';
@@ -41,6 +41,14 @@ import SalaryStructurePage from './pages/payroll/salary/structure/SalaryStructur
 import SalaryComponentsPage from './pages/payroll/salary/components/SalaryComponentsPage';
 import GeneratePayroll from './pages/payroll/payroll/GeneratePayroll';
 import GeneratePayrollDetail from './pages/payroll/payroll/GeneratePayrollDetail';
+import InventoryPage from './pages/asset/InventoryPage';
+import RequestPage from './pages/asset/RequestPage';
+import ReturnPage from './pages/asset/ReturnPage';
+import CompanyPage from './pages/project/company/CompanyPage';
+import PlanPage from './pages/project/plan/PlanPage';
+import ProjectsPage from './pages/project/projects/ProjectsPage';
+import TenderPage from './pages/project/TenderPage';
+import ReportPage from './pages/report/ReportPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -129,19 +137,19 @@ const App = () => {
       children: [
         {
           key: '51',
-          label: <Link to={'/project/list'}><MdWork/> Companies</Link>,
+          label: <Link to={'/project/company'}><MdWork/> Companies</Link>,
+        },
+        {
+          key: '53',
+          label: <Link to={'/project/plan'}><FaUserCheck/> Plan</Link>,
         },
         {
           key: '52',
           label: <Link to={'/project/list'}><MdWork/> Projects</Link>,
         },
         {
-          key: '53',
-          label: <Link to={'/project/assign'}><FaUserCheck/> Report</Link>,
-        },
-        {
           key: '54',
-          label: <Link to={'/project/assign'}><FaUserCheck/> Tender</Link>,
+          label: <Link to={'/project/tender'}><FaUserCheck/> Tender</Link>,
         },
       ],
     },
@@ -171,11 +179,15 @@ const App = () => {
       children: [
         {
           key: '71',
-          label: <Link to={'/asset/requests'}><FaClipboardList/> Requests</Link>,
+          label: <Link to={'/asset/inventorypage'}><FaClipboardList/> Inventory</Link>,
+        },
+        {
+          key: '73',
+          label: <Link to={'/asset/requestpage'}><FaClipboardList/> Requests</Link>,
         },
         {
           key: '72',
-          label: <Link to={'/asset/list'}><MdAccountBalance/> Asset</Link>,
+          label: <Link to={'/asset/returnpage'}><MdAccountBalance/> Return</Link>,
         },
       ],
     },
@@ -440,7 +452,18 @@ const App = () => {
             <Route element={<LeaveApplicationPage />} path="/leave/application" />
             <Route element={<LeaveBalancePage />} path="/leave/balance" />
 
+            <Route element={<InventoryPage />} path="/asset/inventorypage" />
+            <Route element={<RequestPage />} path="/asset/requestpage" />
+            <Route element={<ReturnPage />} path="/asset/returnpage" />
+
             <Route element={<Users />} path="/users/list" />
+            
+            <Route element={<ReportPage />} path="/dailyteport/list" />
+
+            <Route element={<CompanyPage />} path="/project/company" />
+            <Route element={<PlanPage />} path="/project/plan" />
+            <Route element={<ProjectsPage />} path="/project/list" />
+            <Route element={<TenderPage />} path="/project/tender" />
 
             <Route element={<TimeSheet />} path="/timesheet/list" />
             <Route element={<TimeSheetForm />} path="/timesheet/form" />

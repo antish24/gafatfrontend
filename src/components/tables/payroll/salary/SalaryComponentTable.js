@@ -130,6 +130,12 @@ const SalaryComponentsTable = ({componentsData, loading, reload}) => {
       width: '100px',
     },
     {
+      title: 'Applicable After',
+      dataIndex: 'applicableAfter',
+      key: 'applicableAfter',
+      width: '100px',
+    },
+    {
       title: 'Tax',
       dataIndex: 'tax',
       key: 'tax',

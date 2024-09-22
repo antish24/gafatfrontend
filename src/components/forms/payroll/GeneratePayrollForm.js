@@ -135,7 +135,7 @@ const GeneratePayrollForm = ({openModalFun, reload}) => {
           label="From"
           rules={[
             {
-              // required: true,
+              required: true,
               message: 'Please input From',
             },
           ]}
@@ -149,7 +149,7 @@ const GeneratePayrollForm = ({openModalFun, reload}) => {
           label="To"
           rules={[
             {
-              // required: true,
+              required: true,
               message: 'Please input To',
             },
           ]}
