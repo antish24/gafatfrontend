@@ -16,8 +16,7 @@ const ProjectsPage = () => {
     setLoading(true);
     try {
       const res = await axios.get(`${BACKENDURL}/project/all`); // Adjust URL if needed
-      console.log('Fetched Project Data:', res.data); // Check API response
-      setProjectData(res.data.data || res.data); // Adjust based on API response structure
+      setProjectData(res.data.projects); // Adjust based on API response structure
       setLoading(false);
     } catch (error) {
       console.error('Failed to fetch project data:', error);

@@ -29,16 +29,49 @@ const CompanyTable = () => {
   // Handle edit button click
   const handleEdit = (record) => {
     setCurrentItem(record);
-    form.setFieldsValue(record); // Populate the form with existing company data
     setEditModalVisible(true);
+    form.setFieldsValue({
+      ...record,
+      city: record?.companyAddress?.city,
+      subcity: record?.companyAddress?.subCity,
+      woreda: record?.companyAddress?.wereda,
+      kebele: record?.companyAddress?.kebele,
+      houseNo: record?.companyAddress?.houseNo,
+    });
   };
 
   // Handle update company form submission
   const handleUpdateCompany = async (values) => {
     try {
-      await axios.put(`${BACKENDURL}/company/${currentItem.id}`, values); // Send PUT request to update
+      const { name, tin, vat, phone, email, city, subcity, wereda, kebele, houseNo } = values;
+
+      // Prepare the updated company data
+      const companyData = {
+        name,
+        TIN: tin,
+        VAT: vat,
+        phone,
+        email,
+      };
+
+      // Prepare the updated address data
+      const companyAddressData = {
+        city,
+        subCity: subcity,
+        wereda,
+        kebele,
+        houseNo,
+      };
+
+      // Send PUT request to update both company and address
+      await axios.put(`${BACKENDURL}/company/${currentItem.id}`, {
+        company: companyData,
+        address: companyAddressData,
+      });
+
       message.success('Company updated successfully');
       setEditModalVisible(false);
+
       // Refresh the data
       const response = await axios.get(`${BACKENDURL}/company/all`);
       setCompanyData(response.data);
@@ -50,49 +83,54 @@ const CompanyTable = () => {
   // Table columns definition
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
     },
     {
       title: 'TIN',
-      dataIndex: 'tin',
-      key: 'tin',
+      dataIndex: 'TIN',
+      key: 'TIN',
     },
     {
       title: 'VAT',
-      dataIndex: 'vat',
-      key: 'vat',
+      dataIndex: 'VAT',
+      key: 'VAT',
     },
     {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
+      title: 'Phone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
       title: 'City',
-      dataIndex: 'city',
-      key: 'city',
+      key: 'companyAddress',
+      render: (_, record) => record.companyAddress ? record.companyAddress.city : 'N/A',
     },
     {
       title: 'Subcity',
-      dataIndex: 'subcity',
-      key: 'subcity',
+      key: 'companyAddress',
+      render: (_, record) => record.companyAddress ? record.companyAddress.subCity : 'N/A',
     },
     {
       title: 'Woreda',
-      dataIndex: 'woreda',
-      key: 'woreda',
+      key: 'companyAddress',
+      render: (_, record) => record.companyAddress ? record.companyAddress.wereda : 'N/A',
+    },
+    {
+      title: 'Kebele',
+      key: 'companyAddress',
+      render: (_, record) => record.companyAddress ? record.companyAddress.kebele : 'N/A',
     },
     {
       title: 'House Number',
-      dataIndex: 'houseNo',
-      key: 'houseNo',
+      key: 'companyAddress',
+      render: (_, record) => record.companyAddress ? record.companyAddress.houseNo : 'N/A',
     },
     {
       title: 'License',
@@ -120,6 +158,9 @@ const CompanyTable = () => {
           columns={columns}
           dataSource={companyData}
           rowKey="id"
+          scroll={{
+            x: 500,
+          }}
           pagination={{ pageSize: 10 }}
         />
       )}
@@ -136,60 +177,34 @@ const CompanyTable = () => {
           onFinish={handleUpdateCompany}
           initialValues={currentItem}
         >
-          <Form.Item
-            name="name"
-            label="Company Name"
-            rules={[{ required: true, message: 'Please enter company name' }]}
-          >
+          <Form.Item name="name" label="Company Name">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="tin"
-            label="TIN"
-            rules={[{ required: true, message: 'Please enter TIN' }]}
-          >
+          <Form.Item name="TIN" label="TIN">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="vat"
-            label="VAT"
-            rules={[{ required: true, message: 'Please enter VAT' }]}
-          >
+          <Form.Item name="VAT" label="VAT">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="location"
-            label="Location"
-            rules={[{ required: true, message: 'Please enter location' }]}
-          >
+          <Form.Item name="phone" label="Phone">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="city"
-            label="City"
-            rules={[{ required: true, message: 'Please enter city' }]}
-          >
+          <Form.Item name="email" label="Email">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="subcity"
-            label="Subcity"
-            rules={[{ required: true, message: 'Please enter subcity' }]}
-          >
+          <Form.Item name="city" label="City">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="woreda"
-            label="Woreda"
-            rules={[{ required: true, message: 'Please enter woreda' }]}
-          >
+          <Form.Item name="subcity" label="Subcity">
             <Input />
           </Form.Item>
-          <Form.Item
-            name="houseNo"
-            label="House Number"
-            rules={[{ required: true, message: 'Please enter house number' }]}
-          >
+          <Form.Item name="wereda" label="Woreda">
+            <Input />
+          </Form.Item>
+          <Form.Item name="kebele" label="Kebele">
+            <Input />
+          </Form.Item>
+          <Form.Item name="houseNo" label="House Number">
             <Input />
           </Form.Item>
           <Form.Item>

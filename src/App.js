@@ -49,6 +49,8 @@ import PlanPage from './pages/project/plan/PlanPage';
 import ProjectsPage from './pages/project/projects/ProjectsPage';
 import TenderPage from './pages/project/TenderPage';
 import ReportPage from './pages/report/ReportPage';
+import ProjectDetail from './pages/project/projects/ProjectDetail';
+import ReportAnalyticsPage from './pages/report/ReportAnalyticsPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -281,7 +283,7 @@ const App = () => {
       children: [
         {
           key: '101',
-          label: <Link to={'/dailyteport/list'}><FaClipboardList/> List</Link>,
+          label: <Link to={'/dailyreport/list'}><FaClipboardList/> List</Link>,
         },
         {
           key: '102',
@@ -458,10 +460,12 @@ const App = () => {
 
             <Route element={<Users />} path="/users/list" />
             
-            <Route element={<ReportPage />} path="/dailyteport/list" />
+            <Route element={<ReportPage />} path="/dailyreport/list" />
+            <Route element={<ReportAnalyticsPage />} path="/dailyreport/analytics" />
 
             <Route element={<CompanyPage />} path="/project/company" />
             <Route element={<PlanPage />} path="/project/plan" />
+            <Route element={<ProjectDetail />} path="/project/list/:id" />
             <Route element={<ProjectsPage />} path="/project/list" />
             <Route element={<TenderPage />} path="/project/tender" />
 

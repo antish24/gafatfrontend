@@ -4,13 +4,14 @@ import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import axios from 'axios';
 import { BACKENDURL } from '../../../helper/Urls';
 import { UploadOutlined } from '@ant-design/icons';
+import { FormatDay } from '../../../helper/FormateDay';
 
 const ProjectTable = ({ loading, datas, setProjectData }) => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [form] = Form.useForm();
   const navigate = useNavigate(); // Hook for navigation
-
+console.log(datas)
   // Handle edit button click
   const handleEdit = (record) => {
     setCurrentItem(record);
@@ -23,7 +24,7 @@ const ProjectTable = ({ loading, datas, setProjectData }) => {
 
   // Handle "Details" button click
   const handleDetails = (record) => {
-    navigate(`/project/${record.id}`); // Navigate to the project details page
+    navigate(`/project/list/${record.id}`); // Navigate to the project details page
   };
 
   // Handle update project form submission
@@ -67,29 +68,37 @@ const ProjectTable = ({ loading, datas, setProjectData }) => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Project Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'Site',
+      dataIndex: 'site',
+      key: 'site',
     },
     {
       title: 'Company',
       dataIndex: 'company',
       key: 'company',
-    },
-    {
-      title: 'Location',
-      dataIndex: 'location',
-      key: 'location',
+      render:r=>r?r.name:''
     },
     {
       title: 'Number of Security',
       dataIndex: 'noSecurity',
       key: 'noSecurity',
+    },
+    {
+      title: 'From',
+      dataIndex: 'startDate',
+      key: 'startDate',
+      render:r=>FormatDay(r)
+    },
+    {
+      title: 'To',
+      dataIndex: 'endDate',
+      key: 'endDate',
+      render:r=>FormatDay(r)
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
       title: 'Actions',
@@ -114,6 +123,9 @@ const ProjectTable = ({ loading, datas, setProjectData }) => {
         dataSource={datas}
         loading={loading}
         rowKey="id"
+        scroll={{
+          x: 500,
+        }}
         pagination={{ pageSize: 10 }}
       />
       <Modal

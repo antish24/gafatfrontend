@@ -30,13 +30,14 @@ const FiterTimeSheet = ({reload,loading}) => {
       const res = await axios.get (`${BACKENDURL}/project/all`);
       setLoadingSite (false);
       setsiteData (res.data.projects);
+      console.log(res.data.projects)
     } catch (error) {
       openNotification ('error', error.response.data.message, 3, 'red');
       setLoadingSite (false);
     }
   };
 
-  const siteOptions = siteData.length
+  const siteOptions = siteData
     ? siteData.map (d => ({
         value: d.site,
         label: d.site,

@@ -1,68 +1,64 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, Button, message, Upload, Select } from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Form, Input, Button, message, Upload, Select} from 'antd';
 import axios from 'axios';
-import { BACKENDURL } from '../../../helper/Urls';
-import { UploadOutlined } from '@ant-design/icons';
+import {BACKENDURL} from '../../../helper/Urls';
+import Dragger from 'antd/es/upload/Dragger';
+import {FaUpload} from 'react-icons/fa';
 
-const NewPlanForm = ({ reload, openModalFun }) => {
-  const [form] = Form.useForm();
-  const [companies, setCompanies] = useState([]);
+const NewPlanForm = ({reload, openModalFun}) => {
+  const [form] = Form.useForm ();
+  const [companies, setCompanies] = useState ([]);
+  const [companiesLoading, setCompaniesLoading] = useState (false);
+  const [newLoading, setNewLoading] = useState (false);
 
-  useEffect(() => {
+  useEffect (() => {
     const fetchCompanies = async () => {
+      setCompaniesLoading (true);
       try {
-        const response = await axios.get(`${BACKENDURL}/plan/companies`);
-        console.log('Companies fetched:', response.data); // Debugging line
-        setCompanies(response.data);
+        const response = await axios.get (`${BACKENDURL}/plan/companies`);
+        console.log ('Companies fetched:', response.data); // Debugging line
+        setCompaniesLoading (false);
+        setCompanies (response.data);
       } catch (error) {
-        console.error('Error fetching companies:', error); // Debugging line
-        message.error('Failed to fetch companies');
+        console.error ('Error fetching companies:', error); // Debugging line
+        setCompaniesLoading (false);
+        message.error ('Failed to fetch companies');
       }
     };
 
-    fetchCompanies();
+    fetchCompanies ();
   }, []);
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async values => {
+    setNewLoading (true);
     try {
-      const formData = new FormData();
-      Object.keys(values).forEach((key) => {
-        if (key === 'attachments' && values[key]) {
-          // Ensure values[key] is defined and is an array
-          values[key].fileList?.forEach((file) => {
-            formData.append('attachments', file.originFileObj);
-          });
-        } else {
-          formData.append(key, values[key]);
-        }
+      await axios.post (`${BACKENDURL}/plan/plan/add`, {
+        site: values.site,
+        noSecurity: values.securityNo,
+        price: values.pricePerSecurity,
+        attachments: values.attachments.name,
+        companyId: values.companyId,
       });
-  
-      await axios.post(`${BACKENDURL}/plan/plan/add`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      message.success('Plan added successfully');
-      openModalFun(false);
-      reload();
+      message.success ('Plan added successfully');
+      setNewLoading (false);
+      openModalFun (false);
+      reload ();
     } catch (error) {
-      console.error('Failed to add plan:', error);
-      message.error('Failed to add plan');
+      setNewLoading (false);
+      console.error ('Failed to add plan:', error);
+      message.error ('Failed to add plan');
     }
   };
-  
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={handleSubmit}
-    >
+    <Form form={form} layout="vertical" onFinish={handleSubmit}>
       <Form.Item
         name="companyId"
         label="Company"
-        rules={[{ required: true, message: 'Please select a company' }]}
+        rules={[{required: true, message: 'Please select a company'}]}
       >
-        <Select placeholder="Select a company">
-          {companies.map(company => (
+        <Select disabled={companiesLoading} loading={companiesLoading} placeholder="Select a company">
+          {companies.map (company => (
             <Select.Option key={company.id} value={company.id}>
               {company.name}
             </Select.Option>
@@ -70,35 +66,41 @@ const NewPlanForm = ({ reload, openModalFun }) => {
         </Select>
       </Form.Item>
       <Form.Item
+        name="site"
+        label="Site Name"
+        rules={[{required: true, message: 'Please enter site name'}]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
         name="securityNo"
-        label="Security No"
-        rules={[{ required: true, message: 'Please enter security number' }]}
+        label="Employee No"
+        rules={[{required: true, message: 'Please enter security number'}]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         name="pricePerSecurity"
         label="Price per Security"
-        rules={[{ required: true, message: 'Please enter price per security' }]}
+        rules={[{required: true, message: 'Please enter price per security'}]}
       >
         <Input type="number" />
       </Form.Item>
-      <Form.Item
-        name="attachments"
-        label="Attachments"
-        valuePropName="fileList"
-        getValueFromEvent={({ fileList }) => fileList}
-      >
-        <Upload
-          beforeUpload={() => false} // Prevent auto upload
-          listType="text"
-          maxCount={1}
-        >
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        </Upload>
+      <Form.Item name="attachments" label="Attachments">
+        <Dragger multiple={false} maxCount={1}>
+          <p className="ant-upload-drag-icon">
+            <FaUpload />
+          </p>
+
+          <p className="ant-upload-hint">
+            Support for a single
+            {' '}
+            file. Max size 3MB.
+          </p>
+        </Dragger>
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button disabled={newLoading} loading={newLoading} type="primary" htmlType="submit">
           Submit
         </Button>
       </Form.Item>

@@ -10,6 +10,8 @@ const NewCompanyForm = ({ reload, openModalFun }) => {
 
   const onFinish = async (values) => {
     const formData = new FormData();
+    message.success('Company Adding');
+
     for (const key in values) {
       formData.append(key, values[key]);
     }
@@ -55,8 +57,10 @@ const NewCompanyForm = ({ reload, openModalFun }) => {
         vat: '',
         city: '',
         subcity: '',
-        woreda: '',
+        wereda: '',
         houseNo: '',
+        phone: '',
+        email: '',
       }}
     >
       <Form.Item
@@ -65,7 +69,32 @@ const NewCompanyForm = ({ reload, openModalFun }) => {
         rules={[{ required: true, message: 'Please input the company name!' }]}
       >
         <Input />
+ 
       </Form.Item>
+
+      <Form.Item
+  name="phone"
+  label="Phone"
+  rules={[
+    { required: true, message: 'Please input the phone number!' },
+    { pattern: /^[0-9]+$/, message: 'Please input a valid phone number!' }
+  ]}
+>
+  <Input />
+</Form.Item>
+
+
+<Form.Item
+  name="email"
+  label="Email"
+  rules={[
+    { required: true, message: 'Please input the email!' },
+    { type: 'email', message: 'Please input a valid email!' }
+  ]}
+>
+  <Input />
+</Form.Item>
+
 
       <Form.Item
         name="location"

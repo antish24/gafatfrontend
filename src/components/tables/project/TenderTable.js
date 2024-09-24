@@ -68,7 +68,7 @@ const TenderTable = ({ datas, loading, reload }) => {
   };
   // Navigate to NewProjectForm with company ID
   const handleGoToNewProjectForm = () => {
-    navigate(`../project/CompanyPage`); // Change here
+    navigate(`../project/company`); // Change here
   };
 
   const columns = [

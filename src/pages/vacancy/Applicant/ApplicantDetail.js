@@ -6,6 +6,7 @@ import InterviewApplicantsForm from '../../../components/forms/vacancy/Interview
 import { BACKENDURL } from '../../../helper/Urls';
 import axios from 'axios';
 import HireEmployee from '../../../components/forms/employee/HireEmployee';
+import CheckEmployee from '../../../components/forms/employee/CheckEmployee';
 
 const ApplicantDetail = () => {
   const params=useParams()
@@ -52,7 +53,7 @@ const ApplicantDetail = () => {
       {loading?<Spin/>:
       <>
       <div style={{display:'flex',gap:'10px',justifyContent:'flex-end',marginBottom:'5px'}}>
-        <Button type='primary' danger>Check Status</Button>
+        <Button type='primary' danger onClick={() => {setModalOpen (true);setModalContentTitle('Check Status Form ');setModalContent(<CheckEmployee data={[]} reload={()=>getApplicantData()} openModalFun={(e)=>setModalOpen(e)}/>)}} >Check Status</Button>
         <Button disabled={!applicantData.interview|| applicantData.status!=='Pending'} onClick={() => {setModalOpen (true);setModalContentTitle('Interview Form '+applicantData.interview);setModalContent(<InterviewApplicantsForm id={applicantData.interview} reload={()=>getApplicantData()} openModalFun={(e)=>setModalOpen(e)} applicantId={applicantData.applicantId}/>)}} >Interview</Button>
         <Button disabled={!applicantData || applicantData.status==='Hired' || applicantData.status==='Fail'} type='primary' onClick={() => {setModalOpen (true);setModalContentTitle('Hire Applicant');setModalContent(<HireEmployee data={applicantData} reload={()=>getApplicantData()} openModalFun={(e)=>setModalOpen(e)}/>)}}>Hire</Button>
         <ModalForm

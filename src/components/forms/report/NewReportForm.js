@@ -14,36 +14,39 @@ const NewReportForm = ({ reload, openModalFun }) => {
     const handleFinish = async (values) => {
         setLoading(true);
 
-        const formData = new FormData();
-        formData.append('userId', values.userId);
-        formData.append('date', values.date.format('YYYY-MM-DD'));
-        formData.append('shiftTime', `${values.shift[0].format('HH:mm')} - ${values.shift[1].format('HH:mm')}`);
-        formData.append('location', values.location);
-        formData.append('report', values.report);
-        formData.append('description', values.description); // Add description to form data
-        formData.append('reportMeasurement', values.reportMeasurement); // Add report measurement to form data
-        formData.append('status', 'Pending'); // Default status
-        formData.append('attachments', 'default-path'); // Just to match your existing schema
-
         try {
-            await axios.post(`${BACKENDURL}/reports/reports`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            // Send the request to the backend
+            await axios.post(`${BACKENDURL}/reports/reports`, {
+                userId: values.userId,
+                date: values.date, // Format the date
+                shiftTime: `${values.shift[0].format('HH:mm')} - ${values.shift[1].format('HH:mm')}`, // Combine shift times
+                location: values.location,
+                report: values.report,
+                description: values.description,
+                reportMeasurement: values.reportMeasurement,
+                status: 'Pending', // Default status
+                attachments: fileList.map(file => file.name), // Extract file names or paths
             });
+        
             message.success('Report submitted successfully!');
-            reload();
-            openModalFun(false);
+            reload(); // Reload the data
+            openModalFun(false); // Close the modal
         } catch (error) {
             message.error('Failed to submit the report.');
-        } finally {
+            console.error(error);
+        }
+        finally {
             setLoading(false);
         }
     };
+    
 
     return (
         <Form onFinish={handleFinish}>
-            <Form.Item name="userId" label="User ID" rules={[{ required: true, message: 'Please input User ID!' }]}>
-                <Input />
-            </Form.Item>
+           <Form.Item name="userId" label="User ID" rules={[{ required: true, message: 'Please input User ID!' }]}>
+    <Input />
+</Form.Item>
+
             <Form.Item name="date" label="Date" rules={[{ required: true, message: 'Please select a date!' }]}>
                 <DatePicker />
             </Form.Item>

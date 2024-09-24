@@ -37,7 +37,7 @@ const FiterTimeSheetForm = ({reload,loading}) => {
     }
   };
 
-  const siteOptions = siteData.length
+  const siteOptions = siteData
     ? siteData.map (d => ({
         value: d.site,
         label: d.site,

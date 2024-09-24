@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Spin, Modal, Form, Input, message, Select } from 'antd';
+import { Table, Button, Spin, Modal, Form, Input, message, Select, Image } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Change here
 import { BACKENDURL } from '../../../helper/Urls';
@@ -7,7 +7,7 @@ import { BACKENDURL } from '../../../helper/Urls';
 
 const { Option } = Select;
 
-const PlanTable = () => {
+const PlanTable = ({loadingData,datas}) => {
   const [loading, setLoading] = useState(true);
   const [planData, setPlanData] = useState([]);
   const [companies, setCompanies] = useState([]);
@@ -60,26 +60,11 @@ const PlanTable = () => {
 
   // Navigate to NewProjectForm with company ID
   const handleGoToNewProjectForm = (companyId) => {
-    navigate(`../project/ProjectsPage`); // Change here
+    navigate(`../project/list`); // Change here
   };
 
   // Table columns definition
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: 'Security No',
-      dataIndex: 'securityNo',
-      key: 'securityNo',
-    },
-    {
-      title: 'Price per Security',
-      dataIndex: 'pricePerSecurity',
-      key: 'pricePerSecurity',
-    },
     {
       title: 'Company',
       dataIndex: 'companyId',
@@ -88,6 +73,27 @@ const PlanTable = () => {
         const company = companies.find((comp) => comp.id === companyId);
         return company ? company.name : 'Unknown';
       },
+    },
+    {
+      title: 'Site',
+      dataIndex: 'site',
+      key: 'site',
+    },
+    {
+      title: 'Employee No',
+      dataIndex: 'noSecurity',
+      key: 'noSecurity',
+    },
+    {
+      title: 'Price per Employee',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: 'Attachments',
+      dataIndex: 'attachments',
+      key: 'attachments',
+      render:r=><Image style={{width:"100px",height:"40px"}}/>
     },
     {
       title: 'Actions',
@@ -116,8 +122,11 @@ const PlanTable = () => {
       ) : (
         <Table
           columns={columns}
-          dataSource={planData}
-          rowKey="id"
+          dataSource={datas}
+          loading={loadingData}
+          rowKey="id"scroll={{
+            x: 500,
+          }}
           pagination={{ pageSize: 10 }}
         />
       )}
@@ -136,14 +145,14 @@ const PlanTable = () => {
         >
           <Form.Item
             name="securityNo"
-            label="Security No"
+            label="Employee No"
             rules={[{ required: true, message: 'Please enter security number' }]}
           >
-            <Input />
+            <Input type="number" />
           </Form.Item>
           <Form.Item
             name="pricePerSecurity"
-            label="Price per Security"
+            label="Price per Employee"
             rules={[{ required: true, message: 'Please enter price per security' }]}
           >
             <Input type="number" />

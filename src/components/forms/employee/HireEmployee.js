@@ -202,7 +202,6 @@ const HireEmployee = ({data,openModalFun, reload}) => {
           type: 'Input',
           width: '31%',
           req: 'number',
-          notRequired: true,
         },
         {lable: 'Start Date', name: 'startDate', type: 'Date', width: '31%'},
         {

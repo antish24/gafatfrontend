@@ -11,8 +11,9 @@ const PlanPage = () => {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const getPlanData = useCallback(async () => {
+  const getPlanData = async() => {
     setLoading(true);
+    setPlanData([])
     try {
       const res = await axios.get(`${BACKENDURL}/plan/plans`); // Adjust URL if needed
       console.log('Fetched Plan Data:', res.data); // Check API response
@@ -22,11 +23,11 @@ const PlanPage = () => {
       console.error('Failed to fetch plan data:', error);
       setLoading(false);
     }
-  }, []);
+  }
 
   useEffect(() => {
     getPlanData();
-  }, [getPlanData]);
+  }, []);
 
   return (
     <div>
@@ -44,7 +45,7 @@ const PlanPage = () => {
           content={<NewPlanForm reload={getPlanData} openModalFun={setModalOpen} />}
         />
       </div>
-      <PlanTable loading={loading} datas={planData} />
+      <PlanTable loadingData={loading} datas={planData} />
     </div>
   );
 };

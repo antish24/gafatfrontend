@@ -1,9 +1,11 @@
 import {Button, Image, Tabs, Tooltip} from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import EmployeeInfoTab from '../../../components/tabs/employee/EmployeeInfoTab';
 import {FaBuilding, FaSchool, FaUserAlt} from 'react-icons/fa';
 import {FaHeartPulse, FaUserGear, FaUserLock} from 'react-icons/fa6';
 import { MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
+import ModalForm from '../../../modal/Modal';
+import ReportEmployee from '../../../components/forms/employee/ReportEmployee';
 
 const EmployeeDetail = () => {
     const EmployeeInfoData = [
@@ -177,12 +179,21 @@ const EmployeeDetail = () => {
       children: <EmployeeInfoTab/>,
     },
   ];
+
+  const [modalOpen, setModalOpen] = useState (false);
+
   return (
     <div>
+      <ModalForm
+          open={modalOpen}
+          close={() => setModalOpen (false)}
+          title={'Report Employee Form'}
+          content={<ReportEmployee reload={()=>console.log('fun')} openModalFun={(e) => setModalOpen(e)}/>}
+        />
       <div style={{display:'flex',gap:'10px',justifyContent:'flex-end'}}>
         <Tooltip title='Print'><Button><MdPrint/>Print</Button></Tooltip>
         <Tooltip title='Status'><Button type='primary'><FaUserLock/>Status</Button></Tooltip>
-        <Tooltip title='Report'><Button danger><MdReport color='red'/>Report</Button></Tooltip>
+        <Tooltip title='Report'><Button onClick={()=>setModalOpen(true)} danger><MdReport color='red'/>Report</Button></Tooltip>
       </div>
       <Tabs defaultActiveKey="1" items={tabs} style={{width: '100%'}} />
     </div>
