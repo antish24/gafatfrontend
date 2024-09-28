@@ -29,7 +29,7 @@ const NewLeaveApplicationForm = ({openModalFun, reload}) => {
 
   const employeeOptions = employeeData.length
   ? employeeData.map(emp => ({
-    value: emp.id,
+    value: emp.empId,
     label: emp.IDNO +"-"+emp.fName+" "+emp.mName+" "+(emp.lName?emp.lName:"") 
   }))
   : [];

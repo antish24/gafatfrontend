@@ -1,11 +1,13 @@
-import {Button, Image, Tabs, Tooltip} from 'antd';
+import {Button, Image, Tabs, Tag, Tooltip} from 'antd';
 import React, { useState } from 'react';
 import EmployeeInfoTab from '../../../components/tabs/employee/EmployeeInfoTab';
 import {FaBuilding, FaSchool, FaUserAlt} from 'react-icons/fa';
 import {FaHeartPulse, FaUserGear, FaUserLock} from 'react-icons/fa6';
-import { MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
+import { MdExitToApp, MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
+import { GiExitDoor} from 'react-icons/gi';
 import ModalForm from '../../../modal/Modal';
 import ReportEmployee from '../../../components/forms/employee/ReportEmployee';
+import TextArea from 'antd/es/input/TextArea';
 
 const EmployeeDetail = () => {
     const EmployeeInfoData = [
@@ -62,6 +64,18 @@ const EmployeeDetail = () => {
         {key: '7',label: 'Wereda',children:"01"},
         {key: '8',label: 'Kebele',children:"13"},
         {key: '9',label: 'House No',children:"New"},
+      ];
+
+
+      const TerminationData = [
+        {key: '1',label: 'Termination Date',children:'05 oct 2025'},
+        {key: '9',label: 'Start Date',children:'01 oct 2025'},
+        {key: '7',label: 'Clearance ',children:<Tag color='warning'>Pending</Tag>},
+        {key: '2',label: 'Reason for Termination',children:<TextArea></TextArea>,span:3},
+        {key: '3',label: 'Exit Interview',children:<TextArea></TextArea>,span:3},
+        {key: '4',label: 'Employee Acknowledgment',children:<TextArea></TextArea>,span:3},
+        {key: '8',label: 'Employee Letter',children:<TextArea></TextArea>,span:3},
+        {key: '5',label: 'Confidentiality and Non-Disclosure Agreements',children:<TextArea></TextArea>,span:3},
       ];
 
 
@@ -164,6 +178,22 @@ const EmployeeDetail = () => {
     },
     {
       key: '7',
+      label: (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '3px',
+          }}
+        >
+          <GiExitDoor size={20} />Termination 
+        </div>
+      ),
+      children: <EmployeeInfoTab data={TerminationData}/>,
+    },
+    {
+      key: '8',
       label: (
         <div
           style={{

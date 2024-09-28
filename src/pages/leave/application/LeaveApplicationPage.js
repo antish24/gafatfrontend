@@ -49,7 +49,7 @@ const LeaveApplicationPage = () => {
         />
         <div style={{width:'100%'}}>
             <div style={{display:'flex',gap:'5px',marginBottom:'5px'}}>
-            <Button type='primary' onClick={HandleType}>Add Leave Type</Button>
+            <Button type='primary' onClick={HandleType}>Add Leave Application</Button>
             <Button onClick={getLeaveApplicationData}>Reload</Button>
             </div>
             <LeaveApplicationTable loading={loading} reload={getLeaveApplicationData} applicationData={applicationData}/>

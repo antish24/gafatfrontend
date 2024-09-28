@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Link, Route, Routes} from 'react-router-dom';
 import {Layout,theme,Button, Menu,} from 'antd';
 
-import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
+import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
 import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
@@ -51,6 +51,8 @@ import TenderPage from './pages/project/TenderPage';
 import ReportPage from './pages/report/ReportPage';
 import ProjectDetail from './pages/project/projects/ProjectDetail';
 import ReportAnalyticsPage from './pages/report/ReportAnalyticsPage';
+import DisciplinePage from './pages/employee/discipline/DisciplinePage';
+import DisciplineDetail from './pages/employee/discipline/DisciplineDetail';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -129,6 +131,10 @@ const App = () => {
               label: <Link to={'/employee/performace/list'}><FaWpforms/> Performace</Link>,
             },
           ],
+        },
+        {
+          key: '44',
+          label: <Link to={'/discipline/list'}><FaFileSignature/> Discipline</Link>,
         },
       ],
     },
@@ -216,20 +222,20 @@ const App = () => {
         {
           key: '82',
           label: <><FaUserMinus/> Attendance</>,
-          children: [
-            {
-              key: '821',
-              label: <Link to={'/timesheet/form'}><FaClipboardList/> Components</Link>,
-            },
-            {
-              key: '822',
-              label: <Link to={'/timesheet/list'}><MdAccountBalance/> Structure</Link>,
-            },
-            {
-              key: '823',
-              label: <Link to={'/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
-            },
-          ],
+          // children: [
+          //   {
+          //     key: '821',
+          //     label: <Link to={'/timesheet/form'}><FaClipboardList/> Components</Link>,
+          //   },
+          //   {
+          //     key: '822',
+          //     label: <Link to={'/timesheet/list'}><MdAccountBalance/> Structure</Link>,
+          //   },
+          //   {
+          //     key: '823',
+          //     label: <Link to={'/timesheet/list'}><MdAccountBalance/> Assignment</Link>,
+          //   },
+          // ],
         },
       ],
     },
@@ -449,6 +455,8 @@ const App = () => {
             <Route element={<EmployeePage />} path="/employee/list" />
             <Route element={<EmployeeDetail />} path="/employee/detail/:id" />
             <Route element={<AgreementPage />} path="/employee/agreement" />
+            <Route element={<DisciplinePage />} path="/discipline/list" />
+            <Route element={<DisciplineDetail />} path="/discipline/detail/:id" />
 
             <Route element={<ManageLeavePage />} path="/leave/leaves" />
             <Route element={<LeaveApplicationPage />} path="/leave/application" />
