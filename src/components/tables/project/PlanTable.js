@@ -26,7 +26,7 @@ const PlanTable = ({loadingData,datas}) => {
           axios.get(`${BACKENDURL}/company/all`)
         ]);
         setPlanData(plansResponse.data);
-        setCompanies(companiesResponse.data);
+        setCompanies(companiesResponse.data.companies);
       } catch (error) {
         message.error('Failed to fetch data');
       } finally {

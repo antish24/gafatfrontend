@@ -1,26 +1,14 @@
 import React, {useContext, useRef, useState} from 'react';
 import {
-  Badge,
   Button,
-  Divider,
   Input,
-  Popconfirm,
   Space,
   Table,
   Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock, FaUsers} from 'react-icons/fa6';
-import {MdClose, MdDelete, MdEdit, MdViewAgenda} from 'react-icons/md';
 import {FormatDateTime} from '../../../helper/FormatDate';
-import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
 import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
-import axios from 'axios';
-import {CSVLink} from 'react-csv';
-import {IoMdEye, IoMdEyeOff} from 'react-icons/io';
-import UpdateVancayForm from '../../forms/vacancy/UpdateVacancyForm';
 import {Link} from 'react-router-dom';
 import { FormatDay } from '../../../helper/FormateDay';
 

@@ -1,175 +1,260 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, message, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import React, {useState} from 'react';
+import {Form, Input, Button, message, Upload} from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
 import axios from 'axios';
-import { BACKENDURL } from '../../../helper/Urls'; // Adjust the URL as needed
+import {BACKENDURL} from '../../../helper/Urls'; // Adjust the URL as needed
+import {FaUpload} from 'react-icons/fa6';
+import Dragger from 'antd/es/upload/Dragger';
 
-const NewCompanyForm = ({ reload, openModalFun }) => {
-  const [form] = Form.useForm();
-  const [fileList, setFileList] = useState([]); // Manage uploaded files
+const NewCompanyForm = ({reload, openModalFun}) => {
+  const [form] = Form.useForm ();
+  const [loading, setLoading] = useState (false);
+  const [licensePic, setLicensePic] = useState ('');
+  const [profilePic, setProfilePic] = useState ('');
 
-  const onFinish = async (values) => {
-    const formData = new FormData();
-    message.success('Company Adding');
+  const onFinish = async values => {
+    setLoading (true);
 
-    for (const key in values) {
-      formData.append(key, values[key]);
-    }
-    
-    // Check if a file is uploaded for license and append it to formData
-    if (fileList.length > 0) {
-      formData.append('license', fileList[0].originFileObj);
-    } else {
-      formData.append('license', null); // Pass null if no file is uploaded
-    }
-  
     try {
-      await axios.post(`${BACKENDURL}/company/add`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      await axios.post (`${BACKENDURL}/company/add`, {
+        name:values.name,
+        TIN:values.TIN,
+        VAT:values.VAT,
+        license:licensePic,
+        profile:profilePic,
+        city:values.city,
+        subCity:values.subCity,
+        wereda:values.wereda,
+        houseNo:values.kebele,
+        phone:values.phone,
+        email:values.email,
+        kebele:values.kebele,
       });
-      message.success('Company added successfully');
-      form.resetFields();
-      reload(); // Reload the data after adding a new company
-      openModalFun(false); // Close the modal
-      setFileList([]); // Reset the file list
+      message.success ('Company added successfully');
+      setLoading (false);
+      form.resetFields ();
+      reload (); // Reload the data after adding a new company
+      openModalFun (false); // Close the modal
     } catch (error) {
-      message.error('Failed to add company');
+      setLoading (false);
+      message.error ('Failed to add company');
     }
-  };
-  
-
-  // Handle file changes for Upload component
-  const handleFileChange = ({ fileList }) => {
-    setFileList(fileList); // Update file list
   };
 
   return (
-    <Form
-      form={form}
-      layout="vertical"
-      onFinish={onFinish}
-      initialValues={{
-        name: '',
-        location: '',
-        tin: '',
-        vat: '',
-        city: '',
-        subcity: '',
-        wereda: '',
-        houseNo: '',
-        phone: '',
-        email: '',
-      }}
-    >
-      <Form.Item
-        name="name"
-        label="Company Name"
-        rules={[{ required: true, message: 'Please input the company name!' }]}
+    <Form layout="vertical" onFinish={onFinish} form={form}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+        }}
       >
-        <Input />
- 
-      </Form.Item>
-
-      <Form.Item
-  name="phone"
-  label="Phone"
-  rules={[
-    { required: true, message: 'Please input the phone number!' },
-    { pattern: /^[0-9]+$/, message: 'Please input a valid phone number!' }
-  ]}
->
-  <Input />
-</Form.Item>
-
-
-<Form.Item
-  name="email"
-  label="Email"
-  rules={[
-    { required: true, message: 'Please input the email!' },
-    { type: 'email', message: 'Please input a valid email!' }
-  ]}
->
-  <Input />
-</Form.Item>
-
-
-      <Form.Item
-        name="location"
-        label="Location"
-        rules={[{ required: true, message: 'Please input the location!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="tin"
-        label="TIN"
-        rules={[{ required: true, message: 'Please input the TIN!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="vat"
-        label="VAT"
-        rules={[{ required: true, message: 'Please input the VAT!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="city"
-        label="City"
-        rules={[{ required: true, message: 'Please input the city!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="subcity"
-        label="Subcity"
-        rules={[{ required: true, message: 'Please input the subcity!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="woreda"
-        label="Woreda"
-        rules={[{ required: true, message: 'Please input the woreda!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="houseNo"
-        label="House Number"
-        rules={[{ required: true, message: 'Please input the house number!' }]}
-      >
-        <Input />
-      </Form.Item>
-
-      <Form.Item
-        name="license"
-        label="Company License"
-        valuePropName="file"
-        getValueFromEvent={(e) => (Array.isArray(e) ? e[0] : e && e.fileList[0])}
-      >
-        <Upload
-          beforeUpload={() => false} // Prevents auto-upload
-          fileList={fileList} // Show uploaded file
-          onChange={handleFileChange} // Handle file change
+        <Form.Item
+          style={{margin: '5px', width: '100%'}}
+          label="Company Name"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Name',
+            },
+          ]}
+          name="name"
         >
-          <Button icon={<UploadOutlined />}>Click to Upload License (optional)</Button>
-        </Upload>
-      </Form.Item>
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="Company TIN"
+          rules={[
+            {
+              required: true,
+              message: 'Please input TIN',
+            },
+          ]}
+          name="TIN"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="VAT"
+          rules={[
+            {
+              required: true,
+              message: 'Please input VAT',
+            },
+          ]}
+          name="VAT"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="Phone"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Phone',
+            },
+          ]}
+          name="phone"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="Email"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Email',
+              type: 'email',
+            },
+          ]}
+          name="email"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '59%'}}
+          label="City"
+          rules={[
+            {
+              required: true,
+              message: 'Please input City',
+            },
+          ]}
+          name="city"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '40%'}}
+          label="SubCity"
+          rules={[
+            {
+              required: true,
+              message: 'Please input SubCity',
+            },
+          ]}
+          name="subCity"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '33%'}}
+          label="Wereda"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Wereda',
+            },
+          ]}
+          name="wereda"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '33%'}}
+          label="Kebele"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Kebele',
+            },
+          ]}
+          name="kebele"
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '33%'}}
+          label="House No"
+          rules={[
+            {
+              required: true,
+              message: 'Please input houseNo',
+            },
+          ]}
+          name="houseNo"
+        >
+          <Input />
+        </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="license"
+          rules={[
+            {
+              required: true,
+              message: 'Please input license',
+            },
+          ]}
+          name="license"
+        >
+          <Dragger
+            name="file"
+            action={`${BACKENDURL}/upload/new`}
+            accept="image/*"
+            onChange={e => {
+              if (e.file.status === 'done')
+                setLicensePic (e.file.name);
+            }}
+            multiple={false}
+            maxCount={1}
+          >
+            <div className="ant-upload-drag-icon">
+              <FaUpload />
+            </div>
+            <div className="ant-upload-hint">
+              Support for a single Image file. Max size 3MB.
+            </div>
+          </Dragger>
+        </Form.Item>
+
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="Profile"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Profile',
+            },
+          ]}
+          name="profile"
+        >
+          <Dragger
+            name="file"
+            action={`${BACKENDURL}/upload/new`}
+            accept="image/*"
+            onChange={e => {
+              if (e.file.status === 'done')
+                setProfilePic (e.file.name);
+            }}
+            multiple={false}
+            maxCount={1}
+          >
+            <div className="ant-upload-drag-icon">
+              <FaUpload />
+            </div>
+            <div className="ant-upload-hint">
+              Support for a single Image file. Max size 3MB.
+            </div>
+          </Dragger>
+        </Form.Item>
+
+      </div>
+      <Form.Item
+        style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}
+      >
+        <Button
+          type="primary"
+          htmlType="submit"
+          disabled={loading}
+          loading={loading}
+        >
+          Publish
         </Button>
       </Form.Item>
     </Form>

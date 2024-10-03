@@ -1,20 +1,47 @@
 import {Button, Image, Tabs, Tag, Tooltip} from 'antd';
-import React, { useState } from 'react';
+import React, { useState ,useContext,useEffect} from 'react';
 import EmployeeInfoTab from '../../../components/tabs/employee/EmployeeInfoTab';
 import {FaBuilding, FaSchool, FaUserAlt} from 'react-icons/fa';
 import {FaHeartPulse, FaUserGear, FaUserLock} from 'react-icons/fa6';
-import { MdExitToApp, MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
+import { MdList, MdPrint, MdReport, MdWorkHistory } from 'react-icons/md';
 import { GiExitDoor} from 'react-icons/gi';
 import ModalForm from '../../../modal/Modal';
 import ReportEmployee from '../../../components/forms/employee/ReportEmployee';
 import TextArea from 'antd/es/input/TextArea';
+import { BACKENDURL } from '../../../helper/Urls';
+import { AlertContext } from '../../../context/AlertContext';
+import axios from 'axios'
+import { useParams } from 'react-router-dom';
 
 const EmployeeDetail = () => {
+  const {openNotification} = useContext (AlertContext);
+  const params=useParams()
+  const [personalInfo,setPersonalInfo]=useState([])
+  const [loadingPersonalInfo,setLoadingPersonalInfo]=useState(false)
+
+  const getPersonalInfo=async()=>{
+    setLoadingPersonalInfo(true)
+    try {
+      const res = await axios.get(`${BACKENDURL}/employee/detail/personalinfo?id=${params.id}`);
+      setLoadingPersonalInfo (false);
+      console.log(res.data.employee)
+      setPersonalInfo(res.data.employee)
+    } catch (error) {
+      openNotification('error', error.response.data.message, 3, 'red');
+      setLoadingPersonalInfo (false);
+    }
+  }
+
+  useEffect(()=>{
+    getPersonalInfo()
+  },[])
+
+ 
     const EmployeeInfoData = [
-        {key: '1',label: 'Profile',children:<Image alt='profile'/>},
-        {key: '2',label: 'ID Front',children:<Image alt='ID Front'/>},
-        {key: '3',label: 'ID Back',children:<Image alt='ID Back'/>},
-        {key: '4',label: 'Full Name',children:'Abebe Balch Mulu'},
+        {key: '1',label: 'Profile',children:<Image src={`${BACKENDURL}/uploads/${personalInfo.profile}`} alt='profile' width={30} height={30}/>},
+        {key: '2',label: 'ID Front',children:<Image src={`${BACKENDURL}/uploads/${personalInfo.IDFront}`} alt='ID Front' width={30} height={30} />},
+        {key: '3',label: 'ID Back',children:<Image src={`${BACKENDURL}/uploads/${personalInfo.IDBack}`} alt='ID Back' width={30} height={30} />},
+        {key: '4',label: 'Full Name',children:personalInfo.fName},
         {key: '5',label: 'Date of Birth',children:'02 jun 1889'},
         {key: '6',label: 'Gender',children:'Male'},
         {key: '7',label: 'Nationality',children:"Ethiopian"},
@@ -35,7 +62,7 @@ const EmployeeDetail = () => {
         {key: '4',label: 'Shift',children:'Normal'},
         {key: '5',label: 'Start Date',children:'02 jun 1889'},
         {key: '6',label: 'Salary',children:'2000'},
-        {key: '7',label: 'Agreement',children:"File",span:2},
+        {key: '7',label: 'Agreement',children:<a target='_blank' href={`${BACKENDURL}/uploads/bulletproof flyer.pdf`} alt='profile'>View</a>,span:2},
         {key: '8',label: 'Bank Name',children:"CBE"},
         {key: '9',label: 'Account Number',children:"1000152677889"},
         {key: '10',label: 'Tin',children:"00457281"},
@@ -50,13 +77,13 @@ const EmployeeDetail = () => {
         {key: '8',label: 'EmergencyContact Relation',children:'Father'},
         {key: '5',label: 'Family',children:'3'},
         {key: '4',label: 'Blood Type',children:'O+'},
-        {key: '9',label: 'Medical Report',children:"1000152677889"},
-        {key: '10',label: 'FingerPrint Report',children:"00457281"},
+        {key: '9',label: 'Medical Report',children:<a target='_blank' href={`${BACKENDURL}/uploads/bulletproof flyer.pdf`} alt='profile'>View</a>},
+        {key: '10',label: 'FingerPrint Report',children:<Image src={`${BACKENDURL}/uploads/${personalInfo.profile}`} alt='profile' width={30} height={30}/>},
       ];
 
       const SuretyInfoData = [
         {key: '1',label: 'Type',children:'Letter'},
-        {key: '2',label: 'Attachment',children:"",span:2},
+        {key: '2',label: 'Attachment',span:2,children:<Image src={`${BACKENDURL}/uploads/${personalInfo.profile}`} alt='profile' width={30} height={30}/>},
         {key: '3',label: 'Full Name',children:'Telahun Wase Mula'},
         {key: '4',label: 'Phone',children:'0911664477'},
         {key: '5',label: 'City',children:"Addis Abeba"},
@@ -75,7 +102,7 @@ const EmployeeDetail = () => {
         {key: '3',label: 'Exit Interview',children:<TextArea></TextArea>,span:3},
         {key: '4',label: 'Employee Acknowledgment',children:<TextArea></TextArea>,span:3},
         {key: '8',label: 'Employee Letter',children:<TextArea></TextArea>,span:3},
-        {key: '5',label: 'Confidentiality and Non-Disclosure Agreements',children:<TextArea></TextArea>,span:3},
+        {key: '5',label: 'Confidentiality and Non-Disclosure Agreements',children:<a target='_blank' href={`${BACKENDURL}/uploads/bulletproof flyer.pdf`} alt='profile'>View</a>,span:3},
       ];
 
 

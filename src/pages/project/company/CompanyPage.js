@@ -1,52 +1,56 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react'
+import { AlertContext } from '../../../context/AlertContext';
 import axios from 'axios';
+import ModalForm from '../../../modal/Modal';
 import { Button } from 'antd';
 import { BACKENDURL } from '../../../helper/Urls';
-import ModalForm from '../../../modal/Modal';
-import CompanyTable from '../../../components/tables/project/CompanyTable';
 import NewCompanyForm from '../../../components/forms/project/NewCompanyForm';
+import CompanyTable from '../../../components/tables/project/CompanyTable';
 
 const CompanyPage = () => {
-  const [companyData, setCompanyData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+  const {openNotification} = useContext(AlertContext);
 
-  const getCompanyData = useCallback(async () => {
-    setLoading(true);
+  const [companyData,setCompanyData]=useState([])
+  const [loading,setLoading]=useState(false)
+
+  const getCompanies=async()=>{
+    setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/company/all`); // Adjust URL if needed
-      console.log('Fetched Data:', res.data); // Check API response
-      setCompanyData(res.data.data || res.data); // Adjust based on API response structure
-      setLoading(false);
+      const res = await axios.get(`${BACKENDURL}/company/all`);
+      setLoading (false);
+      setCompanyData(res.data.companies)
     } catch (error) {
-      console.error('Failed to fetch company data:', error);
-      setLoading(false);
+      openNotification('error', error.response.data.message, 3, 'red');
+      setLoading (false);
     }
-  }, []);
+  }
 
-  useEffect(() => {
-    getCompanyData();
-  }, [getCompanyData]);
+  useEffect(()=>{
+    getCompanies()
+  },[])
+
+
+  const [modalOpen, setModalOpen] = useState (false);
 
   return (
     <div>
-      <div style={{ height: '50px', display: 'flex', gap: '10px' }}>
-        <Button type="primary" onClick={() => setModalOpen(true)}>
+      <div style={{height: '50px',display:'flex',gap:'10px'}}>
+        <Button type="primary" onClick={() => setModalOpen (true)}>
           Add New Company
         </Button>
-        <Button type="default" onClick={getCompanyData} loading={loading}>
+        <Button type='default' onClick={getCompanies} loading={loading}>
           Reload
         </Button>
         <ModalForm
           open={modalOpen}
-          close={() => setModalOpen(false)}
+          close={() => setModalOpen (false)}
           title={'New Company Form'}
-          content={<NewCompanyForm reload={getCompanyData} openModalFun={setModalOpen} />}
+          content={<NewCompanyForm reload={()=>getCompanies()} openModalFun={(e) => setModalOpen (e)}/>}
         />
       </div>
-      <CompanyTable loading={loading} datas={companyData} />
+      <CompanyTable loading={loading} reload={()=>getCompanies()} companyData={companyData}/>
     </div>
-  );
-};
+  )
+}
 
-export default CompanyPage;
+export default CompanyPage

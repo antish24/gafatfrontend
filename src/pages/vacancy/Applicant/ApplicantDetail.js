@@ -7,6 +7,7 @@ import { BACKENDURL } from '../../../helper/Urls';
 import axios from 'axios';
 import HireEmployee from '../../../components/forms/employee/HireEmployee';
 import CheckEmployee from '../../../components/forms/employee/CheckEmployee';
+import { FormatDay } from '../../../helper/FormateDay';
 
 const ApplicantDetail = () => {
   const params=useParams()
@@ -34,7 +35,7 @@ const ApplicantDetail = () => {
 
   const EmployeeInfoData = [
     {key: '4', label: 'Full Name', children: applicantData.name},
-    {key: '5', label: 'Date of Birth', children:applicantData.dateOfBirth},
+    {key: '5', label: 'Date of Birth', children:FormatDay(applicantData.dateOfBirth)},
     {key: '6', label: 'Gender', children: applicantData.sex},
     {key: '8', label: 'Nationality', children:applicantData.nationality},
     {key: '12', label: 'Email', children:applicantData.email},

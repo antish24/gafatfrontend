@@ -123,6 +123,25 @@ const InterviewTable = ({interviewData, loading, reload}) => {
       key: 'title',
     },
     {
+      title: 'Branch',
+      dataIndex: 'position',
+      width: '200px',
+      render:r=>r?r.department.branch.name:'null'
+    },
+    {
+      title: 'Department',
+      dataIndex: 'position',
+      width: '200px',
+      render:r=>r?r.department.name:'null'
+    },
+    {
+      title: 'Position',
+      dataIndex: 'position',
+      ...getColumnSearchProps ('position'),
+      width: '200px',
+      render:r=>r?r.name:'null'
+    },
+    {
       title: 'Date',
       dataIndex: 'createdAt',
       width: '150px',
@@ -159,16 +178,6 @@ const InterviewTable = ({interviewData, loading, reload}) => {
           >
             <MdEdit />
           </Button>
-          <Button style={{padding:'0',margin:'0'}}
-            type="text"
-          >
-            <IoMdEyeOff/>
-          </Button>
-            <Link
-              to={`/vacancy/interview/usedby`}
-            >
-              <LuFileStack />
-            </Link>
         </Space>
       ),
     },
@@ -176,7 +185,6 @@ const InterviewTable = ({interviewData, loading, reload}) => {
 
   return (
     <div>
-      <CSVLink data={interviewData}>Download me</CSVLink>
       <ModalForm
         open={modalOpen}
         close={() => setModalOpen (false)}

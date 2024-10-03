@@ -5,7 +5,7 @@ import { FaUserLock } from 'react-icons/fa6';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { FormatDateTime } from '../../helper/FormatDate';
 import ModalForm from '../../modal/Modal';
-import UpdateUserForm from '../forms/UpdateUserForm';
+import UpdateUserForm from '../forms/users/UpdateUserForm';
 import { AlertContext } from '../../context/AlertContext';
 import { BACKENDURL } from '../../helper/Urls';
 import axios from 'axios';

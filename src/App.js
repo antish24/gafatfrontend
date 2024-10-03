@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { Link, Route, Routes} from 'react-router-dom';
-import {Layout,theme,Button, Menu,} from 'antd';
+import { Link, Route, Routes, useLocation} from 'react-router-dom';
+import {Layout,theme,Breadcrumb,Button, Menu, Tooltip, Dropdown, Badge, Tabs, Spin,} from 'antd';
 
 import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
-import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage } from 'react-icons/md';
+import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage, MdDocumentScanner, MdPictureAsPdf, MdMessage } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
 import Auth from './pages/Auth';
@@ -16,7 +16,7 @@ import logo from './assets/imgs/image.png'
 import { SiAwsorganizations, SiOnlyoffice } from 'react-icons/si';
 import { BsCalendarDate } from 'react-icons/bs';
 import { GrMoney } from 'react-icons/gr';
-import { IoTimeOutline } from 'react-icons/io5';
+import { IoNotificationsCircle, IoSettingsOutline, IoTimeOutline } from 'react-icons/io5';
 import { HiOutlineDocumentReport } from 'react-icons/hi';
 import VacancyPage from './pages/vacancy/VacancyPage';
 import BranchPage from './pages/organzation/branch/BranchPage';
@@ -53,6 +53,13 @@ import ProjectDetail from './pages/project/projects/ProjectDetail';
 import ReportAnalyticsPage from './pages/report/ReportAnalyticsPage';
 import DisciplinePage from './pages/employee/discipline/DisciplinePage';
 import DisciplineDetail from './pages/employee/discipline/DisciplineDetail';
+import BlacklistDetail from './pages/employee/discipline/BlacklistDetail';
+import BlacklistPage from './pages/employee/discipline/BlacklistPage';
+import VacancyReport from './pages/vacancy/report/VacancyReport';
+import NewUserForm from './components/forms/users/NewUserForm';
+import ModalForm from './modal/Modal';
+import NewMessageForm from './components/forms/users/NewMessageForm';
+import ChangePasswordForm from './components/forms/users/ChangePasswordForm';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -134,7 +141,17 @@ const App = () => {
         },
         {
           key: '44',
-          label: <Link to={'/discipline/list'}><FaFileSignature/> Discipline</Link>,
+          label: <><FaFileSignature/> Discipline</>,
+          children: [
+            {
+              key: '441',
+              label: <Link to={'/discipline/list'}><MdSettings/> List</Link>,
+            },
+            {
+              key: '442',
+              label: <Link to={'/blacklist/list'}><FaWpforms/> Blacklist</Link>,
+            },
+          ],
         },
       ],
     },
@@ -158,6 +175,25 @@ const App = () => {
         {
           key: '54',
           label: <Link to={'/project/tender'}><FaUserCheck/> Tender</Link>,
+        },
+      ],
+    },
+    {
+      key: '15',
+      label: 'Manage Doc',
+      icon: <MdDocumentScanner size={20} />,
+      children: [
+        {
+          key: '151',
+          label: <Link to={'/doc/type'}><MdPictureAsPdf/> Type</Link>,
+        },
+        {
+          key: '152',
+          label: <Link to={'/doc/list'}><FaClipboardList/> List</Link>,
+        },
+        {
+          key: '153',
+          label: <Link to={'/doc/report'}><HiOutlineDocumentReport/> Report</Link>,
         },
       ],
     },
@@ -370,8 +406,97 @@ const App = () => {
     }
   };
 
+  const pathName=useLocation().pathname
+  const paths =pathName.split ('/').filter (path => path);
+
+  const [openValue, setOpenValue] = useState (false);
+  const [openTitle, setTitle] = useState (false);
+  const [openContent, setOpenContent] = useState ();
+
+  const tabs = [
+    {
+      key: '1',
+      label: 'Alert',
+      children: <span>Alert</span>,
+    },
+    {
+      key: '2',
+      label: 'Inbox',
+      children: <span>Inbox</span>,
+    },
+    {
+      key: '3',
+      label: 'Sent',
+      children: <span>Sent</span>,
+    },
+    {
+      key: '4',
+      label: 'Draft',
+      children: <span>Draft</span>,
+    },
+  ]
+
+  const items1 = [
+    {
+      key: '1',
+      label: (
+        <span style={{width:'100%',display:'flex',alignItems:'center'}}
+          onClick={() => {
+            setOpenValue (true);
+            setOpenContent (<NewUserForm />);
+            setTitle ('Profile');
+          }}
+        >
+          Profile
+        </span>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <span
+          onClick={() => {
+            setOpenValue (true);
+            setOpenContent (<ChangePasswordForm />);
+            setTitle ('Change Password');
+          }}
+        >
+          Change Password
+        </span>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <span style={{width:'100%',display:'flex',alignItems:'center'}}
+          onClick={()=>{}}
+        >
+          {false?<Spin></Spin>:'Logout'}
+        </span>
+      ),
+    },
+  ];
+
+  const items2 = [
+    {
+      key: '4',
+      label: (
+        <Tabs defaultActiveKey="1" items={paths.includes('administrators')?tabs:tabs} style={{width: '350px',height:'450px'}} onChange={()=>(c=>!c)}/>
+        // <Tabs defaultActiveKey="1" items={paths.includes('administrators')?tabs:tabs.slice(0,3)} style={{width: '350px',height:'450px'}} onChange={()=>(c=>!c)}/>
+      ),
+    },
+  ];
+  const [visible, setVisible] = useState(false);
+
+
   return (
     <Layout style={{height: '100vh'}} >
+      <ModalForm
+        open={openValue}
+        close={() => setOpenValue (false)}
+        content={openContent}
+        title={openTitle}
+      />
       <Sider
       trigger={null} collapsible collapsed={collapsed}
       theme='dark'
@@ -402,7 +527,7 @@ const App = () => {
       <Layout>
         <Header
           style={{
-            padding: '0 8px',
+            padding: '0 16px',
             background: colorBgContainer,
             display: 'flex',
             alignItems: 'center',
@@ -410,6 +535,7 @@ const App = () => {
             gap: '10px',
           }}
         >
+          <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
           <div style={{display:'flex',alignItems:'center',gap:'10px'}}>
           <Button
             type="text"
@@ -422,6 +548,51 @@ const App = () => {
             }}
           />
           </div>
+            <Breadcrumb separator={<FaAngleRight />}>
+              {paths.map ((path, index) => {
+                const url = '/' + paths.slice (0, index + 1).join ('/');
+                return (
+                  <Breadcrumb.Item key={path}>
+                    {path.toLocaleUpperCase()}
+                  </Breadcrumb.Item>
+                );
+              })}
+            </Breadcrumb>
+          </div>
+
+          <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
+          <Tooltip title='Write Message'>
+          <MdMessage onClick={() => {
+            setOpenValue (true);
+            setOpenContent (<NewMessageForm openModalFun={(e)=>setOpenValue(e)}/>);
+            setTitle ('Message');
+          }} size={25} cursor={'pointer'} />
+          </Tooltip>
+          <Dropdown
+          visible={visible}
+          onVisibleChange={v=>setVisible(v)}
+              menu={{
+                items: items2,onClick:()=>setVisible(true)
+              }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <Badge size="small" count={2}>
+                <IoNotificationsCircle size={26} cursor={'pointer'} />
+                {/* <IoNotificationsCircle size={26} onClick={()=>play()} cursor={'pointer'} /> */}
+              </Badge>
+            </Dropdown>
+            <Dropdown
+              menu={{
+                items: items1,
+              }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <IoSettingsOutline size={22} cursor={'pointer'} />
+            </Dropdown>
+          </div>
+
         </Header>
         <Content
           style={{
@@ -442,6 +613,7 @@ const App = () => {
             <Route element={<Dashboard />} path="/dashboard" />
 
             <Route element={<VacancyPage />} path="/vacancy/list" />
+            <Route element={<VacancyReport />} path="/vacancy/reports" />
             <Route element={<ApplicantList />} path="/vacancy/applicants/:id" />
             <Route element={<ApplicantDetail />} path="/vacancy/applicant/detail/:id" />
 
@@ -457,6 +629,8 @@ const App = () => {
             <Route element={<AgreementPage />} path="/employee/agreement" />
             <Route element={<DisciplinePage />} path="/discipline/list" />
             <Route element={<DisciplineDetail />} path="/discipline/detail/:id" />
+            <Route element={<BlacklistPage />} path="/blacklist/list" />
+            <Route element={<BlacklistDetail />} path="/blacklist/detail/:id" />
 
             <Route element={<ManageLeavePage />} path="/leave/leaves" />
             <Route element={<LeaveApplicationPage />} path="/leave/application" />
@@ -485,11 +659,9 @@ const App = () => {
             <Route element={<GeneratePayroll />} path="/payroll/generate" />
             <Route element={<GeneratePayrollDetail />} path="/payroll/generate/:id" />
 
-
             <Route element={<SalaryComponentsPage />} path="/payroll/salary/components" />
             <Route element={<SalaryStructurePage />} path="/payroll/salary/structure" />
             <Route element={<StructureAssignmentPage />} path="/payroll/salary/assignment" />
-
             
             <Route element={<SupportPage />} path="/support" />
             <Route element={<PageNotFound />} path="*" />

@@ -1,31 +1,25 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
+  Badge,
   Button,
+  DatePicker,
   Input,
-  Popconfirm,
   Space,
   Table,
   Tag,
   Tooltip,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {MdCancel, MdEdit} from 'react-icons/md';
-import {AlertContext} from '../../../context/AlertContext';
-import {BACKENDURL} from '../../../helper/Urls';
-import axios from 'axios';
+import {FaFileCsv} from 'react-icons/fa6';
+import { MdFilterAltOff} from 'react-icons/md';
+import {CSVLink} from 'react-csv';
+import {FormatDay} from '../../../helper/FormateDay';
 import { Link } from 'react-router-dom';
-import { FormatDay } from '../../../helper/FormateDay';
-import { FaCheck, FaEdit } from 'react-icons/fa';
 
-const LeaveApplicationTable = ({applicationData, loading, reload}) => {
-  const {openNotification} = useContext (AlertContext);
+const BlacklistTable = ({userData, loading, reload}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
-  const [modalOpen, setModalOpen] = useState (false);
-  const [modalContent, setModalContent] = useState ([]);
-  const [approveLoading, setApproveLoading] = useState (false);
-  const [failLoading, setFailLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -109,49 +103,37 @@ const LeaveApplicationTable = ({applicationData, loading, reload}) => {
       ),
   });
 
-  const ApproveApplication = async (id) => {
-    setApproveLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/leave/application/approve?id=${id}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setApproveLoading (false);
-    } catch (error) {
-      setApproveLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
+  const [filteredInfo, setFilteredInfo] = useState({});
+  const [filteredData, setFilteredData] = useState(userData);
+  
+  const handleChange = (pagination, filters) => {
+
+    let filteredInfo = filters;
+    let filterData = userData;
+    setFilteredInfo(filters);
+  
+    Object.keys(filteredInfo).forEach(key => {
+  
+      const value = filteredInfo[key];
+  
+      if(!value) return;
+      
+      filterData = filterData.filter(item => {  
+        return value.includes(item[key]); 
+      });
+  
+    });
+  
+    setFilteredData(filterData);
+
+    console.log(filterData)
   };
 
-  const AmendApplication = async (id) => {
-    setApproveLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/leave/application/amend?id=${id}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setApproveLoading (false);
-    } catch (error) {
-      setApproveLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
+  const clearAll = () => {
+    setFilteredInfo({});
+    setFilteredData(userData);
   };
-
-  const FailApplication = async id => {
-    setFailLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/leave/application/fail?id=${id}`);
-      setFailLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setFailLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
+  
   const columns = [
     {
       title: 'IDNO',
@@ -160,7 +142,14 @@ const LeaveApplicationTable = ({applicationData, loading, reload}) => {
       width: '80px',
       fixed:'left',
       key: 'IDNO',
-      render:r=><Link to={`/employee/detail/${r}`}>{r}</Link>
+      render: r => (
+        <Tooltip title='View Detail'
+        >
+          <Link to={`/employee/detail/${r}`}>
+            {r}
+          </Link>
+        </Tooltip>
+      ),
     },
     {
       title: 'Employee Info',
@@ -207,40 +196,85 @@ const LeaveApplicationTable = ({applicationData, loading, reload}) => {
               value: 'Female',
             },
           ],
+          filteredValue: filteredInfo.sex || null,
+          onFilter: (value, record) => record.sex.includes(value),
         },
       ],
     },
     {
-      title: 'Leave Type',
-      dataIndex: 'leaveType',
-      width: '120px',
-      key: 'leaveType',
+      title: 'Work Info',
+      children: [
+        {
+          title: 'Branch',
+          dataIndex: 'branch',
+          width: '100px',
+          key: 'branch',
+          filters: [
+            {
+              text: 'Arada Adwa',
+              value: 'Arada Adwa',
+            },
+          ],
+          filteredValue: filteredInfo.branch || null,
+          onFilter: (value, record) => record.branch.includes(value),
+        },
+        {
+          title: 'Department',
+          dataIndex: 'department',
+          width: '120px',
+          key: 'department',
+          filters: [
+            {
+              text: 'Security',
+              value: 'Security',
+            },
+          ],
+          filteredValue: filteredInfo.department || null,
+          onFilter: (value, record) => record.department.includes(value),
+        },
+        {
+          title: 'Position',
+          dataIndex: 'position',
+          width: '100px',
+          key: 'position',
+          filters: [
+            {
+              text: 'Security Guard',
+              value: 'Security Guard',
+            },
+          ],
+          filteredValue: filteredInfo.position || null,
+          onFilter: (value, record) => record.position.includes(value),
+        },],},
+    {
+      title: 'Incidents',
+      dataIndex: 'incidents',
+      width:'150px',
+      key: 'incidents',
+      render: r => (
+        <Space style={{display:'flex',flexWrap:'wrap',width:'100%'}}>
+        <Tag color={r === 'Active' ? 'success' : 'error'}>Abuse of Authority</Tag>
+        <Tag color={r === 'Active' ? 'success' : 'error'}>Drinking</Tag>
+        <Tag color={r === 'Active' ? 'success' : 'error'}>Theft</Tag>
+        </Space>
+      ),
     },
     {
-      title: 'Request Days',
-      dataIndex: 'totalDay',
+      title: 'Magnitude',
+      dataIndex: 'incidentMagnitude',
       width: '100px',
-      key: 'totalDay',
+      key: 'incidentMagnitude',
+      render: r => (
+        <Tag
+          color={r === 'Active' ? 'success' : 'error'}
+        >High</Tag>
+      ),
     },
     {
-      title: 'From',
-      dataIndex: 'startDate',
-      width: '100px',
-      key: 'startDate',
-      render: r => <span>{FormatDay(r)}</span>,
-    },
-    {
-      title: 'To',
-      dataIndex: 'endDate',
-      width: '100px',
-      key: 'endDate',
-      render: r => <span>{FormatDay(r)}</span>,
-    },
-    {
-      title: 'Date',
-      dataIndex: 'createdAt',
-      width: '120px',
-      key: 'createdAt',
+      title: 'Report Date',
+      dataIndex: 'registered',
+      width: '150px',
+      key: 'registered',
       render: r => <span>{FormatDay(r)}</span>,
     },
     {
@@ -250,52 +284,53 @@ const LeaveApplicationTable = ({applicationData, loading, reload}) => {
       key: 'status',
       filters: [
         {
-          text: 'Approved',
-          value: 'Approved',
-        },
-        {
           text: 'Pending',
           value: 'Pending',
         },
         {
-          text: 'Failed',
-          value: 'Failed',
+          text: 'Guilty',
+          value: 'Guilty',
+        },
+        {
+          text: 'Inocent',
+          value: 'Inocent',
         },
       ],
+      filteredValue: filteredInfo.status || null,
+      onFilter: (value, record) => record.status.includes(value),
       render: r => (
         <Tag
-          color={r.status === 'Approved' ? 'success' :r.status === 'Pending' ?"processing": 'volcano'}
-        >{r.status}</Tag>
+          color={r.status === 'Pending' ? 'success' : 'error'}
+        >Guilty</Tag>
       ),
     },
-    
     {
       title: 'Action',
-      width: '150px',
+      width: '70px',
       fixed: 'right',
       key: 'operation',
       render: r => (
-          <Space>
-            {r.status==="Approved"?
-            <Popconfirm title="Are you sure , To Amend Application" onConfirm={()=>AmendApplication(r.id)}>
-            <Tooltip title="Amend"><Button><MdEdit/></Button></Tooltip>
-            </Popconfirm>:<>
-            <Tooltip title="Edit"><Button><FaEdit/></Button></Tooltip>
-            <Popconfirm title="Are you sure , To Fail Application" onConfirm={()=>FailApplication(r.id)}>
-            <Tooltip title="Cancel"><Button><MdCancel color='red'/></Button></Tooltip>
-            </Popconfirm>
-            <Popconfirm title="Are you sure , To Approve Application" onConfirm={()=>ApproveApplication(r.id)}>
-            <Tooltip title="Approve"><Button><FaCheck color='green'/></Button></Tooltip>
-            </Popconfirm>
-            </>
-            }
-          </Space>
+        <Tooltip title='View Detail'
+        >
+          <Link to={`/blacklist/detail/${r.IDNO}`}>
+            Detail
+          </Link>
+        </Tooltip>
       ),
     },
   ];
 
   return (
-    <Table
+    <div>
+      <div style={{display:'flex',width:"100%",gap:'5px',marginBottom:"5px",justifyContent:'flex-end'}}>
+      <CSVLink
+        data={filteredData}
+        filename={"employee-detail-csv"}>
+          <Button><FaFileCsv/>CSV</Button>
+      </CSVLink>
+      <Button onClick={clearAll}><MdFilterAltOff/> Clear filters</Button>
+      </div>
+      <Table
       size="small"
       columns={columns}
       bordered
@@ -303,12 +338,14 @@ const LeaveApplicationTable = ({applicationData, loading, reload}) => {
         x: 500,
       }}
       pagination={{
-        defaultPageSize: 7,
-        showSizeChanger: false,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
-      dataSource={applicationData}
+      dataSource={userData}
+      onChange={handleChange}
       loading={loading}
     />
+    </div>
   );
 };
-export default LeaveApplicationTable;
+export default BlacklistTable;

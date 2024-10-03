@@ -4,6 +4,7 @@ import { Row, Col, Card, Spin } from 'antd';
 import { MdDashboard, MdWork, MdOutlineDateRange } from 'react-icons/md';
 import { FaClipboardList, FaUserShield, FaUserCheck, FaProjectDiagram, FaBuilding, FaUsers, FaToolbox } from 'react-icons/fa';
 import { BACKENDURL } from '../helper/Urls';
+import { FaNoteSticky } from 'react-icons/fa6';
 
 const Dashboard = () => {
   const [employeeCount, setEmployeeCount] = useState(null);
@@ -119,6 +120,12 @@ const Dashboard = () => {
       link: '/asset/inventorypage',
       count: assetCount,
     },
+    {
+      title: 'Blacklist',
+      icon: <FaUserShield size={40} color={'rgb(0,140,255)'} />,
+      link: '/blacklist/list',
+      count: employeeCount,
+    },
   ];
 
   return (
@@ -143,6 +150,7 @@ const Dashboard = () => {
           </Col>
         ))}
       </Row>
+      <Card style={{marginTop:'10px'}} title={<span style={{display:'flex',alignItems:'center',gap:'2px'}}><FaNoteSticky/> <span>Notice</span></span>}></Card>
     </div>
   );
 };

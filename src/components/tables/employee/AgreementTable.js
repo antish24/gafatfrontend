@@ -2,23 +2,18 @@ import React, {useContext, useRef, useState} from 'react';
 import {
   Badge,
   Button,
-  Divider,
   Input,
   Popconfirm,
   Space,
   Table,
-  Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import {FaUserLock} from 'react-icons/fa6';
 import {MdDelete, MdEdit} from 'react-icons/md';
 import {FormatDateTime} from '../../../helper/FormatDate';
-import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
-import {CSVLink} from 'react-csv';
 
 const AgreementTable = ({userData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);

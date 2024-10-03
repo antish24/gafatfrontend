@@ -19,6 +19,7 @@ const InterviewPage = () => {
       const res = await axios.get(`${BACKENDURL}/interview/all`);
       setLoading (false);
       setinterviewData(res.data.interviews)
+      console.log(res.data.interviews)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);

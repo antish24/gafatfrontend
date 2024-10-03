@@ -20,6 +20,7 @@ const NewEmployee = ({openModalFun, reload}) => {
   const [form] = Form.useForm ();
   const [formValues, setFormValues] = useState ({});
   const {Dragger} = Upload;
+  const [currentSlide, setCurrentSlide] = useState (0);
 
   const [branchData, setBranchData] = useState ([]);
   const [branchId, setBranchId] = useState ('');
@@ -113,6 +114,8 @@ const NewEmployee = ({openModalFun, reload}) => {
       openModalFun (false);
       openNotification ('success', res.data.message, 3, 'green');
       form.resetFields ();
+      setFormValues({})
+      setCurrentSlide(0)
     } catch (error) {
       setLoading (false);
       openNotification ('error', error.response.data.message, 3, 'red');
@@ -122,7 +125,6 @@ const NewEmployee = ({openModalFun, reload}) => {
     console.log ('Failed:', errorInfo);
   };
 
-  const [currentSlide, setCurrentSlide] = useState (0);
   const formInfos = [
     {
       title: 'Personal Information',
@@ -425,10 +427,13 @@ const NewEmployee = ({openModalFun, reload}) => {
                           />
                         : data.type === 'File' &&
                             <Dragger
-                              name={data.name}
+                              name='file'
+                              action={data.name==='fingerPrintReport'?
+                                `${BACKENDURL}/upload/fingerprint`:`${BACKENDURL}/upload/new`
+                              }
                               accept={data.req}
                               onChange={e => {
-                                onFieldChange (data.name, e.file);
+                                if(e.file.status==='done')onFieldChange (data.name, e.file);
                               }}
                               multiple={false}
                               maxCount={1}

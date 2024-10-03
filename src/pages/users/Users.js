@@ -2,10 +2,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AlertContext } from '../../context/AlertContext';
 import axios from 'axios';
 import ModalForm from '../../modal/Modal';
-import NewUserForm from '../../components/forms/NewUserForm';
 import { Button } from 'antd';
 import UserTable from '../../components/tables/UserTable';
 import { BACKENDURL } from '../../helper/Urls';
+import NewUserForm from '../../components/forms/users/NewUserForm';
 
 const Users = () => {
   const {openNotification} = useContext(AlertContext);
@@ -31,11 +31,13 @@ const Users = () => {
 
 
   const [modalOpen, setModalOpen] = useState (false);
+  const [modalTitle, setModalTitle] = useState ('');
+  const [modalContent, setModalContent] = useState ([]);
 
   return (
     <div>
       <div style={{height: '50px',display:'flex',gap:'10px'}}>
-        <Button type="primary" onClick={() => setModalOpen (true)}>
+        <Button type="primary" onClick={() => {setModalOpen (true);setModalContent(<NewUserForm reload={()=>getUserData()} openModalFun={(e) => setModalOpen (e)}/>);setModalTitle("New User")}}>
           Add New User
         </Button>
         <Button type='default' onClick={getUserData} loading={loading}>
@@ -44,8 +46,8 @@ const Users = () => {
         <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
-          title={'New User Form'}
-          content={<NewUserForm reload={()=>getUserData()} openModalFun={(e) => setModalOpen (e)}/>}
+          title={modalTitle}
+          content={modalContent}
         />
       </div>
       <UserTable loading={loading} reload={()=>getUserData()} userData={userData}/>

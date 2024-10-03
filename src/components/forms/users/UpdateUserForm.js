@@ -1,8 +1,8 @@
 import {Button, Form, Input, Select} from 'antd';
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
-import { AlertContext } from '../../context/AlertContext';
-import { BACKENDURL } from '../../helper/Urls';
+import { AlertContext } from '../../../context/AlertContext';
+import { BACKENDURL } from '../../../helper/Urls';
 
 const UpdateUserForm = ({openModalFun,reload,id}) => {
   const {openNotification} = useContext (AlertContext);

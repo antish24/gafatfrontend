@@ -1,6 +1,5 @@
 import React, {useContext, useRef, useState} from 'react';
 import {
-  Badge,
   Button,
   Divider,
   Input,
@@ -11,16 +10,14 @@ import {
   Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock, FaUsers} from 'react-icons/fa6';
-import {MdClose, MdDelete, MdEdit, MdViewAgenda} from 'react-icons/md';
+import {FaUsers} from 'react-icons/fa6';
+import { MdEdit} from 'react-icons/md';
 import {FormatDateTime} from '../../../helper/FormatDate';
 import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
-import {CSVLink} from 'react-csv';
-import {IoMdEye, IoMdEyeOff} from 'react-icons/io';
+import {IoMdEyeOff} from 'react-icons/io';
 import UpdateVancayForm from '../../forms/vacancy/UpdateVacancyForm';
 import {Link} from 'react-router-dom';
 import {FormatDay} from '../../../helper/FormateDay';
@@ -139,6 +136,20 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       key: 'title',
     },
     {
+      title: 'Branch',
+      dataIndex: 'branch',
+      ...getColumnSearchProps ('branch'),
+      width: '100px',
+      key: 'branch',
+    },
+    {
+      title: 'Department',
+      dataIndex: 'department',
+      ...getColumnSearchProps ('department'),
+      width: '110px',
+      key: 'department',
+    },
+    {
       title: 'Position',
       dataIndex: 'position',
       ...getColumnSearchProps ('position'),
@@ -164,13 +175,6 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       dataIndex: 'sector',
       key: 'sector',
       width: '120px',
-    },
-    {
-      title: 'Location',
-      dataIndex: 'location',
-      ...getColumnSearchProps ('location'),
-      key: 'location',
-      width: '100px',
     },
     {
       title: 'Gender',
@@ -278,6 +282,7 @@ const VacancyTable = ({vacancyData, loading, reload}) => {
       <Table
         size="small"
         columns={columns}
+        bordered
         scroll={{
           x: 500,
         }}

@@ -10,6 +10,89 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
 
+  const [branchData, setBranchData] = useState ([]);
+  const [branchId, setBranchId] = useState ('');
+  const [loadingBranch, setLoadingBranch] = useState (false);
+
+  const getBranchData = async () => {
+    setLoadingBranch (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/branch/all`);
+      setLoadingBranch (false);
+      setBranchData (res.data.branchs);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingBranch (false);
+    }
+  };
+
+  const branchOptions = branchData.length
+  ? branchData.map(branch => ({
+    value: branch.id,
+    label: branch.name 
+  }))
+  : [];
+
+  useEffect(() => {
+    getBranchData ();
+  }, []);
+
+  const [departmentData, setDepartmentData] = useState ([]);
+  const [loadingDepartment, setLoadingDepartment] = useState (false);
+  const [departmentId, setDepartmentId] = useState ('');
+
+  const getDepartmentData = async (id) => {
+    setLoadingDepartment (true);
+    form.resetFields (['department']);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/department/find?branchId=${id}`);
+      setLoadingDepartment (false);
+      setDepartmentData (res.data.departments);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingDepartment (false);
+    }
+  };
+
+  const departmentOptions = departmentData.length
+    ? departmentData.map (department => ({
+        value: department.id,
+        label: department.name,
+      }))
+    : [];
+
+  useEffect (() => {
+    getDepartmentData (branchId);
+  }, [branchId]);
+
+  const [positionData, setPositionData] = useState ([]);
+  const [loadingPosition, setLoadingPosition] = useState (false);
+  const [positionId, setPositionId] = useState ('');
+
+  const getPositionData = async (id) => {
+    setLoadingPosition (true);
+    form.resetFields (['position']);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/position/find?departmentId=${id}`);
+      setLoadingPosition (false);
+      setPositionData (res.data.positions);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingPosition (false);
+    }
+  };
+
+  const positionOptions = positionData.length
+    ? positionData.map (position => ({
+        value: position.id,
+        label: position.name,
+      }))
+    : [];
+
+  useEffect(() => {
+    getPositionData (departmentId);
+  }, [departmentId]);
+
   const onFinish = async values => {
     setLoading (true);
     try {
@@ -19,7 +102,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
         position:values.position,
         vacancyType:values.vacancyType,
         employementType:values.employementType,
-        interview:values.interview,
+        interview:values.interviewId,
         gender:values.gender,
         location:values.location,
         sector:values.sector,
@@ -49,6 +132,9 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
     try {
       const res = await axios.get(`${BACKENDURL}/vacancy/detail?id=${id}`);
       setVacancyData(res.data.vacancy)
+      setBranchId(res.data.vacancy.branch)
+      setDepartmentId(res.data.vacancy.department)
+      setPositionId(res.data.vacancy.position)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
     }
@@ -67,7 +153,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
   const getInterviewData = async (id) => {
     setLoadinginterview (true);
     try {
-      const res = await axios.get (`${BACKENDURL}/interview/all`);
+      const res = await axios.get (`${BACKENDURL}/interview/find?position=${positionId}`);
       setLoadinginterview (false);
       setInterviewData (res.data.interviews);
     } catch (error) {
@@ -85,7 +171,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
 
   useEffect(() => {
     getInterviewData ();
-  }, []);
+  }, [positionId]);
 
   return (
     <div>
@@ -107,9 +193,66 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
           flexWrap: 'wrap',
         }}
       >
+<Form.Item
+          style={{margin: '5px 0', width: '34%'}}
+          label="Branch"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Branch',
+            },
+          ]}
+          name="branch"
+        >
+          <Select
+            placeholder="Search to Select"
+            onChange={(e)=>setBranchId(e)}
+            options={branchOptions}
+            loading={loadingBranch}
+            disabled={loadingBranch}
+          />
+        </Form.Item>
 
         <Form.Item
-          style={{margin: '5px', width: '47%'}}
+          style={{margin: '5px 0', width: '25%'}}
+          label="Department"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Department',
+            },
+          ]}
+          name="department"
+        >
+          <Select
+            onChange={(e)=>setDepartmentId(e)}
+            placeholder="Search to Select"
+            options={departmentOptions}
+            loading={loadingDepartment}
+            disabled={loadingDepartment}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width:'35%'}}
+          label="Position"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Position',
+            },
+          ]}
+          name="position"
+        >
+          <Select
+            placeholder="Search to Select"
+            onChange={(e)=>setPositionId(e)}
+            options={positionOptions}
+            loading={loadingPosition}
+            disabled={loadingPosition}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px', width: '100%'}}
           label="Title"
           rules={[
             {
@@ -121,20 +264,6 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Position"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Position',
-            },
-          ]}
-          name="position"
-        >
-          <Input />
-        </Form.Item>
-
         <Form.Item
           style={{margin: '5px', width: '47%'}}
           label="Vacancy Type"
@@ -198,7 +327,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
               message: 'Please input Interview',
             },
           ]}
-          name="interview"
+          name="interviewId"
         >
           <Select
             showSearch
@@ -245,33 +374,6 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '30%'}}
-          label="Location"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Location',
-            },
-          ]}
-          name="location"
-        >
-          <Select
-            showSearch
-            placeholder="Search to Select"
-            optionFilterProp="children"
-            // filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            // filterSort={(optionA, optionB) =>
-            //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            // }
-            options={[
-              {
-                value: 'AA',
-                label: 'Addis Abeba',
-              },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item
-          style={{margin: '5px', width: '30%'}}
           label="Sector"
           rules={[
             {
@@ -284,7 +386,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
           <Input />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '65%'}}
+          style={{margin: '5px 0', width: '25%'}}
           label="Experience"
           name="experience"
           rules={[
@@ -317,7 +419,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
           />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '30%'}}
+          style={{margin: '5px 0', width: '20%'}}
           label="Vacancy"
           name="vacancyNo"
           rules={[
@@ -327,10 +429,10 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
             },
           ]}
         >
-          <Input type="number" />
+          <Input type="number" min={1}/>
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '30%'}}
+          style={{margin: '5px 0', width: '25%'}}
           label="Salary"
           name="salary"
           rules={[
@@ -340,10 +442,10 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
             },
           ]}
         >
-          <Input type="number" />
+          <Input type="number" min={1}/>
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '30%'}}
+          style={{margin: '5px 0', width: '25%'}}
           label="Deadline"
           name="deadline"
           rules={[
@@ -366,7 +468,7 @@ const UpdateVancayForm = ({id,openModalFun, reload}) => {
             },
           ]}
         >
-          <TextArea style={{height: '200px'}} />
+          <TextArea style={{height: '150px'}} />
         </Form.Item>
       </div>
       <Form.Item

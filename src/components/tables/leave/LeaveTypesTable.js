@@ -11,17 +11,11 @@ import {
   Tooltip,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock} from 'react-icons/fa6';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {FormatDateTime} from '../../../helper/FormatDate';
-import ModalForm from '../../../modal/Modal';
-import UpdateUserForm from '../../forms/UpdateUserForm';
+import { MdEdit} from 'react-icons/md';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
-import {CSVLink} from 'react-csv';
 import { IoEyeOff } from 'react-icons/io5';
-import { FormatDay } from '../../../helper/FormateDay';
 
 const LeaveTypesTable = ({leaveData, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AlertContext } from '../../../context/AlertContext';
 import axios from 'axios';
 import ModalForm from '../../../modal/Modal';
-import NewUserForm from '../../../components/forms/NewUserForm';
 import { Button } from 'antd';
 import { BACKENDURL } from '../../../helper/Urls';
 import BranchTable from '../../../components/tables/organzation/branch/BranchTable';
