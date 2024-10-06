@@ -349,7 +349,7 @@ const NewEmployee = ({openModalFun, reload}) => {
           lable: 'FingerPrint Report',
           name: 'fingerPrintReport',
           type: 'File',
-          req: 'application/pdf',
+          req: '.tml',
           width: '100%',
         },
       ],
@@ -433,7 +433,7 @@ const NewEmployee = ({openModalFun, reload}) => {
                               }
                               accept={data.req}
                               onChange={e => {
-                                if(e.file.status==='done')onFieldChange (data.name, e.file);
+                                if(e.file.status==='done')onFieldChange (data.name, e.file.response.name.filename);
                               }}
                               multiple={false}
                               maxCount={1}

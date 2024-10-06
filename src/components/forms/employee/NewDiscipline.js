@@ -7,10 +7,13 @@ import TextArea from 'antd/es/input/TextArea';
 import {FaUpload} from 'react-icons/fa6';
 import Dragger from 'antd/es/upload/Dragger';
 
-const NewDiscipline = ({openModalFun, reload, projectId}) => {
+const NewDiscipline = ({openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
+
+  const [witnessesData, setwitnessesData] = useState ([]);
+  const [loadingwitnesses, setLoadingwitnesses] = useState (false);
 
   const [branchData, setBranchData] = useState ([]);
   const [branchId, setBranchId] = useState ('');
@@ -26,9 +29,6 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
 
   const [employeeData, setEmployeeData] = useState ([]);
   const [loadingEmployee, setLoadingEmployee] = useState (false);
-
-  const [witnessesData, setwitnessesData] = useState ([]);
-  const [loadingwitnesses, setLoadingwitnesses] = useState (false);
 
   const getBranchData = async () => {
     setLoadingBranch (true);
@@ -69,29 +69,10 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
     }
   };
 
-  const getWitnessData = async id => {
-    setLoadingwitnesses (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/employee/names`);
-      setLoadingwitnesses (false);
-      setwitnessesData (res.data.employees);
-    } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      setLoadingwitnesses (false);
-    }
-  };
-
   const EmployeeOptions = employeeData
     ? employeeData.map (branch => ({
         value: branch.id,
         label: branch.IDNO + ' ' + branch.fName + ' ' + branch.mName,
-      }))
-    : [];
-
-  const WitnessesOptions = witnessesData
-    ? witnessesData.map (emp => ({
-        value: emp.id,
-        label: emp.IDNO + ' ' + emp.fName + ' ' + emp.mName,
       }))
     : [];
 
@@ -101,10 +82,6 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
     },
     [positionId]
   );
-
-  useEffect (() => {
-    getWitnessData ();
-  }, []);
 
   const getDepartmentData = async id => {
     setLoadingDepartment (true);
@@ -164,13 +141,38 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
     [departmentId]
   );
 
+  const getWitnessData = async id => {
+    setLoadingwitnesses (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/employee/names`);
+      setLoadingwitnesses (false);
+      setwitnessesData (res.data.employees);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingwitnesses (false);
+    }
+  };
+
+  useEffect (() => {
+    getWitnessData ();
+  }, []);
+
+  const WitnessesOptions = witnessesData
+    ? witnessesData.map (emp => ({
+        value: emp.id,
+        label: emp.IDNO + ' ' + emp.fName + ' ' + emp.mName,
+      }))
+    : [];
+
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/discipline/new`, {
-        role: values.role,
-        employees: values.employee,
-        project: projectId,
+      const res = await axios.post (`${BACKENDURL}/employee/discipline/new`, {
+        incidentDate: values.incidentDate,
+        description: values.description,
+        attachment: values.attachment.file.name,
+        witnesses: values.witnesses,
+        employeeWork: values.employee,
       });
       reload ();
       setLoading (false);
@@ -280,7 +282,7 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
         <Form.Item
           style={{margin: '5px', width: '100%'}}
           label="Date and Time Of Incident"
-          name="date"
+          name="incidentDate"
           rules={[
             {
               required: true,
@@ -309,12 +311,16 @@ const NewDiscipline = ({openModalFun, reload, projectId}) => {
           label="Attachment"
           name="attachment"
         >
-          <Dragger accept="application/pdf" multiple={false} maxCount={1}>
+          <Dragger
+            action={`${BACKENDURL}/upload/new`}
+            multiple={false}
+            maxCount={1}
+          >
             <p className="ant-upload-drag-icon">
               <FaUpload />
             </p>
             <p className="ant-upload-hint">
-              Support for a single pdf file. Max size 3MB.
+              Support for a single file. Max size 3MB.
             </p>
           </Dragger>
         </Form.Item>

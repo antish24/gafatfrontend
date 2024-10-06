@@ -3,7 +3,7 @@ import { Link, Route, Routes, useLocation} from 'react-router-dom';
 import {Layout,theme,Breadcrumb,Button, Menu, Tooltip, Dropdown, Badge, Tabs, Spin,} from 'antd';
 
 import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
-import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage, MdDocumentScanner, MdPictureAsPdf, MdMessage } from 'react-icons/md';
+import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage, MdDocumentScanner, MdPictureAsPdf, MdMessage, MdAccountBox } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
 import Auth from './pages/Auth';
@@ -13,11 +13,12 @@ import SupportPage from './pages/SupportPage';
 import PageNotFound from './pages/PageNotFound';
 import logo from './assets/imgs/image.png'
 
-import { SiAwsorganizations, SiOnlyoffice } from 'react-icons/si';
+import { SiAwsorganizations, SiOnlyoffice, SiQuantconnect } from 'react-icons/si';
 import { BsCalendarDate } from 'react-icons/bs';
 import { GrMoney } from 'react-icons/gr';
 import { IoNotificationsCircle, IoSettingsOutline, IoTimeOutline } from 'react-icons/io5';
-import { HiOutlineDocumentReport } from 'react-icons/hi';
+import { HiOutlineDocumentReport} from 'react-icons/hi';
+import { HiBuildingOffice2 } from 'react-icons/hi2';
 import VacancyPage from './pages/vacancy/VacancyPage';
 import BranchPage from './pages/organzation/branch/BranchPage';
 import DepartmentPage from './pages/organzation/department/DepartmentPage';
@@ -60,6 +61,10 @@ import NewUserForm from './components/forms/users/NewUserForm';
 import ModalForm from './modal/Modal';
 import NewMessageForm from './components/forms/users/NewMessageForm';
 import ChangePasswordForm from './components/forms/users/ChangePasswordForm';
+import DocPage from './pages/doc/DocPage';
+import DocReportPage from './pages/doc/DocReportPage';
+import OrganzationInfo from './pages/organzation/OrganzationInfo';
+import PromotionPage from './pages/PromotionPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -99,6 +104,10 @@ const App = () => {
       icon: <SiAwsorganizations size={20} />,
       children: [
         {
+          key: '34',
+          label: <Link to={'/organzation/info'}><HiBuildingOffice2/> Info</Link>,
+        },
+        {
           key: '31',
           label: <Link to={'/organzation/branch'}><MdLocationCity/> Branch</Link>,
         },
@@ -125,20 +134,20 @@ const App = () => {
           key: '42',
           label:<Link to={'/employee/agreement'}><GoLaw/> Agreement</Link>,
         },
-        {
-          key: '43',
-          label: <><FaUsersGear/> Performace</>,
-          children: [
-            {
-              key: '431',
-              label: <Link to={'/employee/performace/setting'}><MdSettings/> Setting</Link>,
-            },
-            {
-              key: '432',
-              label: <Link to={'/employee/performace/list'}><FaWpforms/> Performace</Link>,
-            },
-          ],
-        },
+        // {
+        //   key: '43',
+        //   label: <><FaUsersGear/> Performace</>,
+        //   children: [
+        //     {
+        //       key: '431',
+        //       label: <Link to={'/employee/performace/setting'}><MdSettings/> Setting</Link>,
+        //     },
+        //     {
+        //       key: '432',
+        //       label: <Link to={'/employee/performace/list'}><FaWpforms/> Performace</Link>,
+        //     },
+        //   ],
+        // },
         {
           key: '44',
           label: <><FaFileSignature/> Discipline</>,
@@ -183,10 +192,6 @@ const App = () => {
       label: 'Manage Doc',
       icon: <MdDocumentScanner size={20} />,
       children: [
-        {
-          key: '151',
-          label: <Link to={'/doc/type'}><MdPictureAsPdf/> Type</Link>,
-        },
         {
           key: '152',
           label: <Link to={'/doc/list'}><FaClipboardList/> List</Link>,
@@ -352,6 +357,11 @@ const App = () => {
           label: <Link to={'/users/access'}><FaUserSecret/> Access</Link>,
         },
       ],
+    },
+    {
+      key: '17',
+      label: <Link to={'/promotion'}>Promotion</Link>,
+      icon: <SiQuantconnect size={20} />,
     },
     {
       key: '13',
@@ -522,7 +532,7 @@ const App = () => {
             mode="inline"
             items={items}
           />
-
+          <div style={{height:'40px'}}></div>
       </Sider>
       <Layout>
         <Header
@@ -620,9 +630,13 @@ const App = () => {
             <Route element={<InterviewPage />} path="/vacancy/interview" />
             <Route element={<InterviewVacancyPage />} path="/vacancy/interview/usedby" />
 
+            <Route element={<OrganzationInfo />} path="/organzation/info" />
             <Route element={<BranchPage />} path="/organzation/branch" />
             <Route element={<DepartmentPage />} path="/organzation/department" />
             <Route element={<PostionPage />} path="/organzation/postion" />
+
+            <Route element={<DocPage />} path="/doc/list" />
+            <Route element={<DocReportPage />} path="/doc/report" />
 
             <Route element={<EmployeePage />} path="/employee/list" />
             <Route element={<EmployeeDetail />} path="/employee/detail/:id" />
@@ -663,6 +677,7 @@ const App = () => {
             <Route element={<SalaryStructurePage />} path="/payroll/salary/structure" />
             <Route element={<StructureAssignmentPage />} path="/payroll/salary/assignment" />
             
+            <Route element={<PromotionPage />} path="/promotion" />
             <Route element={<SupportPage />} path="/support" />
             <Route element={<PageNotFound />} path="*" />
 

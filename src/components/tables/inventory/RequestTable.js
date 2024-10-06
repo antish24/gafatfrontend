@@ -1,34 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, message, Modal, Form, InputNumber, Select, Input } from 'antd';
+import { Table, Button, message, Modal, Form, InputNumber, Select } from 'antd';
 import axios from 'axios';
 import { BACKENDURL } from '../../../helper/Urls';
 
 const { Option } = Select;
 
-const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
+const RequestTable = ({ loading, requestData, reload }) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [returnModalOpen, setReturnModalOpen] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
   const [form] = Form.useForm();
   const [returnForm] = Form.useForm();
-  const [searchText, setSearchText] = useState('');
   const [filteredData, setFilteredData] = useState(requestData);
 
   useEffect(() => {
     setFilteredData(requestData);
   }, [requestData]);
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`${BACKENDURL}/request/allemp`, {
-        params: { employeeName: searchText },
-      });
-      setFilteredData(response.data);
-    } catch (error) {
-      message.error('Failed to search requests');
-      console.error('Search error:', error);
-    }
-  };
 
   const editRequest = (record) => {
     setCurrentItem(record);
@@ -53,17 +41,6 @@ const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
     }
   };
 
-  const deleteRequest = async (record) => {
-    try {
-      await axios.delete(`${BACKENDURL}/request/delete/${record.id}`);
-      message.success('Request item deleted successfully!');
-      reload();
-    } catch (error) {
-      message.error('Failed to delete request item');
-      console.error('Delete error:', error);
-    }
-  };
-
   const handleReturnSubmit = async (values) => {
     try {
         await axios.post(`${BACKENDURL}/request/return`, {
@@ -73,19 +50,8 @@ const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
         });
 
         // Update local request data after return
-        const updatedRequestData = requestData.map((request) => {
-            if (request.id === currentItem.id) {
-                return {
-                    ...request,
-                    quantity: request.quantity - values.quantity, // Decrease the returned quantity from the request
-                };
-            }
-            return request;
-        });
-
         // Set the updated request data to state
-        reload(updatedRequestData); // Update displayed data
-
+        reload(); // Update displayed data
         message.success('Item returned successfully!');
         setReturnModalOpen(false);
         returnForm.resetFields();
@@ -124,7 +90,6 @@ const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
       render: (text, record) => (
         <>
           <Button onClick={() => editRequest(record)}>Edit</Button>
-          <Button onClick={() => deleteRequest(record)} danger style={{ marginLeft: '10px' }}>Delete</Button>
           <Button onClick={() => {
             setCurrentItem(record);
             setReturnModalOpen(true);
@@ -135,14 +100,7 @@ const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
   ];
 
   return (
-    <>
-      <Input
-        placeholder="Search by Employee Name"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        onPressEnter={handleSearch}
-        style={{ marginBottom: 16 }}
-      />
+    <div>
       <Table
         dataSource={filteredData}
         columns={columns}
@@ -230,7 +188,7 @@ const RequestTable = ({ loading, requestData = [], reload = () => {} }) => {
           </Form.Item>
         </Form>
       </Modal>
-    </>
+    </div>
   );
 };
 

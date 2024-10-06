@@ -10,15 +10,15 @@ import NewDiscipline from '../../../components/forms/employee/NewDiscipline';
 const DisciplinePage = () => {
   const {openNotification} = useContext(AlertContext);
 
-  const [userData,setUserData]=useState([])
+  const [disciplineData,setdisciplineData]=useState([])
   const [loading,setLoading]=useState(false)
 
-  const getUserData=async()=>{
+  const getdisciplineData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/employee/all`);
+      const res = await axios.get(`${BACKENDURL}/employee/discipline/all`);
       setLoading (false);
-      setUserData(res.data.employees)
+      setdisciplineData(res.data.list)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
@@ -26,7 +26,7 @@ const DisciplinePage = () => {
   }
 
   useEffect(()=>{
-    getUserData()
+    getdisciplineData()
   },[])
 
 
@@ -38,17 +38,17 @@ const DisciplinePage = () => {
         <Button type="primary" onClick={() => setModalOpen (true)}>
         Discipline Form
         </Button>
-        <Button type='default' onClick={getUserData} loading={loading}>
+        <Button type='default' onClick={getdisciplineData} loading={loading}>
           Reload
         </Button>
         <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
           title={'New Discipline Form'}
-          content={<NewDiscipline reload={()=>getUserData()} openModalFun={(e) => setModalOpen (e)}/>}
+          content={<NewDiscipline reload={()=>getdisciplineData()} openModalFun={(e) => setModalOpen (e)}/>}
         />
       </div>
-      <DisciplineTable loading={loading} reload={()=>getUserData()} userData={userData}/>
+      <DisciplineTable loading={loading} reload={()=>getdisciplineData()} data={disciplineData}/>
     </div>
   )
 }

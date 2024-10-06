@@ -48,7 +48,7 @@ const InventoryPage = () => {
           }
         />
       </div>
-      <InventoryTable loading={loading} inventoryData={inventoryData} />
+      <InventoryTable reload={getInventoryData} loading={loading} inventoryData={inventoryData} />
     </div>
   );
 };

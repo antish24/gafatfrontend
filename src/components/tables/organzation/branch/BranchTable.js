@@ -8,7 +8,6 @@ import UpdateUserForm from '../../../forms/users/UpdateUserForm';
 import { AlertContext } from '../../../../context/AlertContext';
 import { BACKENDURL } from '../../../../helper/Urls';
 import axios from 'axios';
-import {CSVLink} from 'react-csv'
 
 const BranchTable = ({branchData,loading,reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -97,10 +96,10 @@ const BranchTable = ({branchData,loading,reload}) => {
   const DeleteUser=async(id)=>{
     setDeleteLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/users/delete?id=${id}`);
+      // const res = await axios.get(`${BACKENDURL}/users/delete?id=${id}`);
       setDeleteLoading(false)
       reload()
-      openNotification('success', res.data.message, 3, 'green');
+      openNotification('success', "Under Work tho", 3, 'green');
     } catch (error) {
       setDeleteLoading(false)
       openNotification('error', error.response.data.message, 3, 'red');
@@ -179,7 +178,7 @@ const BranchTable = ({branchData,loading,reload}) => {
      render: (r) =>
      <Space style={{display:'flex',alignItems:'center',flexWrap:"wrap"}}>
      <Button type='text' onClick={() =>{setModalOpen (true);setModalContent(r.IDNO)}}><MdEdit/></Button>
-     <Popconfirm title='Are you sure, Delete user' onConfirm={()=>DeleteUser(r.IDNO)}><Button type='text' disabled={deleteLoading} loading={deleteLoading}><MdDelete color='red'/></Button></Popconfirm>
+     <Popconfirm title='Are you sure, Close Branch' onConfirm={()=>DeleteUser(r.IDNO)}><Button type='text' disabled={deleteLoading} loading={deleteLoading}><MdDelete color='red'/></Button></Popconfirm>
      </Space>
     },
   ];
@@ -187,19 +186,14 @@ const BranchTable = ({branchData,loading,reload}) => {
 
   return (
     <div>
-    <CSVLink
-        data={branchData}
-        onClick={() => {
-        console.log("clicked") 
-        }}
-    >
-    Download me
-    </CSVLink>
     <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
-          title={<Divider>Update User Form</Divider>}
-          content={<UpdateUserForm id={modalContent} reload={()=>reload()} openModalFun={(e) => setModalOpen (e)}/>}
+          title={<Divider>Update Branch Form</Divider>}
+          content={
+            ''
+            // <UpdateUserForm id={modalContent} reload={()=>reload()} openModalFun={(e) => setModalOpen (e)}/>
+          }
         />
     <Table
       size='small'

@@ -16,7 +16,7 @@ import {CSVLink} from 'react-csv';
 import {FormatDay} from '../../../helper/FormateDay';
 import { Link } from 'react-router-dom';
 
-const DisciplineTable = ({userData, loading, reload}) => {
+const DisciplineTable = ({data, loading, reload}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
@@ -104,12 +104,12 @@ const DisciplineTable = ({userData, loading, reload}) => {
   });
 
   const [filteredInfo, setFilteredInfo] = useState({});
-  const [filteredData, setFilteredData] = useState(userData);
+  const [filteredData, setFilteredData] = useState(data);
   
   const handleChange = (pagination, filters) => {
 
     let filteredInfo = filters;
-    let filterData = userData;
+    let filterData = data;
     setFilteredInfo(filters);
   
     Object.keys(filteredInfo).forEach(key => {
@@ -131,7 +131,7 @@ const DisciplineTable = ({userData, loading, reload}) => {
 
   const clearAll = () => {
     setFilteredInfo({});
-    setFilteredData(userData);
+    setFilteredData(data);
   };
   
   const columns = [
@@ -248,9 +248,9 @@ const DisciplineTable = ({userData, loading, reload}) => {
         },],},
     {
       title: 'Report Date',
-      dataIndex: 'registered',
-      width: '150px',
-      key: 'registered',
+      dataIndex: 'createdAt',
+      width: '120px',
+      key: 'createdAt',
       render: r => <span>{FormatDay(r)}</span>,
     },
     {
@@ -272,7 +272,7 @@ const DisciplineTable = ({userData, loading, reload}) => {
       onFilter: (value, record) => record.status.includes(value),
       render: r => (
         <Tag
-          color={r.status === 'Active' ? 'success' : 'error'}
+          color={r.status === 'Approved' ? 'success' :r.status === 'Pending'?'processing': 'error'}
         >{r.status}</Tag>
       ),
     },
@@ -284,7 +284,7 @@ const DisciplineTable = ({userData, loading, reload}) => {
       render: r => (
         <Tooltip title='View Detail'
         >
-          <Link to={`/discipline/detail/${r.IDNO}`}>
+          <Link to={`/discipline/detail/${r.id}`}>
             Detail
           </Link>
         </Tooltip>
@@ -313,7 +313,7 @@ const DisciplineTable = ({userData, loading, reload}) => {
         defaultPageSize: 10,
         showSizeChanger: true,
       }}
-      dataSource={userData}
+      dataSource={data}
       onChange={handleChange}
       loading={loading}
     />

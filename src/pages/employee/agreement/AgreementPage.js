@@ -10,15 +10,15 @@ import AgreementTable from '../../../components/tables/employee/AgreementTable';
 const AgreementPage = () => {
   const {openNotification} = useContext(AlertContext);
 
-  const [userData,setUserData]=useState([])
+  const [agreementData,setAgreementData]=useState([])
   const [loading,setLoading]=useState(false)
 
-  const getUserData=async()=>{
+  const getAgreementData=async()=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/users/all`);
+      const res = await axios.get(`${BACKENDURL}/employee/agreement/all`);
       setLoading (false);
-      setUserData(res.data.users)
+      setAgreementData(res.data.agreements)
     } catch (error) {
       openNotification('error', error.response.data.message, 3, 'red');
       setLoading (false);
@@ -26,7 +26,7 @@ const AgreementPage = () => {
   }
 
   useEffect(()=>{
-    getUserData()
+    getAgreementData()
   },[])
 
 
@@ -38,17 +38,17 @@ const AgreementPage = () => {
         <Button type="primary" onClick={() => setModalOpen (true)}>
           Register New Agreement
         </Button>
-        <Button type='default' onClick={getUserData} loading={loading}>
+        <Button type='default' onClick={getAgreementData} loading={loading}>
           Reload
         </Button>
         <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}
           title={'New Agreement Form'}
-          content={<NewAgreement reload={()=>getUserData()} openModalFun={(e) => setModalOpen (e)}/>}
+          content={<NewAgreement reload={()=>getAgreementData()} openModalFun={(e) => setModalOpen (e)}/>}
         />
       </div>
-      <AgreementTable loading={loading} reload={()=>getUserData()} userData={userData}/>
+      <AgreementTable loading={loading} reload={()=>getAgreementData()} agreementData={agreementData}/>
     </div>
   )
 }

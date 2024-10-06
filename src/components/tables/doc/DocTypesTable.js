@@ -1,31 +1,26 @@
 import React, {useContext, useRef, useState} from 'react';
 import {
-  Badge,
   Button,
-  Divider,
   Input,
   Popconfirm,
   Space,
   Table,
+  Tooltip,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
-import {FaUserLock} from 'react-icons/fa6';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {FormatDateTime} from '../../../helper/FormatDate';
+import { MdEdit} from 'react-icons/md';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
-import UpdateAgreementForm from '../../forms/employee/UpdateAgreementForm';
-import ModalForm from '../../../modal/Modal';
+import { IoEyeOff } from 'react-icons/io5';
 
-const AgreementTable = ({agreementData, loading, reload}) => {
+const DocTypesTable = ({data, loading, reload}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
   const [modalOpen, setModalOpen] = useState (false);
   const [modalContent, setModalContent] = useState ([]);
-  const [banLoading, setBanLoading] = useState (false);
   const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -110,21 +105,6 @@ const AgreementTable = ({agreementData, loading, reload}) => {
       ),
   });
 
-  const BanUser = async ({id, status}) => {
-    setBanLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setBanLoading (false);
-    } catch (error) {
-      setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
   const DeleteUser = async id => {
     setDeleteLoading (true);
     try {
@@ -140,60 +120,15 @@ const AgreementTable = ({agreementData, loading, reload}) => {
 
   const columns = [
     {
-      title: 'IDNO',
-      dataIndex: 'IDNO',
-      ...getColumnSearchProps ('IDNO'),
+      title: 'Doc Type',
+      dataIndex: 'name',
+      ...getColumnSearchProps ('name'),
+      key: 'name',
       width: '80px',
-      key: 'IDNO',
-    },
-    {
-      title: 'Agreement Name',
-      dataIndex: 'title',
-      ...getColumnSearchProps ('title'),
-      key: 'title',
-      width: '250px',
-    },
-    {
-      title: 'Branch',
-      dataIndex: 'position',
-      width: '200px',
-      render:r=>r?r.department.branch.name:'null'
-    },
-    {
-      title: 'Department',
-      dataIndex: 'position',
-      width: '200px',
-      render:r=>r?r.department.name:'null'
-    },
-    {
-      title: 'Position',
-      dataIndex: 'position',
-      ...getColumnSearchProps ('position'),
-      width: '200px',
-      render:r=>r?r.name:'null'
-    },
-    {
-      title: 'Date',
-      dataIndex: 'createdAt',
-      width: '150px',
-      key: 'createdAt',
-      render: r => <span>{FormatDateTime (r)}</span>,
-    },
-    {
-      fixed: 'right',
-      title: 'Status',
-      width: '80px',
-      key: 'status',
-      render: r => (
-        <Badge
-          status={r.status === 'Active' ? 'success' : 'error'}
-          text={r.status}
-        />
-      ),
     },
     {
       title: 'Action',
-      width: '165px',
+      width: '60px',
       fixed: 'right',
       key: 'operation',
       render: r => (
@@ -204,22 +139,24 @@ const AgreementTable = ({agreementData, loading, reload}) => {
             type="text"
             onClick={() => {
               setModalOpen (true);
-              setModalContent (r.id);
+              setModalContent (r.IDNO);
             }}
           >
             <MdEdit />
           </Button>
           <Popconfirm
-            title="Are you sure, Close Agreement"
+            title="Are you sure, Change Status"
             onConfirm={() => DeleteUser (r.IDNO)}
           >
+            <Tooltip title='Change Status'>
             <Button
               type="text"
               disabled={deleteLoading}
               loading={deleteLoading}
             >
-              <MdDelete color="red" />
+              <IoEyeOff color="red" />
             </Button>
+            </Tooltip>
           </Popconfirm>
         </Space>
       ),
@@ -227,33 +164,17 @@ const AgreementTable = ({agreementData, loading, reload}) => {
   ];
 
   return (
-    <div>
-      <ModalForm
-        open={modalOpen}
-        close={() => setModalOpen (false)}
-        title={<Divider>Update Agreement</Divider>}
-        content={
-          <UpdateAgreementForm
-            id={modalContent}
-            reload={() => reload ()}
-            openModalFun={e => setModalOpen (e)}
-          />
-        }
-      />
     <Table
       size="small"
       columns={columns}
-      scroll={{
-        x: 500,
-      }}
+      bordered
       pagination={{
         defaultPageSize: 7,
         showSizeChanger: false,
       }}
-      dataSource={agreementData}
+      dataSource={data}
       loading={loading}
     />
-    </div>
   );
 };
-export default AgreementTable;
+export default DocTypesTable;

@@ -1,7 +1,7 @@
 import React from 'react';
-import BarChart from '../../../components/graph/BarChart';
+import BarChart from '../../components/graph/BarChart';
 
-const VacancyReport = () => {
+const DocReportPage = () => {
   const departmentWise = {
     labels: ['IT', 'Security', 'Marketing'],
     datasets: [
@@ -181,4 +181,4 @@ const VacancyReport = () => {
   );
 };
 
-export default VacancyReport;
+export default DocReportPage;

@@ -1,18 +1,47 @@
 import {Button, Descriptions, Image, Table, Tag, Tooltip} from 'antd';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FaUserLock} from 'react-icons/fa6';
 import {MdFilePresent, MdPrint, MdReport } from 'react-icons/md';
 import ModalForm from '../../../modal/Modal';
 import ReportEmployee from '../../../components/forms/employee/ReportEmployee';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import TextArea from 'antd/es/input/TextArea';
+import { AlertContext } from '../../../context/AlertContext';
+import { BACKENDURL } from '../../../helper/Urls';
+import axios from 'axios';
+import { FormatDay } from '../../../helper/FormateDay';
 
 const DisciplineDetail = () => {
+
+  const {openNotification} = useContext(AlertContext);
+  const params = useParams ();
+  const [disciplineDetail, setdisciplineDetail] = useState ([]);
+  const [loadingdisciplineDetail, setLoadingdisciplineDetail] = useState (false);
+
+  const getdisciplineDetail = async () => {
+    setLoadingdisciplineDetail (true);
+    try {
+      const res = await axios.get (
+        `${BACKENDURL}/employee/discipline/detail?id=${params.id}`
+      );
+      setLoadingdisciplineDetail (false);
+      setdisciplineDetail (res.data.list);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingdisciplineDetail (false);
+    }
+  };
+
+  useEffect (() => {
+    getdisciplineDetail ();
+  }, []);
+
+
       const disciplineInfoData = [
-        {key: '1',label: 'Employee IDNO',children:<Link to={`/employee/detail/EMP-00001`}>EMP-00001</Link>},
-        {key: '2',label: 'Employee Full Name',children:'Abrham Assefa Mulatu'},
-        {key: '3',label: 'Date and Time',children:'02 jun 1889 07:30'},
-        {key: '4',label: 'Description',children:<TextArea></TextArea>,span:3},
+        {key: '1',label: 'Employee IDNO',children:<Link to={`/employee/detail/${disciplineDetail.IDNO}`}>{disciplineDetail.IDNO}</Link>},
+        {key: '2',label: 'Employee Full Name',children:<>{disciplineDetail.fName + ' '+disciplineDetail.mName+' '+(disciplineDetail.lName?disciplineDetail.lName:'')}</>},
+        {key: '3',label: 'incidentDate',children:<>{FormatDay(disciplineDetail.incidentDate)}</>},
+        {key: '4',label: 'Description',children:<TextArea value={disciplineDetail.description}></TextArea>,span:3},
         {key: '5',label: 'Attachment',children:<Image/>,span:3},
         {key: '6',label: 'Witnesses',children:'',span:3},
         {key: '7',label: 'Employee Acknowledgment',children:'',span:3},

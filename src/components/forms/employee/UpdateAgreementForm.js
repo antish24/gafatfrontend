@@ -5,7 +5,7 @@ import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
 
-const NewAgreement = ({openModalFun, reload}) => {
+const UpdateAgreementForm = ({openModalFun, reload,id}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
@@ -27,13 +27,13 @@ const NewAgreement = ({openModalFun, reload}) => {
   };
 
   const branchOptions = branchData.length
-    ? branchData.map (branch => ({
-        value: branch.id,
-        label: branch.name,
-      }))
-    : [];
+  ? branchData.map(branch => ({
+    value: branch.id,
+    label: branch.name 
+  }))
+  : [];
 
-  useEffect (() => {
+  useEffect(() => {
     getBranchData ();
   }, []);
 
@@ -41,13 +41,11 @@ const NewAgreement = ({openModalFun, reload}) => {
   const [loadingDepartment, setLoadingDepartment] = useState (false);
   const [departmentId, setDepartmentId] = useState ('');
 
-  const getDepartmentData = async id => {
+  const getDepartmentData = async (id) => {
     setLoadingDepartment (true);
     form.resetFields (['department']);
     try {
-      const res = await axios.get (
-        `${BACKENDURL}/organzation/department/find?branchId=${id}`
-      );
+      const res = await axios.get (`${BACKENDURL}/organzation/department/find?branchId=${id}`);
       setLoadingDepartment (false);
       setDepartmentData (res.data.departments);
     } catch (error) {
@@ -63,23 +61,19 @@ const NewAgreement = ({openModalFun, reload}) => {
       }))
     : [];
 
-  useEffect (
-    () => {
-      getDepartmentData (branchId);
-    },
-    [branchId]
-  );
+  useEffect (() => {
+    getDepartmentData (branchId);
+  }, [branchId]);
 
   const [positionData, setPositionData] = useState ([]);
   const [loadingPosition, setLoadingPosition] = useState (false);
+  const [positionId, setPositionId] = useState ('');
 
-  const getPositionData = async id => {
+  const getPositionData = async (id) => {
     setLoadingPosition (true);
     form.resetFields (['position']);
     try {
-      const res = await axios.get (
-        `${BACKENDURL}/organzation/position/find?departmentId=${id}`
-      );
+      const res = await axios.get (`${BACKENDURL}/organzation/position/find?departmentId=${id}`);
       setLoadingPosition (false);
       setPositionData (res.data.positions);
     } catch (error) {
@@ -95,12 +89,9 @@ const NewAgreement = ({openModalFun, reload}) => {
       }))
     : [];
 
-  useEffect (
-    () => {
-      getPositionData (departmentId);
-    },
-    [departmentId]
-  );
+  useEffect(() => {
+    getPositionData (departmentId);
+  }, [departmentId]);
 
   const [articles, setArticles] = useState ([
     {
@@ -126,10 +117,11 @@ const NewAgreement = ({openModalFun, reload}) => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/employee/agreement/new`, {
+      const res = await axios.post (`${BACKENDURL}/employee/agreement/update`, {
         position: values.position,
         title: values.title,
         articles: articles,
+        id:id
       });
       reload ();
       setLoading (false);
@@ -145,12 +137,39 @@ const NewAgreement = ({openModalFun, reload}) => {
     console.log ('Failed:', errorInfo);
   };
 
+
+  const [agreementData,setagreementData]=useState([])
+
+  const getagreementData=async()=>{
+    try {
+      const res = await axios.get(`${BACKENDURL}/employee/agreement/detail?id=${id}`);
+      setagreementData(res.data.agreement)
+      setArticles(res.data.articles.map(question => ({
+        name: question.name, 
+        description: question.description,
+      })))
+    } catch (error) {
+      openNotification('error', error.response.data.message, 3, 'red');
+    }
+  }
+
+  useEffect(()=>{
+    getagreementData()
+
+    return setagreementData([])
+  },[id])
   return (
+    <div>
+    {Object.keys(agreementData).length > 0 ? (
     <Form
       layout="vertical"
       onFinish={onFinish}
       form={form}
       onFinishFailed={onFinishFailed}
+      initialValues={agreementData}
+      disabled={loading}
+      autoComplete="on"
+      autoFocus="true"
     >
       <div
         style={{
@@ -159,7 +178,7 @@ const NewAgreement = ({openModalFun, reload}) => {
           flexWrap: 'wrap',
         }}
       >
-        <Form.Item
+<Form.Item
           style={{margin: '5px 0', width: '34%'}}
           label="Branch"
           rules={[
@@ -172,7 +191,7 @@ const NewAgreement = ({openModalFun, reload}) => {
         >
           <Select
             placeholder="Search to Select"
-            onChange={e => setBranchId (e)}
+            onChange={(e)=>setBranchId(e)}
             options={branchOptions}
             loading={loadingBranch}
             disabled={loadingBranch}
@@ -191,7 +210,7 @@ const NewAgreement = ({openModalFun, reload}) => {
           name="department"
         >
           <Select
-            onChange={e => setDepartmentId (e)}
+            onChange={(e)=>setDepartmentId(e)}
             placeholder="Search to Select"
             options={departmentOptions}
             loading={loadingDepartment}
@@ -199,7 +218,7 @@ const NewAgreement = ({openModalFun, reload}) => {
           />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px 0', width: '35%'}}
+          style={{margin: '5px 0', width:'35%'}}
           label="Position"
           rules={[
             {
@@ -211,6 +230,7 @@ const NewAgreement = ({openModalFun, reload}) => {
         >
           <Select
             placeholder="Search to Select"
+            onChange={(e)=>setPositionId(e)}
             options={positionOptions}
             loading={loadingPosition}
             disabled={loadingPosition}
@@ -248,12 +268,12 @@ const NewAgreement = ({openModalFun, reload}) => {
             >
               <Input
                 placeholder="Right of Employee"
-                value={article.articleTitle}
+                value={article.name}
                 onChange={e => {
                   const value = e.target.value;
                   setArticles (prev => {
                     const updatedarticles = [...prev];
-                    updatedarticles[index].articleTitle = value;
+                    updatedarticles[index].name = value;
                     return updatedarticles;
                   });
                 }}
@@ -304,8 +324,11 @@ const NewAgreement = ({openModalFun, reload}) => {
           Submit
         </Button>
       </Form.Item>
-    </Form>
+    </Form>): (
+      <p>Loading Agreement data...</p>
+    )}
+    </div>
   );
 };
 
-export default NewAgreement;
+export default UpdateAgreementForm;
