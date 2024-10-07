@@ -4,7 +4,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { AlertContext } from '../../../context/AlertContext';
 import { BACKENDURL } from '../../../helper/Urls';
 
-const UpdateTimeSheetForm = ({openModalFun,reload,id}) => {
+const UpdateTimeSheetForm = ({openModalFun,id}) => {
   const {openNotification} = useContext (AlertContext);
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm();
@@ -19,7 +19,7 @@ const UpdateTimeSheetForm = ({openModalFun,reload,id}) => {
         specialPH: values.specialPH,
         OT32: values.OT32,
       });
-      reload()
+      // reload()
       setLoading (false);
       openModalFun(false)
       openNotification ('success', res.data.message, 3, 'green');

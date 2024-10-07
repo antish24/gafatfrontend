@@ -81,7 +81,7 @@ const NewProjectForm = ({ reload, openModalFun }) => {
       <Form.Item
         name="site"
         label="Site"
-        style={{width:'58%',margin:0}}
+        style={{width:'48%',margin:0}}
         rules={[{ required: true, message: 'Please enter Site' }]}
       >
         <Input />
@@ -96,8 +96,8 @@ const NewProjectForm = ({ reload, openModalFun }) => {
       </Form.Item>
       <Form.Item
         name="price"
-        style={{width:'20%',margin:0}}
-        label="Price"
+        style={{width:'30%',margin:0}}
+        label="Price per Security"
         rules={[{ required: true, message: 'Please enter Price Per Employee' }]}
       >
         <Input type='number'/>
@@ -126,7 +126,11 @@ const NewProjectForm = ({ reload, openModalFun }) => {
         label="attachment"
         style={{width:'100%',margin:0}}
       >
-        <Dragger multiple={false} maxCount={1}>
+        <Dragger
+        name='file'
+        action={`${BACKENDURL}/upload/new`
+        }
+        multiple={false} maxCount={1}>
           <p className="ant-upload-drag-icon">
             <FaUpload />
           </p>

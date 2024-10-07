@@ -9,6 +9,135 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
   const [loading, setLoading] = useState (false);
   const [form] = Form.useForm ();
 
+
+  const [branchData, setBranchData] = useState ([]);
+  const [branchId, setBranchId] = useState ('');
+  const [loadingBranch, setLoadingBranch] = useState (false);
+
+  const [departmentData, setDepartmentData] = useState ([]);
+  const [departmentId, setDepartmentId] = useState ();
+  const [loadingDepartment, setLoadingDepartment] = useState (false);
+
+  const [positionData, setPositionData] = useState ([]);
+  const [positionId, setPositionId] = useState ();
+  const [loadingPosition, setLoadingPosition] = useState (false);
+
+  const [employeeData, setEmployeeData] = useState ([]);
+  const [loadingEmployee, setLoadingEmployee] = useState (false);
+
+  const getBranchData = async () => {
+    setLoadingBranch (true);
+    try {
+      const res = await axios.get (`${BACKENDURL}/organzation/branch/all`);
+      setLoadingBranch (false);
+      setBranchData (res.data.branchs);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingBranch (false);
+    }
+  };
+
+  const branchOptions = branchData
+    ? branchData.map (branch => ({
+        value: branch.id,
+        label: branch.name,
+      }))
+    : [];
+
+  useEffect (() => {
+    getBranchData ();
+  }, []);
+
+  //employee
+
+  const getEmployeeData = async id => {
+    setLoadingEmployee (true);
+    try {
+      const res = await axios.get (
+        `${BACKENDURL}/employee/find?position=${id}`
+      );
+      setLoadingEmployee (false);
+      setEmployeeData (res.data.employees);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingEmployee (false);
+    }
+  };
+
+  const EmployeeOptions = employeeData
+    ? employeeData.map (branch => ({
+        value: branch.id,
+        label: branch.IDNO + ' ' + branch.fName + ' ' + branch.mName,
+      }))
+    : [];
+
+  useEffect (
+    () => {
+      getEmployeeData (positionId);
+    },
+    [positionId]
+  );
+
+  const getDepartmentData = async id => {
+    setLoadingDepartment (true);
+    form.resetFields (['department','employee']);
+    try {
+      const res = await axios.get (
+        `${BACKENDURL}/organzation/department/find?branchId=${id}`
+      );
+      setLoadingDepartment (false);
+      setDepartmentData (res.data.departments);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingDepartment (false);
+    }
+  };
+
+  const departmentOptions = departmentData
+    ? departmentData.map (department => ({
+        value: department.id,
+        label: department.name,
+      }))
+    : [];
+
+  useEffect (
+    () => {
+      getDepartmentData (branchId);
+    },
+    [branchId]
+  );
+
+  const getPositionData = async id => {
+    setLoadingPosition (true);
+    form.resetFields (['position', 'employee']);
+    try {
+      const res = await axios.get (
+        `${BACKENDURL}/organzation/position/find?departmentId=${id}`
+      );
+      setLoadingPosition (false);
+      setPositionData (res.data.positions);
+    } catch (error) {
+      openNotification ('error', error.response.data.message, 3, 'red');
+      setLoadingPosition (false);
+    }
+  };
+
+  const positionOptions = positionData
+    ? positionData.map (department => ({
+        value: department.id,
+        label: department.name,
+      }))
+    : [];
+
+  useEffect (
+    () => {
+      getPositionData (departmentId);
+    },
+    [departmentId]
+  );
+
+
+
   const onFinish = async values => {
     setLoading (true);
     try {
@@ -32,8 +161,6 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
 
   const [SalaryComponentData, setSalaryComponentData] = useState ([]);
   const [loadingSalaryCom, setLoadingSalaryCom] = useState (false);
-  const [employeesData, setEmployeeData] = useState ([]);
-  const [loadingEmployee, setLoadingEmployee] = useState (false);
   const [assignmentMethod, setAssignmentMethod] = useState ('');
 
   const getSalaryComponentData = async () => {
@@ -55,34 +182,9 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
       }))
     : [];
 
-  const getEmployeeData = async () => {
-    setLoadingEmployee (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/employee/names`);
-      setLoadingEmployee (false);
-      setEmployeeData (res.data.employees);
-    } catch (error) {
-      openNotification ('error', error.response.data.message, 3, 'red');
-      setEmployeeData (false);
-    }
-  };
-
-  const employeesOpt = employeesData.length
-    ? employeesData.map (branch => ({
-        value: branch.id,
-        label: branch.IDNO +
-          '-' +
-          branch.fName +
-          ' ' +
-          branch.mName +
-          ' ' +
-          (branch.lName ? branch.lName : ''),
-      }))
-    : [];
 
   useEffect (() => {
     getSalaryComponentData ();
-    getEmployeeData ();
   }, []);
 
   return (
@@ -99,44 +201,6 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
           flexWrap: 'wrap',
         }}
       >
-        <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Branch"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Branch',
-            },
-          ]}
-          name="branch"
-        >
-          <Select
-            placeholder="Search to Select"
-            options={employeesOpt}
-            loading={loadingEmployee}
-            disabled={loadingEmployee}
-          />
-        </Form.Item>
-
-        <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Department"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Department',
-            },
-          ]}
-          name="department"
-        >
-          <Select
-            placeholder="Search to Select"
-            options={employeesOpt}
-            loading={loadingEmployee}
-            disabled={loadingEmployee}
-          />
-        </Form.Item>
-
         <Form.Item
           style={{margin: '5px', width: '100%'}}
           label="Assignment Method"
@@ -163,49 +227,88 @@ const NewAssignSalaryStructureForm = ({openModalFun, reload}) => {
             ]}
           />
         </Form.Item>
+        <Form.Item
+          style={{margin: '5px', width: '47%'}}
+          label="Branch"
+          name="branch"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Branch',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Search to Select"
+            onChange={e => setBranchId (e)}
+            options={branchOptions}
+            loading={loadingBranch}
+            disabled={loadingBranch}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px', width: '47%'}}
+          label="Department"
+          name="department"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Department',
+            },
+          ]}
+        >
+          <Select
+            placeholder="Search to Select"
+            onChange={e => setDepartmentId (e)}
+            options={departmentOptions}
+            loading={loadingDepartment}
+            disabled={loadingDepartment}
+          />
+        </Form.Item>
 
         <Form.Item
-          style={{margin: '5px', width:assignmentMethod==='Position'?"100%":'35%'}}
+          style={{margin: '5px 0', width:'100%'}}
           label="Position"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Position',
-            },
-          ]}
           name="position"
-        >
-          <Select
-            placeholder="Search to Select"
-            options={employeesOpt}
-            loading={loadingEmployee}
-            disabled={loadingEmployee}
-          />
-        </Form.Item>
-
-        <Form.Item
-          style={{margin: '5px', width: '60%',display:assignmentMethod==='Position'&&'none'}}
-          label="Employee"
           rules={[
             {
               required: true,
-              message: 'Please input Name',
+              message: 'Please input Department',
             },
           ]}
-          name="employee"
         >
           <Select
             placeholder="Search to Select"
-            mode='multiple'
+            onChange={e => setPositionId (e)}
+            options={positionOptions}
+            loading={loadingPosition}
+            disabled={loadingPosition}
+          />
+        </Form.Item>
+
+        <Form.Item
+          style={{margin: '5px 0', width:'100%',display:assignmentMethod==='Position'?'none':'block'}}
+          label="Employee"
+          name="employee"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Department',
+            },
+          ]}
+        >
+          <Select
+            mode="multiple"
+            placeholder="Search to Select"
             maxTagCount='responsive'
-            options={employeesOpt}
+            options={EmployeeOptions}
             loading={loadingEmployee}
             disabled={loadingEmployee}
           />
         </Form.Item>
 
         <Form.Item
-          style={{margin: '0', width: '100%'}}
+          style={{margin: '0', width:'100%'}}
           name="structure"
           label="Structure"
           rules={[{required: true, message: 'Structure'}]}

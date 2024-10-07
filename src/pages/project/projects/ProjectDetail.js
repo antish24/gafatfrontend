@@ -86,10 +86,10 @@ const ProjectDetail = () => {
             {project.company}
           </Descriptions.Item>
           <Descriptions.Item label="From">
-            {project.startDate}
+            {FormatDay(project.startDate)}
           </Descriptions.Item>
           <Descriptions.Item label="To">{FormatDay(project.endDate)}</Descriptions.Item>
-          <Descriptions.Item label="Price">{FormatDay(project.price)}</Descriptions.Item>
+          <Descriptions.Item label="Price">{project.price}</Descriptions.Item>
           <Descriptions.Item label="Number of Employees">
             {project.noSecurity}
           </Descriptions.Item>
