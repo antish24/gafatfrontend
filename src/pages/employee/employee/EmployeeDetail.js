@@ -60,7 +60,7 @@ const EmployeeDetail = () => {
       label: 'ID Front',
       children: (
         <Image
-          src={`${BACKENDURL}/uploads/new/${personalInfo.IDFront}`}
+          src={`${BACKENDURL}/uploads/new/${personalInfo.IDF}`}
           alt="ID Front"
           width={30}
           height={30}
@@ -76,7 +76,7 @@ const EmployeeDetail = () => {
       label: 'ID Back',
       children: (
         <Image
-          src={`${BACKENDURL}/uploads/new/${personalInfo.IDBack}`}
+          src={`${BACKENDURL}/uploads/new/${personalInfo.IDB}`}
           alt="ID Back"
           width={30}
           height={30}
@@ -98,7 +98,7 @@ const EmployeeDetail = () => {
     {
       key: '5',
       label: 'Date of Birth',
-      children: '02 jun 1889',
+      children: personalInfo.dateOfBirth,
       name: 'dateOfBirth',
       type: 'Date',
       width: '30%',
@@ -106,7 +106,7 @@ const EmployeeDetail = () => {
     {
       key: '6',
       label: 'Gender',
-      children: 'Male',
+      children: personalInfo.sex,
       name: 'sex',
       type: 'Select',
       options: [
@@ -118,7 +118,7 @@ const EmployeeDetail = () => {
     {
       key: '7',
       label: 'Nationality',
-      children: 'Ethiopian',
+      children: personalInfo.nationality,
       name: 'nationality',
       type: 'Input',
       width: '40%',
@@ -126,7 +126,7 @@ const EmployeeDetail = () => {
     {
       key: '8',
       label: 'City / Regional',
-      children: 'Amhara',
+      children: personalInfo.city,
       name: 'city',
       type: 'Input',
       width: '33%',
@@ -134,7 +134,7 @@ const EmployeeDetail = () => {
     {
       key: '9',
       label: 'Sub City / Zone',
-      children: '7',
+      children: personalInfo.subCity,
       name: 'subCity',
       type: 'Input',
       width: '35%',
@@ -142,15 +142,15 @@ const EmployeeDetail = () => {
     {
       key: '10',
       label: 'Wereda',
-      children: '09',
+      children: personalInfo.wereda,
       name: 'wereda',
       type: 'Input',
       width: '25%',
     },
     {
       key: '11',
+      children: personalInfo.kebele,
       label: 'Kebele',
-      children: '3',
       name: 'kebele',
       type: 'Input',
       width: '17%',
@@ -158,7 +158,7 @@ const EmployeeDetail = () => {
     {
       key: '11',
       label: 'House No',
-      children: 'New',
+      children: personalInfo.houseNo,
       name: 'houseNo',
       type: 'Input',
       width: '20%',
@@ -166,7 +166,7 @@ const EmployeeDetail = () => {
     {
       key: '12',
       label: 'Email',
-      children: 'abebebalch@gmail.com',
+      children: personalInfo.email,
       name: 'email',
       type: 'Input',
       width: '50%',
@@ -175,15 +175,15 @@ const EmployeeDetail = () => {
     {
       key: '13',
       label: 'Phone',
-      children: '0911755025',
+      children: personalInfo.phone,
       name: 'phone',
       type: 'Input',
       width: '25%',
     },
     {
       key: '14',
+      children: personalInfo.otherPhone,
       label: 'Optional Phone',
-      children: '0911755023',
       name: 'otherPhone',
       type: 'Input',
       notRequired: true,
@@ -192,20 +192,21 @@ const EmployeeDetail = () => {
   ];
 
   const WorkInfoData = [
-    {key: '1', label: 'Branch', children: 'Gonder'},
-    {key: '2', label: 'Department', children: 'IT'},
-    {key: '3', label: 'Postion', children: 'Software Dev'},
-    {key: '4', label: 'Employee Type', children: 'Full Time'},
-    {key: '4', label: 'Shift', children: 'Normal'},
-    {key: '5', label: 'Start Date', children: '02 jun 1889'},
-    {key: '6', label: 'Salary', children: '2000'},
+    {key: '1', label: 'Branch',name:'branch',type:'Input',width:"24%" ,children:personalInfo.branch},
+    {key: '2', label: 'Department', name: 'department',type:'Input',width:"24%" ,children:personalInfo.department},
+    {key: '3', label: 'Postion',name:'position',type:'Input',width:"24%" ,children:personalInfo.position},
+    {key: '4', label: 'Employee Type', name: 'employementType',type:'Input',width:"24%" ,children:personalInfo.employementType},
+    {key: '7', label: 'Shift',  name: 'shift',type:'Input',width:"24%" ,children:personalInfo.shift},
+    {key: '5', label: 'Start Date', name: 'startDate',type:'Input',width:"24%" ,children:personalInfo.startDate},
+    {key: '6', label: 'Salary', name: 'salary',type:'Input',width:"24%" ,children:personalInfo.salary},
     {
-      key: '7',
+      key: '8',
       label: 'Agreement',
+      name: 'agreement',type:'Input',width:"24%" ,
       children: (
         <a
           target="_blank"
-          href={`${BACKENDURL}/uploads/bulletproof flyer.pdf`}
+          href={`${BACKENDURL}/uploads/new/${personalInfo.agreement}`}
           alt="profile"
         >
           View
@@ -213,27 +214,27 @@ const EmployeeDetail = () => {
       ),
       span: 2,
     },
-    {key: '8', label: 'Bank Name', children: 'CBE'},
-    {key: '9', label: 'Account Number', children: '1000152677889'},
-    {key: '10', label: 'Tin', children: '00457281'},
+    {key: '9', label: 'Bank Name',name: 'bank',type:'Input',width:"24%" , children: personalInfo.bankName},
+    {key: '11', label: 'Account Number',name: 'account',type:'Input',width:"24%" , children:personalInfo.bankAccount},
+    {key: '10', label: 'Tin',name: 'TIN',type:'Input',width:"24%" , children:personalInfo.TIN},
   ];
 
   const PersonalInfoData = [
-    {key: '1', label: 'Marital status', children: 'Single'},
-    {key: '2', label: 'Religion', children: 'Ortodox'},
-    {key: '3', label: 'Ethnic Group', children: 'Afar'},
-    {key: '6', label: 'Emergency Contact Name', children: 'Abrham Welede'},
-    {key: '7', label: 'Emergency Contact Phone', children: '0910778899'},
-    {key: '8', label: 'EmergencyContact Relation', children: 'Father'},
-    {key: '5', label: 'Family', children: '3'},
-    {key: '4', label: 'Blood Type', children: 'O+'},
+    {key: '1', label: 'Marital status', children: personalInfo.maritalStatus},
+    {key: '2', label: 'Religion', children:  personalInfo.religion},
+    {key: '3', label: 'Ethnic Group', children: personalInfo.ethnicGroup},
+    {key: '6', label: 'Emergency Contact Name', children:  personalInfo.emergencyContactName},
+    {key: '7', label: 'Emergency Contact Phone', children:  personalInfo.emergencyContactPhone},
+    {key: '8', label: 'EmergencyContact Relation', children: personalInfo.emergencyContactRelation},
+    {key: '5', label: 'Family', children:  personalInfo.familyBg},
+    {key: '4', label: 'Blood Type', children: personalInfo.bloodGroup},
     {
       key: '9',
       label: 'Medical Report',
       children: (
         <a
           target="_blank"
-          href={`${BACKENDURL}/uploads/bulletproof flyer.pdf`}
+          href={`${BACKENDURL}/uploads/new/${ personalInfo.medicalReport}`}
           alt="profile"
         >
           View
@@ -244,12 +245,14 @@ const EmployeeDetail = () => {
       key: '10',
       label: 'FingerPrint Report',
       children: (
-        <Image
-          src={`${BACKENDURL}/uploads/${personalInfo.profile}`}
-          alt="profile"
-          width={30}
-          height={30}
-        />
+        // <a
+        //   target="_blank"
+        //   href={`${BACKENDURL}/uploads/fingerprint/${personalInfo.fingerPrintReport}`}
+        //   alt="profile"
+        // >
+        //   View
+        // </a>
+        <>{personalInfo.fingerPrintReport.split('.')[0]}</>
       ),
     },
   ];

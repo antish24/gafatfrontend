@@ -60,7 +60,7 @@ const NewInventoryForm = ({ reload, openModalFun }) => {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={loading}>
+        <Button type="primary" htmlType="submit" loading={loading} disabled={loading}>
           Submit
         </Button>
       </Form.Item>
