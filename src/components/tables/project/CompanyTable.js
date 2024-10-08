@@ -59,13 +59,13 @@ const CompanyTable = ({loading,companyData}) => {
       title: 'License',
       dataIndex: 'license',
       key: 'license',
-      render: (r) => r ? <Image width={30} height={30} src={`${BACKENDURL}/uploads/${r}`}/> : 'No Profile',
+      render: (r) => r ? <Image width={30} height={30} src={`${BACKENDURL}/uploads/new/${r}`}/> : 'No license',
     },
     {
       title: 'Profile',
       dataIndex: 'profile',
       key: 'profile',
-      render: (r) => r ? <Image width={30} height={30} src={`${BACKENDURL}/uploads/${r}`}/> : 'No Profile',
+      render: (r) => r ? <Image width={30} height={30} src={`${BACKENDURL}/uploads/new/${r}`}/> : 'No Profile',
     },
     
   ];

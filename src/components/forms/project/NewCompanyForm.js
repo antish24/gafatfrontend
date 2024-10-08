@@ -230,7 +230,7 @@ const NewCompanyForm = ({reload, openModalFun}) => {
             accept="image/*"
             onChange={e => {
               if (e.file.status === 'done')
-                setProfilePic (e.file.name);
+                setProfilePic (e.file.response.name.filename);
             }}
             multiple={false}
             maxCount={1}

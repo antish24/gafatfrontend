@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Button } from 'antd';
 import ModalForm from '../../modal/Modal'; // Adjust if needed
@@ -12,7 +12,7 @@ const TenderPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   // Fetch tender data from the backend
-  const getTenderData = useCallback(async () => {
+  const getTenderData =async () => {
     setLoading(true);
     try {
       const res = await axios.get(`${BACKENDURL}/tender/all`); // Adjust URL if needed
@@ -23,13 +23,11 @@ const TenderPage = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
-  
+  }
 
-  // Fetch tender data when the component mounts
   useEffect(() => {
     getTenderData();
-  }, [getTenderData]);
+  }, []);
 
   return (
     <div>
@@ -48,7 +46,7 @@ const TenderPage = () => {
         />
       </div>
       {/* Pass the fetched tender data and loading state to TenderTable */}
-      <TenderTable loading={loading} datas={tenderData} />
+      <TenderTable loading={loading} reload={getTenderData} datas={tenderData} />
     </div>
   );
 };

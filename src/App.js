@@ -65,6 +65,7 @@ import DocPage from './pages/doc/DocPage';
 import DocReportPage from './pages/doc/DocReportPage';
 import OrganzationInfo from './pages/organzation/OrganzationInfo';
 import PromotionPage from './pages/PromotionPage';
+import LeaveReportPage from './pages/leave/LeaveReportPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -218,6 +219,10 @@ const App = () => {
         {
           key: '63',
           label: <Link to={'/leave/balance'}><BsCalendarDate/> Balance</Link>,
+        },
+        {
+          key: '64',
+          label: <Link to={'/leave/report'}><MdReport/> Report</Link>,
         },
       ],
     },
@@ -648,6 +653,7 @@ const App = () => {
 
             <Route element={<ManageLeavePage />} path="/leave/leaves" />
             <Route element={<LeaveApplicationPage />} path="/leave/application" />
+            <Route element={<LeaveReportPage />} path="/leave/report" />
             <Route element={<LeaveBalancePage />} path="/leave/balance" />
 
             <Route element={<InventoryPage />} path="/asset/inventorypage" />

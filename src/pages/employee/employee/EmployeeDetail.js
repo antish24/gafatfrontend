@@ -12,6 +12,7 @@ import {BACKENDURL} from '../../../helper/Urls';
 import {AlertContext} from '../../../context/AlertContext';
 import axios from 'axios';
 import {useParams} from 'react-router-dom';
+import { FormatDay } from '../../../helper/FormateDay';
 
 const EmployeeDetail = () => {
   const {openNotification} = useContext (AlertContext);
@@ -46,7 +47,7 @@ const EmployeeDetail = () => {
         <Image
           src={`${BACKENDURL}/uploads/new/${personalInfo.profile}`}
           alt="profile"
-          width={30}
+          width={100}
           height={30}
         />
       ),
@@ -62,7 +63,7 @@ const EmployeeDetail = () => {
         <Image
           src={`${BACKENDURL}/uploads/new/${personalInfo.IDF}`}
           alt="ID Front"
-          width={30}
+          width={100}
           height={30}
         />
       ),
@@ -78,7 +79,7 @@ const EmployeeDetail = () => {
         <Image
           src={`${BACKENDURL}/uploads/new/${personalInfo.IDB}`}
           alt="ID Back"
-          width={30}
+          width={100}
           height={30}
         />
       ),
@@ -98,7 +99,7 @@ const EmployeeDetail = () => {
     {
       key: '5',
       label: 'Date of Birth',
-      children: personalInfo.dateOfBirth,
+      children: FormatDay(personalInfo.dateOfBirth),
       name: 'dateOfBirth',
       type: 'Date',
       width: '30%',
@@ -245,14 +246,13 @@ const EmployeeDetail = () => {
       key: '10',
       label: 'FingerPrint Report',
       children: (
-        // <a
-        //   target="_blank"
-        //   href={`${BACKENDURL}/uploads/fingerprint/${personalInfo.fingerPrintReport}`}
-        //   alt="profile"
-        // >
-        //   View
-        // </a>
-        <>{personalInfo.fingerPrintReport.split('.')[0]}</>
+        <a
+          target="_blank"
+          href={`${BACKENDURL}/uploads/fingerprint/${personalInfo.fingerPrintReport}`}
+          alt="finger report"
+        >
+          View
+        </a>
       ),
     },
   ];
