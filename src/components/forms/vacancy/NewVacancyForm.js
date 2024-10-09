@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, Select} from 'antd';
+import {Button, DatePicker, Form, Input, InputNumber, Select} from 'antd';
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
@@ -240,7 +240,7 @@ const NewVancayForm = ({openModalFun, reload}) => {
           <Input />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '47%'}}
+          style={{margin: '5px 0', width: '25%'}}
           label="Vacancy Type"
           name="vacancyType"
           rules={[
@@ -265,8 +265,8 @@ const NewVancayForm = ({openModalFun, reload}) => {
           />
         </Form.Item>
         <Form.Item
-          style={{margin: '5px', width: '47%'}}
-          label="Employement Type"
+          style={{margin: '5px 0', width: '25%'}}
+          label="Employement"
           name="employementType"
           rules={[
             {
@@ -292,6 +292,32 @@ const NewVancayForm = ({openModalFun, reload}) => {
               },
             ]}
           />
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '24%'}}
+          label="Min Age"
+          name="minAge"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Min Age',
+            },
+          ]}
+        >
+          <InputNumber/>
+        </Form.Item>
+        <Form.Item
+          style={{margin: '5px 0', width: '24%'}}
+          label="Max Age"
+          name="maxAge"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Max Age',
+            },
+          ]}
+        >
+          <InputNumber/>
         </Form.Item>
         <Form.Item
           style={{margin: '5px', width: '40%'}}

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { Link, Route, Routes, useLocation} from 'react-router-dom';
 import {Layout,theme,Breadcrumb,Button, Menu, Tooltip, Dropdown, Badge, Tabs, Spin,} from 'antd';
 
-import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
+import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGear, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
 import { MdAccountBalance, MdTimer,MdAirlines, MdAnalytics, MdBuild, MdDashboard, MdLocationCity, MdOutlineDateRange, MdOutlineSupportAgent, MdOutlineWork, MdOutlineWorkHistory, MdSettings, MdWork, MdReport, MdStorage, MdDocumentScanner, MdPictureAsPdf, MdMessage, MdAccountBox } from 'react-icons/md';
 import { PiOfficeChair } from 'react-icons/pi';
 
@@ -66,6 +66,7 @@ import DocReportPage from './pages/doc/DocReportPage';
 import OrganzationInfo from './pages/organzation/OrganzationInfo';
 import PromotionPage from './pages/PromotionPage';
 import LeaveReportPage from './pages/leave/LeaveReportPage';
+import EmployeeReportPage from './pages/employee/report/EmployeeReportPage';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -163,6 +164,10 @@ const App = () => {
             },
           ],
         },
+        {
+          key: '45',
+          label: <Link to={'/employee/report'}><HiOutlineDocumentReport/> Reports</Link>,
+        },
       ],
     },
     {
@@ -222,7 +227,7 @@ const App = () => {
         },
         {
           key: '64',
-          label: <Link to={'/leave/report'}><MdReport/> Report</Link>,
+          label: <Link to={'/leave/report'}><HiOutlineDocumentReport/> Report</Link>,
         },
       ],
     },
@@ -368,11 +373,11 @@ const App = () => {
       label: <Link to={'/promotion'}>Promotion</Link>,
       icon: <SiQuantconnect size={20} />,
     },
-    {
-      key: '13',
-      label: <Link to={'/setting'}>Setting</Link>,
-      icon: <MdBuild size={20} />,
-    },
+    // {
+    //   key: '13',
+    //   label: <Link to={'/setting'}>Setting</Link>,
+    //   icon: <MdBuild size={20} />,
+    // },
     {
       key: '14',
       label: <Link to={'/support'}>Help & Support</Link>,
@@ -645,6 +650,7 @@ const App = () => {
 
             <Route element={<EmployeePage />} path="/employee/list" />
             <Route element={<EmployeeDetail />} path="/employee/detail/:id" />
+            <Route element={<EmployeeReportPage />} path="/employee/report" />
             <Route element={<AgreementPage />} path="/employee/agreement" />
             <Route element={<DisciplinePage />} path="/discipline/list" />
             <Route element={<DisciplineDetail />} path="/discipline/detail/:id" />

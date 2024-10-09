@@ -2,7 +2,6 @@ import React, {useRef, useState} from 'react';
 import {
   Badge,
   Button,
-  DatePicker,
   Input,
   Space,
   Table,
@@ -10,10 +9,14 @@ import {
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import {FaFileCsv} from 'react-icons/fa6';
-import { MdFilterAltOff, MdSwapHoriz} from 'react-icons/md';
+import { MdFilterAltOff, MdList, MdSwapHoriz} from 'react-icons/md';
 import {CSVLink} from 'react-csv';
 import {FormatDay} from '../../../helper/FormateDay';
 import { Link } from 'react-router-dom';
+import ModalForm from '../../../modal/Modal';
+import RemoveEmployee from '../../forms/project/RemoveEmployee';
+import SwapEmployee from '../../forms/project/SwapEmployee';
+import EmployeeLog from '../../forms/project/EmployeeLog';
 
 const EmployeeProjectTable = ({userData, loading, reload}) => {
   const [searchedColumn, setSearchedColumn] = useState ('');
@@ -132,6 +135,10 @@ const EmployeeProjectTable = ({userData, loading, reload}) => {
     setFilteredData(userData);
   };
   
+  const [modalOpen, setModalOpen] = useState (false);
+  const [modalTitle, setModalTitle] = useState ('');
+  const [modalContent, setModalContent] = useState ([]);
+
   const columns = [
     {
       title: 'IDNO',
@@ -263,15 +270,56 @@ const EmployeeProjectTable = ({userData, loading, reload}) => {
       key: 'operation',
       render: r => (
           <Space>
-            <Button>Remove</Button>
-            <Button><MdSwapHoriz size={25}/></Button>
+            <Button 
+            onClick={()=>{
+              setModalContent(<RemoveEmployee
+                id={r.IDNO}
+                reload={() => reload ()}
+                openModalFun={e => setModalOpen (e)}
+              />)
+              ;
+              setModalOpen(true);
+              setModalTitle(`Remove Employee ${r.IDNO}`);
+            }}
+            >Remove</Button>
+            <Button
+            onClick={()=>{
+              setModalContent(<SwapEmployee
+                reload={() => reload ()}
+                openModalFun={e => setModalOpen (e)}
+              />)
+              ;
+              setModalOpen(true);
+              setModalTitle(`Swap Employee ${r.IDNO}`);
+            }}
+            ><MdSwapHoriz size={25}/></Button>
+            <Tooltip title='view log' trigger='hover'>
+            <Button
+            onClick={()=>{
+              setModalContent(<EmployeeLog
+                reload={() => reload ()}
+                openModalFun={e => setModalOpen (e)}
+              />)
+              ;
+              setModalOpen(true);
+              setModalTitle(`Employee ${r.IDNO} Log`);
+            }}
+            ><MdList/></Button>
+              </Tooltip>
           </Space>
       ),
     },
   ];
 
+
   return (
     <div>
+      <ModalForm
+        open={modalOpen}
+        close={() => setModalOpen (false)}
+        title={modalTitle}
+        content={modalContent}
+      />
       <div style={{display:'flex',width:"100%",gap:'5px',marginBottom:"5px",justifyContent:'flex-end'}}>
       <Button onClick={reload} loading={loading} type='primary'>Reload</Button>
       <CSVLink
