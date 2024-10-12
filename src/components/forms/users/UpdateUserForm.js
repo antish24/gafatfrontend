@@ -1,4 +1,4 @@
-import {Button, Form, Input, Select} from 'antd';
+import {Button, DatePicker, Form, Input, Select} from 'antd';
 import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import { AlertContext } from '../../../context/AlertContext';
@@ -13,11 +13,10 @@ const UpdateUserForm = ({openModalFun,reload,id}) => {
     setLoading (true);
     try {
       const res = await axios.post (`${BACKENDURL}/users/update`,{
+        userName: values.userName,
         email: values.email,
-        phone: values.phone,
-        gender: values.sex,
-        fullname: values.fullname,
         access: values.access,
+        tasks: values.tasks,
       });
       reload()
       setLoading (false);
@@ -82,46 +81,86 @@ const UpdateUserForm = ({openModalFun,reload,id}) => {
 
       <Form.Item
         style={{margin: '5px'}}
-        label="fullname"
+        label="username"
         rules={[
           {
             required: true,
             message: 'Please input fullname',
           },
         ]}
-        name="fullname"
+        name="userName"
       >
         <Input />
       </Form.Item>
 
       <Form.Item
-        style={{margin: '5px'}}
-        label="Gender"
-        name="gender"
-        rules={[
-          {
-            required: true,
-            message: 'Please input gender',
-          },
-        ]}
-      >
-        <Select
+          style={{margin: '5px 0', width: '100%'}}
+          label="Tasks"
+          rules={[
+            {
+              required: true,
+              message: 'Please input Tasks',
+            },
+          ]}
+          name="tasks"
+        >
+          <Select
+            showSearch
+            mode='multiple'
+            maxTagCount='responsive'
             placeholder="Search to Select"
+            optionFilterProp="children"
             options={[
               {
-                value: 'Male',
-                label: 'Male',
+                value: 'Full',
+                label: 'Full System Access',
               },
               {
-                value: 'Female',
-                label: 'Female',
+                value: 'Employee',
+                label: 'Employee',
+              },
+              {
+                value: 'Vacancy',
+                label: 'Vacancy',
+              },
+              {
+                value: 'Organzation',
+                label: 'Organzation',
+              },
+              {
+                value: 'Project',
+                label: 'Project',
+              },
+              {
+                value: 'Leave',
+                label: 'leave',
+              },
+              {
+                value: 'Asset',
+                label: 'Asset',
+              },
+              {
+                value: 'Attendance',
+                label: 'Attendance',
+              },
+              {
+                value: 'Payroll',
+                label: 'Payroll',
+              },
+              {
+                value: 'Daily Report',
+                label: 'Daily Report',
+              },
+              {
+                value: 'Doc',
+                label: 'Doc',
               },
             ]}
           />
-      </Form.Item>
+        </Form.Item>
 
-      <Form.Item
-          style={{margin: '5px'}}
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
           label="Access"
           rules={[
             {
@@ -141,34 +180,24 @@ const UpdateUserForm = ({openModalFun,reload,id}) => {
             }
             options={[
               {
-                value: 'R',
+                value: 'Read',
                 label: 'Read',
               },
               {
-                value: 'RW',
-                label: 'Read Write',
-              },
-              {
-                value: 'Full',
-                label: 'Full Access',
+                value: 'Write',
+                label: 'Write',
               },
             ]}
           />
         </Form.Item>
-      <Form.Item
-        style={{margin: '5px'}}
-        label="Phone"
-        rules={[
-          {
-            required: true,
-            message: 'Please input Phone',
-          },
-        ]}
-        name="phone"
-      >
-        <Input />
-      </Form.Item>
-
+        
+        <Form.Item
+          style={{margin: '5px 0', width: '49%'}}
+          label="Effective Till"
+          name="effectiveTill"
+        >
+          <DatePicker style={{width:'100%'}}/>
+        </Form.Item>
       </div>
       <Form.Item
         style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}

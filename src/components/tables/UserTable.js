@@ -9,6 +9,7 @@ import UpdateUserForm from '../forms/users/UpdateUserForm';
 import { AlertContext } from '../../context/AlertContext';
 import { BACKENDURL } from '../../helper/Urls';
 import axios from 'axios';
+import { Link } from 'react-router-dom'
 
 const UserTable = ({userData,loading,reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -128,22 +129,20 @@ const UserTable = ({userData,loading,reload}) => {
       children: [
         {
           title: 'IDNO',
-          dataIndex: 'IDNO',
-          ...getColumnSearchProps('IDNO'),
+          dataIndex: 'employee',
+          render:r=>r.employee.IDNO?<Link to={`/employee/detail/${r.employee.IDNO}`}>{r.employee.IDNO}</Link>:"N/A",
           width:'80px',
-          key: 'IDNO',
         },
         {
-          title: 'Full Name',
-          dataIndex: 'fullname',
-          ...getColumnSearchProps('fullname'),
-          key: 'fullname',
+          title: 'UserName',
+          dataIndex: 'userName',
+          key: 'userName',
           width:"250px"
         },
         {
           title: 'Sex',
-          dataIndex: 'gender',
-          key: 'gender',
+          dataIndex: 'employee',
+          render:r=>r.employee.sex?r.employee.sex:'N/A',
           width:'80px'
         },
       ],
@@ -153,9 +152,9 @@ const UserTable = ({userData,loading,reload}) => {
       children: [
         {
           title: 'Phone',
-            dataIndex: 'phone',
+          dataIndex: 'employee',
+          render:r=>r.employee.contact.phone?r.employee.contact.phone:'N/A',
           width:'100px',
-            key: 'phone',
           },
           {
             title: 'Email',
