@@ -14,8 +14,8 @@ const Auth = () => {
   const HandleLogin =async (values) => {
     setLoading(true)
     try {
-    //   const res=await axios.post(`${BACKENDURL}/auth/login`,{email:values.email,password:values.password})
-    //   localStorage.setItem('BLHR_Token',res.data.token)
+      const res=await axios.post(`${BACKENDURL}/auth/login`,{email:values.email,password:values.password})
+      localStorage.setItem('ERPUSER_Token',res.data.token)
       openNotification('Success','Login Success',3,'green');
       setLoading(false)
       navigate('/dashboard')

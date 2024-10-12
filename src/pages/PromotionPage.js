@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaTiktok } from 'react-icons/fa'
+import { FaLink, FaTiktok } from 'react-icons/fa'
 import { FaFacebook, FaInstagram, FaTelegram, FaYoutube } from 'react-icons/fa6'
 
 const PromotionPage = () => {
@@ -14,6 +14,8 @@ const PromotionPage = () => {
       <a target='_blank' href='https://www.instagram.com'><FaInstagram size={25} /></a>
       <a target='_blank' href='https://www.youtube.com'><FaYoutube color='red' size={25} /></a>
       </div>
+      <a target='_blank' href='https://www.securehrtech.com'><FaLink/>Our Website</a>
+
     </div>
   )
 }

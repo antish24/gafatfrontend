@@ -250,7 +250,7 @@ const NewEmployee = ({openModalFun, reload}) => {
           name: 'employementType',
           type: 'Select',
           options: [
-            {value: 'Full Time', lable: 'Full Time'},
+            {value: 'Permanent', lable: 'Permanent'},
             {value: 'Temporary', lable: 'Temporary'},
           ],
           width: '47%',
@@ -261,7 +261,7 @@ const NewEmployee = ({openModalFun, reload}) => {
           type: 'Select',
           options: [
             {value: 'Basic', lable: 'Basic'},
-            {value: 'Security', lable: 'Security'},
+            {value: 'Other', lable: 'Other'},
           ],
           width: '31%',
         },

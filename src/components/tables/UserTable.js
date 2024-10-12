@@ -9,7 +9,6 @@ import UpdateUserForm from '../forms/users/UpdateUserForm';
 import { AlertContext } from '../../context/AlertContext';
 import { BACKENDURL } from '../../helper/Urls';
 import axios from 'axios';
-import {CSVLink} from 'react-csv'
 
 const UserTable = ({userData,loading,reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -204,14 +203,6 @@ const UserTable = ({userData,loading,reload}) => {
 
   return (
     <>
-    <CSVLink
-        data={userData}
-        onClick={() => {
-        console.log("clicked") 
-        }}
-    >
-    Download me
-    </CSVLink>
     <ModalForm
           open={modalOpen}
           close={() => setModalOpen (false)}

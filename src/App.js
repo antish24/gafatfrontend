@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Link, Route, Routes, useLocation} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import { Link, Route, Routes, useLocation, useNavigate} from 'react-router-dom';
 import {Layout,theme,Breadcrumb,Button, Menu, Tooltip, Dropdown, Badge, Tabs, Spin,} from 'antd';
 
 import {FaAngleLeft, FaAngleRight,FaBuilding,FaBuildingUser,FaClipboardList,FaDiagramProject,FaFileInvoice,FaFileSignature,FaListUl,FaServicestack, FaUserCheck, FaUserGear, FaUserGroup, FaUserMinus, FaUsers, FaUserSecret, FaUsersGear, FaUserShield, FaWpforms} from 'react-icons/fa6';
@@ -67,6 +67,8 @@ import OrganzationInfo from './pages/organzation/OrganzationInfo';
 import PromotionPage from './pages/PromotionPage';
 import LeaveReportPage from './pages/leave/LeaveReportPage';
 import EmployeeReportPage from './pages/employee/report/EmployeeReportPage';
+import { BACKENDURL } from './helper/Urls';
+import axios from 'axios';
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -355,18 +357,18 @@ const App = () => {
     },
     {
       key: '/users',
-      label: 'Users',
+      label:<Link to={'/users/list'}>Users</Link>,
       icon: <FaUserShield size={20} />,
-      children: [
-        {
-          key: '/users/list',
-          label: <Link to={'/users/list'}><FaUserGroup/> Users</Link>,
-        },
-        {
-          key: '/users/access',
-          label: <Link to={'/users/access'}><FaUserSecret/> Access</Link>,
-        },
-      ],
+      // children: [
+      //   {
+      //     key: '/users/list',
+      //     label: <Link to={'/users/list'}><FaUserGroup/> Users</Link>,
+      //   },
+      //   {
+      //     key: '/users/access',
+      //     label: <Link to={'/users/access'}><FaUserSecret/> Access</Link>,
+      //   },
+      // ],
     },
     {
       key: '17',
@@ -489,9 +491,9 @@ const App = () => {
       key: '3',
       label: (
         <span style={{width:'100%',display:'flex',alignItems:'center'}}
-          onClick={()=>{}}
+          onClick={()=>{localStorage.setItem('ERPUSER_Token','');navigate('/')}}
         >
-          {false?<Spin></Spin>:'Logout'}
+          Logout
         </span>
       ),
     },
@@ -509,7 +511,32 @@ const App = () => {
   const [visible, setVisible] = useState(false);
 
 
+
+  const navigate = useNavigate ();
+  const [authLoading, setAuthLoading] = useState (true);
+
+  const IsUserAuth =async()=>{
+    setAuthLoading(true)
+    const headers = {
+      "Authorization": `Bearer ${localStorage.getItem('ERPUSER_Token')}`,
+    };
+  try {
+    const res=await axios.get(`${BACKENDURL}/auth/user`,{headers})
+    setAuthLoading(false)
+    console.log(res)
+  } catch (error) {
+    setAuthLoading(false)
+    navigate('/')
+  }
+  }
+
+  useEffect(() => {
+    IsUserAuth()
+  }, [pathName])
+  
+
   return (
+  <div>{authLoading?<Spin style={{display:'flex',alignItems:'center',justifyContent:'center',width:"100vw",height:'100vh'}}></Spin>:
     <Layout style={{height: '100vh'}} >
       <ModalForm
         open={openValue}
@@ -710,7 +737,8 @@ const App = () => {
           {new Date ().getFullYear ()}
         </Footer>
       </Layout>
-    </Layout>
+    </Layout>}
+    </div>
   );
 };
 export default App;

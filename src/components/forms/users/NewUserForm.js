@@ -3,7 +3,6 @@ import axios from 'axios';
 import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
-import TextArea from 'antd/es/input/TextArea';
 
 const NewUserForm = ({openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -28,7 +27,7 @@ const NewUserForm = ({openModalFun, reload}) => {
 
   const employeeOptions = employeeData.length
   ? employeeData.map(emp => ({
-    value: emp.empId,
+    value: emp.id,
     label: emp.IDNO +"-"+emp.fName+" "+emp.mName+" "+(emp.lName?emp.lName:"") 
   }))
   : [];
@@ -40,10 +39,11 @@ const NewUserForm = ({openModalFun, reload}) => {
   const onFinish = async values => {
     setLoading (true);
     try {
-      const res = await axios.post (`${BACKENDURL}/user/new`, {
+      const res = await axios.post (`${BACKENDURL}/users/new`, {
         userName: values.userName,
         email: values.email,
         access: values.access,
+        tasks: values.tasks,
         employee: values.employee
       });
       reload ();
@@ -121,11 +121,11 @@ const NewUserForm = ({openModalFun, reload}) => {
             maxTagCount='responsive'
             placeholder="Search to Select"
             optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            }
             options={[
+              {
+                value: 'Full',
+                label: 'Full System Access',
+              },
               {
                 value: 'Employee',
                 label: 'Employee',
@@ -191,16 +191,12 @@ const NewUserForm = ({openModalFun, reload}) => {
             }
             options={[
               {
-                value: 'R',
+                value: 'Read',
                 label: 'Read',
               },
               {
-                value: 'RW',
-                label: 'Read Write',
-              },
-              {
-                value: 'FULL',
-                label: 'Full Access',
+                value: 'Write',
+                label: 'Write',
               },
             ]}
           />
@@ -209,12 +205,6 @@ const NewUserForm = ({openModalFun, reload}) => {
         <Form.Item
           style={{margin: '5px 0', width: '49%'}}
           label="Effective Till"
-          rules={[
-            {
-              required: true,
-              message: 'Please input Effective Till',
-            },
-          ]}
           name="effectiveTill"
         >
           <DatePicker style={{width:'100%'}}/>
