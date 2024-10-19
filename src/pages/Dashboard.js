@@ -122,7 +122,7 @@ const Dashboard = () => {
     },
     {
       title: 'Blacklist',
-      icon: <FaUserShield size={40} color={'rgb(0,140,255)'} />,
+      icon: <FaUserShield size={40} color={'red'} />,
       link: '/blacklist/list',
       count: employeeCount,
     },

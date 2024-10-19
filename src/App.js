@@ -526,7 +526,7 @@ const App = () => {
     console.log(res)
   } catch (error) {
     setAuthLoading(false)
-    navigate('/')
+    // navigate('/')
   }
   }
 

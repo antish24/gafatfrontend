@@ -3,6 +3,7 @@ import LeaveBalanceTable from '../../../components/tables/leave/LeaveBalanceTabl
 import { AlertContext } from '../../../context/AlertContext';
 import { BACKENDURL } from '../../../helper/Urls';
 import axios from 'axios';
+import FilterBalance from '../../../components/forms/leave/FilterBalance';
 
 const LeaveBalancePage = () => {
   const {openNotification} = useContext(AlertContext);
@@ -10,10 +11,10 @@ const LeaveBalancePage = () => {
   const [loading,setLoading]=useState(false)
 
 
-  const getLeaveBalanceData=async()=>{
+  const getLeaveBalanceData=async({year})=>{
     setLoading(true)
     try {
-      const res = await axios.get(`${BACKENDURL}/leave/balance/all`);
+      const res = await axios.get(`${BACKENDURL}/leave/balance/all?year=${year}`);
       setLoading (false);
       setLeaveBalanceData(res.data.all)
     } catch (error) {
@@ -22,13 +23,10 @@ const LeaveBalancePage = () => {
     }
   }
 
-  useEffect(()=>{
-    getLeaveBalanceData()
-  },[])
-
   return (
     <div>
-      <LeaveBalanceTable reload={getLeaveBalanceData} loading={loading} leaveData={leaveBalanceData}/>
+      <FilterBalance reload={getLeaveBalanceData}/>
+      <LeaveBalanceTable loading={loading} leaveData={leaveBalanceData}/>
     </div>
   )
 }

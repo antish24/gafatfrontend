@@ -4,6 +4,7 @@ import {
   Input,
   Space,
   Table,
+  Tag,
 } from 'antd';
 import {SearchOutlined} from '@ant-design/icons';
 import {AlertContext} from '../../../context/AlertContext';
@@ -11,15 +12,11 @@ import {BACKENDURL} from '../../../helper/Urls';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const LeaveBalanceTable = ({leaveData, loading, reload}) => {
+const LeaveBalanceTable = ({leaveData, loading}) => {
   const {openNotification} = useContext (AlertContext);
   const [searchedColumn, setSearchedColumn] = useState ('');
   const [searchText, setSearchText] = useState ('');
   const searchInput = useRef (null);
-  const [modalOpen, setModalOpen] = useState (false);
-  const [modalContent, setModalContent] = useState ([]);
-  const [banLoading, setBanLoading] = useState (false);
-  const [deleteLoading, setDeleteLoading] = useState (false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm ();
@@ -103,34 +100,6 @@ const LeaveBalanceTable = ({leaveData, loading, reload}) => {
       ),
   });
 
-  const BanUser = async ({id, status}) => {
-    setBanLoading (true);
-    try {
-      const res = await axios.get (
-        `${BACKENDURL}/users/ban?id=${id}&&status=${status}`
-      );
-      openNotification ('success', res.data.message, 3, 'green');
-      reload ();
-      setBanLoading (false);
-    } catch (error) {
-      setBanLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
-  const DeleteUser = async id => {
-    setDeleteLoading (true);
-    try {
-      const res = await axios.get (`${BACKENDURL}/users/delete?id=${id}`);
-      setDeleteLoading (false);
-      reload ();
-      openNotification ('success', res.data.message, 3, 'green');
-    } catch (error) {
-      setDeleteLoading (false);
-      openNotification ('error', error.response.data.message, 3, 'red');
-    }
-  };
-
   const columns = [
     {
       title: 'IDNO',
@@ -152,12 +121,14 @@ const LeaveBalanceTable = ({leaveData, loading, reload}) => {
               dataIndex: 'fName',
               ...getColumnSearchProps ('fName'),
               width: '90px',
+              render: r=>r,
               key: 'fName',
             },
             {
               title: 'Middle',
               dataIndex: 'mName',
               ...getColumnSearchProps ('mName'),
+              render: r=>r,
               width: '90px',
               key: 'mName',
             },
@@ -165,6 +136,7 @@ const LeaveBalanceTable = ({leaveData, loading, reload}) => {
               title: 'Last',
               dataIndex: 'lName',
               ...getColumnSearchProps ('lName'),
+              render: r=>r,
               width: '90px',
               key: 'lName',
             },
@@ -201,6 +173,17 @@ const LeaveBalanceTable = ({leaveData, loading, reload}) => {
       width: '150px',
       key: 'balance',
     },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      width: '150px',
+      key: 'status',
+      render: r => (
+        <Tag
+          color={r === 'Active' ? 'success' :'volcano'}
+        >{r}</Tag>
+      ),
+    },
   ];
 
   return (
@@ -212,8 +195,8 @@ const LeaveBalanceTable = ({leaveData, loading, reload}) => {
       }}
       bordered
       pagination={{
-        defaultPageSize: 7,
-        showSizeChanger: false,
+        defaultPageSize: 10,
+        showSizeChanger: true,
       }}
       dataSource={leaveData}
       loading={loading}

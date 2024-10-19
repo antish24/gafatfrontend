@@ -4,6 +4,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {AlertContext} from '../../../context/AlertContext';
 import {BACKENDURL} from '../../../helper/Urls';
 import TextArea from 'antd/es/input/TextArea';
+import Dragger from 'antd/es/upload/Dragger';
+import { FaUpload } from 'react-icons/fa';
 
 const NewLeaveApplicationForm = ({openModalFun, reload}) => {
   const {openNotification} = useContext (AlertContext);
@@ -71,6 +73,7 @@ const NewLeaveApplicationForm = ({openModalFun, reload}) => {
         employee: values.employee,
         leaveType: values.leaveType,
         reason: values.reason,
+        attachment:values.attachment.file.name,
         startDate: values.startDate+ "T00:00:00Z",
         endDate: values.endDate+ "T00:00:00Z",
       });
@@ -183,7 +186,29 @@ const NewLeaveApplicationForm = ({openModalFun, reload}) => {
       >
         <TextArea />
       </Form.Item>
-
+      <Form.Item
+          style={{margin: '5px 0', width: '100%'}}
+          label="Attachment"
+          name="attachment"
+          rules={[
+            {
+              message: 'Please input Attachment',
+            },
+          ]}
+        >
+          <Dragger
+            action={`${BACKENDURL}/upload/new`}
+            multiple={false}
+            maxCount={1}
+          >
+            <div className="ant-upload-drag-icon">
+              <FaUpload />
+            </div>
+            <div className="ant-upload-hint">
+              Support for a single file.
+            </div>
+          </Dragger>
+        </Form.Item>
       </div>
       <Form.Item
         style={{display: 'flex', justifyContent: 'center', marginTop: '15px'}}
