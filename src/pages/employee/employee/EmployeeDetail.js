@@ -198,7 +198,7 @@ const EmployeeDetail = () => {
     {key: '3', label: 'Postion',name:'position',type:'Input',width:"24%" ,children:personalInfo.position},
     {key: '4', label: 'Employee Type', name: 'employementType',type:'Input',width:"24%" ,children:personalInfo.employementType},
     {key: '7', label: 'Shift',  name: 'shift',type:'Input',width:"24%" ,children:personalInfo.shift},
-    {key: '5', label: 'Start Date', name: 'startDate',type:'Input',width:"24%" ,children:personalInfo.startDate},
+    {key: '5', label: 'Start Date', name: 'startDate',type:'Input',width:"24%" ,children:FormatDay(personalInfo.startDate)},
     {key: '6', label: 'Salary', name: 'salary',type:'Input',width:"24%" ,children:personalInfo.salary},
     {
       key: '8',
@@ -215,6 +215,21 @@ const EmployeeDetail = () => {
       ),
       span: 2,
     },
+    {
+      key: '13',
+      label: 'Other Agreement',
+      name: 'otherAgreement',type:'Input',width:"24%" ,
+      children: (
+        <a
+          target="_blank"
+          href={`${BACKENDURL}/uploads/new/${personalInfo.otherAgreement}`}
+          alt="profile"
+        >
+          View
+        </a>
+      ),
+    },
+    {key: '12', label: 'Other Agreement Reason',name: 'bank',type:'Input',width:"24%" , children: personalInfo.reasonForOtherAgreement,span:2},
     {key: '9', label: 'Bank Name',name: 'bank',type:'Input',width:"24%" , children: personalInfo.bankName},
     {key: '11', label: 'Account Number',name: 'account',type:'Input',width:"24%" , children:personalInfo.bankAccount},
     {key: '10', label: 'Tin',name: 'TIN',type:'Input',width:"24%" , children:personalInfo.TIN},

@@ -281,6 +281,21 @@ const NewEmployee = ({openModalFun, reload}) => {
           width: '100%',
         },
         {
+          lable: 'Other Agreement',
+          name: 'otherAgreement',
+          type: 'File',
+          req: 'application/pdf',
+          width: '100%',
+          notRequired: true,
+        },
+        {
+          lable: 'Reason for Other Agreement',
+          name: 'reasonForOtherAgreement',
+          type: 'Input',
+          width: '100%',
+          notRequired: true,
+        },
+        {
           lable: 'Bank Name',
           name: 'bankName',
           type: 'Select',
