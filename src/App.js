@@ -526,7 +526,7 @@ const App = () => {
     console.log(res)
   } catch (error) {
     setAuthLoading(false)
-    // navigate('/')
+    navigate('/')
   }
   }
 
@@ -624,7 +624,7 @@ const App = () => {
               placement="bottomRight"
               trigger={['click']}
             >
-              <Badge size="small" count={2}>
+              <Badge size="small" count={0}>
                 <IoNotificationsCircle size={26} cursor={'pointer'} />
                 {/* <IoNotificationsCircle size={26} onClick={()=>play()} cursor={'pointer'} /> */}
               </Badge>
